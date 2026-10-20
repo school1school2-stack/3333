@@ -572,10 +572,9 @@
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <label style="margin: 0; font-size: 0.9rem;"><i class="fa-solid fa-user-shield"></i> تحويل إلى المرشد المختص:</label>
             <select id="globalTargetCounselor" class="target-counselor-select" style="max-width: 250px; margin: 0;">
-                <option value="أ. تركي العتيبي">أ. تركي العتيبي</option>
-                <option value="أ. محمد">أ. محمد</option>
-                <option value="أ. خالد">أ. خالد</option>
+                <!-- يُعبأ تلقائياً بالمرشدين المخزنين -->
             </select>
+            <button class="btn" style="background: #0284c7; padding: 8px 14px; font-size: 0.85rem;" onclick="addNewCounselorPrompt()"><i class="fa-solid fa-user-plus"></i> إضافة مرشد جديد</button>
         </div>
     </div>
 
@@ -616,7 +615,7 @@
             <option value="">⚙️ قائمة الإجراءات والتحكم الرئيسية...</option>
             <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
             <option value="open_saved">📂 التقارير المحفوظة والأرشيف السحابي (عرض الكل)</option>
-            <option value="share_link">🔗 مشاركة روابط المرشدين</option>
+            <option value="share_link">🔗 مشاركة روابط المرشدين الديناميكية</option>
             <option value="change_teacher">👨‍🏫 تعديل اسم معلم المادة</option>
             <option value="preview">👁️ معاينة الاستمارة الإدارية الفخمة</option>
             <option value="pdf">📄 تحميل الاستمارة ملف PDF</option>
@@ -704,6 +703,13 @@
     let selectedStudentName = "";
     
     let teacherName = localStorage.getItem("teacher_name") || "أ. عبدالعزيز الفيفي";
+    
+    // قائمة المرشدين المخزنة محلياً أو افتراضياً
+    let counselorsList = JSON.parse(localStorage.getItem("school_counselors_list")) || [
+        "أ. تركي العتيبي",
+        "أ. محمد",
+        "أ. خالد"
+    ];
 
     const urlParams = new URLSearchParams(window.location.search);
     const isCounselorView = urlParams.get('mode') === 'counselor';
@@ -731,10 +737,39 @@
         ]
     };
 
+    function renderCounselorsDropdown() {
+        const selectEl = document.getElementById("globalTargetCounselor");
+        if (!selectEl) return;
+        selectEl.innerHTML = "";
+        counselorsList.forEach(cName => {
+            const opt = document.createElement("option");
+            opt.value = cName;
+            opt.textContent = cName;
+            selectEl.appendChild(opt);
+        });
+    }
+
+    function addNewCounselorPrompt() {
+        const newC = prompt("أدخل اسم المرشد الطلابي الجديد:");
+        if (newC && newC.trim() !== "") {
+            const formattedName = newC.trim();
+            if (!counselorsList.includes(formattedName)) {
+                counselorsList.push(formattedName);
+                localStorage.setItem("school_counselors_list", JSON.stringify(counselorsList));
+                renderCounselorsDropdown();
+                document.getElementById("globalTargetCounselor").value = formattedName;
+                showToast(`تم إضافة المرشد (${formattedName}) بنجاح!`);
+            } else {
+                alert("هذا المرشد موجود مسبقاً في القائمة.");
+            }
+        }
+    }
+
     function updateNamesUI() {
         document.querySelectorAll('.teacherNameDisplay').forEach(el => {
             el.textContent = teacherName;
         });
+        renderCounselorsDropdown();
         if (currentCounselorParam) {
             document.querySelectorAll('.counselorNameDisplay').forEach(el => {
                 el.textContent = decodeURIComponent(currentCounselorParam);
@@ -1018,7 +1053,6 @@
                 const reportTeacher = data.teacherName || teacherName;
                 const reportCounselor = data.counselorName || "أ. تركي العتيبي";
 
-                // إذا كان المرشد يتصفح، نعرض فقط تقاريره
                 if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
                     return;
                 }
@@ -1188,7 +1222,13 @@
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ. تركي العتيبي";
 
-                // تصفية العرض حسب المرشد إذا كان في وضع المرشد
+                // تحديث القائمة ديناميكياً إذا وُجد مرشد جديد في السحابة
+                if (!counselorsList.includes(reportCounselor)) {
+                    counselorsList.push(reportCounselor);
+                    localStorage.setItem("school_counselors_list", JSON.stringify(counselorsList));
+                    renderCounselorsDropdown();
+                }
+
                 if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
                     return;
                 }
@@ -1370,12 +1410,12 @@
 
     function shareCounselorLinksModal() {
         const currentUrl = window.location.href.split('?')[0];
-        const linkTurki = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. تركي العتيبي");
-        const linkMohammed = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. محمد");
-        const linkKhaled = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. خالد");
-
-        const msg = `روابط المرشدين المخصصة:\n\n1. رابط أ. تركي العتيبي:\n${linkTurki}\n\n2. رابط أ. محمد:\n${linkMohammed}\n\n3. رابط أ. خالد:\n${linkKhaled}`;
-        prompt("انسخ الرابط المخصص للمرشد المطلوب:", msg);
+        let msg = "روابط المرشدين المخصصة:\n\n";
+        counselorsList.forEach((cName, idx) => {
+            const link = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent(cName);
+            msg += `${idx + 1}. رابط ${cName}:\n${link}\n\n`;
+        });
+        prompt("انسخ روابط المرشدين:", msg);
     }
 
     function showPreview() {
@@ -1424,7 +1464,7 @@
         const textareas = element.querySelectorAll('textarea');
         const originalTextareas = document.querySelectorAll('#tableBody textarea');
         textareas.forEach((ta, idx) => {
-            if(!ta.classList.1st('counselor-reply')) {
+            if(!ta.classList.contains('counselor-reply')) {
                 const div = document.createElement('div');
                 div.textContent = originalTextareas[idx].value || '-';
                 div.style.textAlign = 'right';
