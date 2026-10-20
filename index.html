@@ -191,7 +191,7 @@
             padding-right: 22px;
         }
 
-        select.violation-select, select.count-select {
+        select.violation-select, select.count-select, select.target-counselor-select {
             width: 100%;
             padding: 9px 12px;
             border-radius: var(--radius-sm);
@@ -204,7 +204,7 @@
             margin-bottom: 6px;
         }
 
-        select.violation-select:focus, select.count-select:focus {
+        select.violation-select:focus, select.count-select:focus, select.target-counselor-select:focus {
             border-color: var(--maroon);
         }
 
@@ -476,7 +476,6 @@
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
 
-        /* تنسيقات تقرير الإدارة الفخم والمتوسع */
         .executive-report-box {
             background: #ffffff;
             border: 2px solid var(--maroon);
@@ -562,12 +561,21 @@
     <!-- قسم البحث واختيار الطالب -->
     <div class="select-section no-print" id="controlSection">
         <label for="searchInput"><i class="fa-solid fa-magnifying-glass"></i> ابحث عن اسم الطالب واختاره لإضافته للقائمة:</label>
-        <div class="search-container">
+        <div class="search-container" style="margin-bottom: 15px;">
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" class="student-search" placeholder="اكتب اسم الطالب هنا..." oninput="filterStudents()" onfocus="filterStudents()">
                 <div id="searchResults" class="search-results"></div>
             </div>
             <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-plus"></i> إضافة للقائمة</button>
+        </div>
+        
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <label style="margin: 0; font-size: 0.9rem;"><i class="fa-solid fa-user-shield"></i> تحويل إلى المرشد المختص:</label>
+            <select id="globalTargetCounselor" class="target-counselor-select" style="max-width: 250px; margin: 0;">
+                <option value="أ. تركي العتيبي">أ. تركي العتيبي</option>
+                <option value="أ. محمد">أ. محمد</option>
+                <option value="أ. خالد">أ. خالد</option>
+            </select>
         </div>
     </div>
 
@@ -598,7 +606,7 @@
     </table>
 
     <div style="margin-top: 45px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
-        <div>توقيع المرشد الطلابي (<span class="counselorNameDisplay">أ. تركي العتيبي</span>): ........................</div>
+        <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ. تركي العتيبي</span> ........................</div>
         <div>توقيع معلم المادة (<span class="teacherNameDisplay">أ. عبدالعزيز الفيفي</span>): ........................</div>
     </div>
 
@@ -608,9 +616,8 @@
             <option value="">⚙️ قائمة الإجراءات والتحكم الرئيسية...</option>
             <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
             <option value="open_saved">📂 التقارير المحفوظة والأرشيف السحابي (عرض الكل)</option>
-            <option value="share_link">🔗 مشاركة رابط المرشد الطلابي</option>
+            <option value="share_link">🔗 مشاركة روابط المرشدين</option>
             <option value="change_teacher">👨‍🏫 تعديل اسم معلم المادة</option>
-            <option value="change_counselor">👤 تعديل اسم المرشد الطلابي</option>
             <option value="preview">👁️ معاينة الاستمارة الإدارية الفخمة</option>
             <option value="pdf">📄 تحميل الاستمارة ملف PDF</option>
             <option value="print">🖨️ طباعة الاستمارة</option>
@@ -634,7 +641,7 @@
 <div class="modal-overlay" id="savedReportsModal">
     <div class="modal-content">
         <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-            <span><i class="fa-solid fa-box-archive"></i> سجل كافة التقارير المحولة للمرشد الطلابي</span>
+            <span><i class="fa-solid fa-box-archive"></i> سجل التقارير المحولة للمرشدين</span>
             <button class="btn btn-close" onclick="closeSavedReportsModal()">إغلاق</button>
         </h3>
         <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;" class="no-print">
@@ -697,10 +704,10 @@
     let selectedStudentName = "";
     
     let teacherName = localStorage.getItem("teacher_name") || "أ. عبدالعزيز الفيفي";
-    let counselorName = localStorage.getItem("counselor_name") || "أ. تركي العتيبي";
 
     const urlParams = new URLSearchParams(window.location.search);
     const isCounselorView = urlParams.get('mode') === 'counselor';
+    const currentCounselorParam = urlParams.get('counselor') || "";
 
     const countOptionsMap = {
         "عدم إحضار الواجبات": [
@@ -728,9 +735,11 @@
         document.querySelectorAll('.teacherNameDisplay').forEach(el => {
             el.textContent = teacherName;
         });
-        document.querySelectorAll('.counselorNameDisplay').forEach(el => {
-            el.textContent = counselorName;
-        });
+        if (currentCounselorParam) {
+            document.querySelectorAll('.counselorNameDisplay').forEach(el => {
+                el.textContent = decodeURIComponent(currentCounselorParam);
+            });
+        }
     }
 
     function promptChangeTeacherName() {
@@ -740,16 +749,6 @@
             localStorage.setItem("teacher_name", teacherName);
             updateNamesUI();
             showToast("تم تحديث اسم المعلم بنجاح!");
-        }
-    }
-
-    function promptChangeCounselorName() {
-        const newName = prompt("أدخل اسم المرشد الطلابي الجديد:", counselorName);
-        if (newName && newName.trim() !== "") {
-            counselorName = newName.trim();
-            localStorage.setItem("counselor_name", counselorName);
-            updateNamesUI();
-            showToast("تم تحديث اسم المرشد بنجاح!");
         }
     }
 
@@ -808,9 +807,8 @@
 
         if (val === "save_all") saveCurrentReports();
         else if (val === "open_saved") openSavedReportsModal();
-        else if (val === "share_link") shareCounselorLink();
+        else if (val === "share_link") shareCounselorLinksModal();
         else if (val === "change_teacher") promptChangeTeacherName();
-        else if (val === "change_counselor") promptChangeCounselorName();
         else if (val === "preview") showPreview();
         else if (val === "pdf") downloadPDF();
         else if (val === "print") window.print();
@@ -844,6 +842,10 @@
         if (isCounselorView) {
             document.getElementById('controlSection').style.display = 'none';
             document.querySelector('.actions-dropdown-container').style.display = 'none';
+            if(currentCounselorParam) {
+                const titleEl = document.querySelector('.header-info h2');
+                titleEl.textContent = `لوحة متابعة المرشد الطلابي (${decodeURIComponent(currentCounselorParam)})`;
+            }
         }
     }
 
@@ -898,12 +900,12 @@
                 const currentViolations = data.violations || [];
                 const violationsHTML = generateFormattedViolationsHTML(currentViolations);
                 const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || counselorName;
+                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
                 
                 html += `
                     <div class="history-card" id="history_card_${docId}">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> إحالة المعلم (${reportTeacher}): ${createdTimeStr}</span>
+                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> الإحالة (${reportTeacher} ⬅️ المرشد: ${reportCounselor}): ${createdTimeStr}</span>
                             <div class="no-print">
                                 <select class="action-dropdown" onchange="handleReportAction(this, '${docId}', '${data.name}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')">
                                     <option value="">⚙️ الإجراءات...</option>
@@ -914,9 +916,9 @@
                             </div>
                         </div>
                         <div style="font-size: 0.85rem; margin-bottom: 6px;"><strong>المخالفات:</strong><br>${violationsHTML}</div>
-                        <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظات المعلم (${reportTeacher}):</strong> ${data.notes || 'لا توجد ملاحظات'}</div>
+                        <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظات المعلم:</strong> ${data.notes || 'لا توجد ملاحظات'}</div>
                         <div style="font-size: 0.85rem; color: #0284c7; margin-bottom: 4px;">
-                            <strong>رد المرشد الطلابي (${reportCounselor}):</strong> ${data.reply || 'لم يتم الرد بعد'} 
+                            <strong>رد المرشد (${reportCounselor}):</strong> ${data.reply || 'لم يتم الرد بعد'} 
                             ${replyTimeStr ? `<br><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span>` : ''}
                         </div>
                     </div>
@@ -960,14 +962,14 @@
         }
     }
 
-    async function saveSingleStudent(id, studentName) {
+    async function saveSingleStudent(id, studentName, counselorNameVal) {
         try {
             await db.collection("referral_list").doc(id).update({
                 isArchived: true,
                 teacherName: teacherName,
-                counselorName: counselorName
+                counselorName: counselorNameVal
             });
-            showToast(`تم أرشفة وحفظ تقرير الطالب (${studentName}) بنجاح!`);
+            showToast(`تم أرشفة وحفظ تقرير الطالب (${studentName}) للمرشد (${counselorNameVal}) بنجاح!`);
         } catch (error) {
             alert("حدث خطأ أثناء الحفظ.");
         }
@@ -977,15 +979,14 @@
         const rows = document.querySelectorAll("#tableBody tr");
         if (rows.length === 0) return alert("لا توجد بيانات طلاب نشطة لحفظها وأرشفتها.");
 
-        if (confirm("هل تريد أرشفة وحفظ جميع التقارير وإخفائها من هذه الشاشة؟")) {
+        if (confirm("هل تريد أرشفة وحفظ جميع التقارير الحالية؟")) {
             const batch = db.batch();
             const snapshot = await db.collection("referral_list").get();
             snapshot.forEach(doc => {
                 if (doc.data().isArchived !== true) {
                     batch.update(doc.ref, { 
                         isArchived: true, 
-                        teacherName: teacherName, 
-                        counselorName: counselorName 
+                        teacherName: teacherName
                     });
                 }
             });
@@ -1015,12 +1016,17 @@
                 const currentViolations = data.violations || [];
                 const violationsHTML = generateFormattedViolationsHTML(currentViolations);
                 const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || counselorName;
+                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
+
+                // إذا كان المرشد يتصفح، نعرض فقط تقاريره
+                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
+                    return;
+                }
 
                 html += `
                     <div class="history-card report-item-card" data-search="${(data.name || '').toLowerCase()}">
                         <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: var(--maroon); margin-bottom: 8px;">
-                            <span>🎓 الطالب: ${data.name || 'طالب'}</span>
+                            <span>🎓 الطالب: ${data.name || 'طالب'} (الموجه إلى: ${reportCounselor})</span>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
                                 <div class="no-print">
@@ -1042,7 +1048,7 @@
                     </div>
                 `;
             });
-            container.innerHTML = html;
+            container.innerHTML = html || "<p style='color: #666;'>لا توجد تقارير مطابقة.</p>";
         } catch (error) {
             console.error(error);
             container.innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل التقارير المحفوظة.</p>";
@@ -1081,7 +1087,6 @@
         }
     }
 
-    // معاينة تقرير مفرد بتصميم إداري فخم ومتوسع
     function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
         let violationsArr = [];
         if (typeof violationsInput === 'string') {
@@ -1092,7 +1097,7 @@
 
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
         const activeTeacher = customTeacher || teacherName;
-        const activeCounselor = customCounselor || counselorName;
+        const activeCounselor = customCounselor || "أ. تركي العتيبي";
 
         const content = `
             <div class="executive-report-box" id="printableSingleReport">
@@ -1105,7 +1110,7 @@
                     <div class="executive-grid-item"><i class="fa-solid fa-user-graduate" style="color:var(--maroon)"></i> <strong>اسم الطالب:</strong> ${name}</div>
                     <div class="executive-grid-item"><i class="fa-solid fa-calendar-days" style="color:var(--maroon)"></i> <strong>تاريخ ووقت الإحالة:</strong> ${dateStr}</div>
                     <div class="executive-grid-item"><i class="fa-solid fa-chalkboard-user" style="color:var(--maroon)"></i> <strong>معلم المادة:</strong> ${activeTeacher}</div>
-                    <div class="executive-grid-item"><i class="fa-solid fa-user-shield" style="color:var(--maroon)"></i> <strong>المرشد الطلابي:</strong> ${activeCounselor}</div>
+                    <div class="executive-grid-item"><i class="fa-solid fa-user-shield" style="color:var(--maroon)"></i> <strong>المرشد الطلابي المختص:</strong> ${activeCounselor}</div>
                 </div>
 
                 <div class="executive-section-title">قائمة المخالفات والسلوكيات المرصودة:</div>
@@ -1148,6 +1153,7 @@
     async function addSelectedStudent() {
         const inputVal = document.getElementById("searchInput").value.trim();
         const studentName = selectedStudentName || inputVal;
+        const targetCounselor = document.getElementById("globalTargetCounselor").value;
         if (!studentName) return alert("يرجى اختيار أو كتابة اسم الطالب أولاً");
 
         const studentId = "student_" + Date.now();
@@ -1159,13 +1165,13 @@
                 reply: "لم يتم الرد بعد",
                 isArchived: false,
                 teacherName: teacherName,
-                counselorName: counselorName,
+                counselorName: targetCounselor,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             document.getElementById("searchInput").value = "";
             selectedStudentName = "";
             document.getElementById("studentHistorySection").style.display = "none";
-            showToast(`تم إدراج الطالب (${studentName}) للقائمة النشطة!`);
+            showToast(`تم إدراج الطالب (${studentName}) وتحويله إلى (${targetCounselor})!`);
         } catch (e) {
             console.error(e);
         }
@@ -1180,6 +1186,12 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const id = doc.id;
+                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
+
+                // تصفية العرض حسب المرشد إذا كان في وضع المرشد
+                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
+                    return;
+                }
 
                 if (!isCounselorView && data.isArchived === true) return;
                 if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
@@ -1191,7 +1203,6 @@
                 const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
                 const studentDisplayName = data.name || "اسم الطالب";
                 const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || counselorName;
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
@@ -1200,6 +1211,7 @@
                         ${studentDisplayName}
                         <br>
                         <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
+                        <div style="font-size:0.75rem; color:#854d0e; margin-top:3px;"><i class="fa-solid fa-user-shield"></i> المرشد: ${reportCounselor}</div>
                     </td>
                     <td class="no-print">
                         <select id="type_select_${id}" class="violation-select" ${isCounselorView ? 'disabled' : ''} onchange="onTypeSelectChange('${id}')">
@@ -1225,11 +1237,11 @@
                             <div style="font-size: 0.8rem; font-weight: bold; color: var(--maroon); margin-bottom: 2px;">المرشد: <span class="counselorNameDisplay">${reportCounselor}</span></div>
                             <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد الطلابي هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
                             ${replyTimeStr ? `<div style="text-align: right;"><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                            <button class="btn-save-reply" onclick="saveReply('${id}')"><i class="fa-solid fa-paper-plane"></i> حفظ رد المرشد</button>
+                            <button class="btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ رد المرشد</button>
                         </div>
                     </td>
                     <td class="no-print" style="display: flex; gap: 4px; justify-content: center; align-items: center; padding-top: 15px;">
-                        <button class="btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}')" title="حفظ وأرشفة الطالب"><i class="fa-solid fa-floppy-disk"></i></button>
+                        <button class="btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')" title="حفظ وأرشفة الطالب"><i class="fa-solid fa-floppy-disk"></i></button>
                         <button class="btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')" title="معاينة التقرير الفخم"><i class="fa-solid fa-eye"></i></button>
                         <button class="btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>
                     </td>
@@ -1332,7 +1344,7 @@
         }
     }
 
-    async function saveReply(id) {
+    async function saveReply(id, counselorNameVal) {
         const replyText = document.getElementById(`reply_${id}`).value;
         if (!replyText.trim()) return alert("يرجى كتابة الرد قبل الحفظ!");
 
@@ -1340,7 +1352,7 @@
             await db.collection("referral_list").doc(id).update({ 
                 reply: replyText,
                 teacherName: teacherName,
-                counselorName: counselorName,
+                counselorName: counselorNameVal,
                 replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast("تم حفظ الرد وتوقيته وإخفاء التقرير من قائمة المرشد!");
@@ -1356,15 +1368,16 @@
         }
     }
 
-    function shareCounselorLink() {
+    function shareCounselorLinksModal() {
         const currentUrl = window.location.href.split('?')[0];
-        const counselorUrl = currentUrl + "?mode=counselor";
-        navigator.clipboard.writeText(counselorUrl).then(() => {
-            showToast("تم نسخ رابط المرشد الطلابي بنجاح!");
-        });
+        const linkTurki = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. تركي العتيبي");
+        const linkMohammed = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. محمد");
+        const linkKhaled = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent("أ. خالد");
+
+        const msg = `روابط المرشدين المخصصة:\n\n1. رابط أ. تركي العتيبي:\n${linkTurki}\n\n2. رابط أ. محمد:\n${linkMohammed}\n\n3. رابط أ. خالد:\n${linkKhaled}`;
+        prompt("انسخ الرابط المخصص للمرشد المطلوب:", msg);
     }
 
-    // المعاينة العامة للاستمارة بتصميم فخم ومتوسع
     function showPreview() {
         const contentClone = document.getElementById('pdfContent').cloneNode(true);
         contentClone.querySelectorAll('.no-print').forEach(el => el.remove());
@@ -1411,7 +1424,7 @@
         const textareas = element.querySelectorAll('textarea');
         const originalTextareas = document.querySelectorAll('#tableBody textarea');
         textareas.forEach((ta, idx) => {
-            if(!ta.classList.contains('counselor-reply')) {
+            if(!ta.classList.1st('counselor-reply')) {
                 const div = document.createElement('div');
                 div.textContent = originalTextareas[idx].value || '-';
                 div.style.textAlign = 'right';
