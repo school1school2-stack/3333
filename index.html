@@ -541,6 +541,29 @@
     <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
+<!-- نافذة تسجيل بيانات المعلم أول مرة أو عند التعديل -->
+<div class="modal-overlay" id="teacherInfoModal" style="display: flex;">
+    <div class="modal-content" style="max-width: 450px;">
+        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">أدخل بياناتك لمرة واحدة فقط، وستبقى محفوظة على جهازك تلقائياً:</p>
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 4px;">اسم المعلم:</label>
+            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+        </div>
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 4px;">البريد الإلكتروني:</label>
+            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+        </div>
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 4px;">اسم المادة / الصف:</label>
+            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
+        </div>
+    </div>
+</div>
+
 <div class="container" id="pdfContent">
     <div class="header-info">
         <div class="header-title-box">
@@ -553,8 +576,8 @@
             </div>
         </div>
         <div class="header-badge">
-            <div><i class="fa-solid fa-book-bookmark" style="color: var(--maroon);"></i> <strong>المادة:</strong> الكفايات اللغوية (أول ثانوي)</div>
-            <div><i class="fa-solid fa-user-tie" style="color: var(--maroon);"></i> <strong>معلم المادة:</strong> <span class="teacherNameDisplay">أ. عبدالعزيز الفيفي</span></div>
+            <div><i class="fa-solid fa-book-bookmark" style="color: var(--maroon);"></i> <strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
+            <div><i class="fa-solid fa-user-tie" style="color: var(--maroon);"></i> <strong>معلم المادة:</strong> <span class="teacherNameDisplay">-</span> (<span class="teacherEmailDisplay">-</span>)</div>
         </div>
     </div>
 
@@ -572,9 +595,8 @@
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <label style="margin: 0; font-size: 0.9rem;"><i class="fa-solid fa-user-shield"></i> تحويل إلى المرشد المختص:</label>
             <select id="globalTargetCounselor" class="target-counselor-select" style="max-width: 250px; margin: 0;">
-                <!-- يُعبأ تلقائياً بالمرشدين -->
+                <!-- القائمة الثابتة للمرشدين الثلاثة -->
             </select>
-            <button class="btn" style="background: #0284c7; padding: 8px 14px; font-size: 0.85rem;" onclick="addNewCounselorPrompt()"><i class="fa-solid fa-user-plus"></i> إضافة مرشد جديد</button>
         </div>
     </div>
 
@@ -606,7 +628,7 @@
 
     <div style="margin-top: 45px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
         <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
-        <div>توقيع معلم المادة (<span class="teacherNameDisplay">أ. عبدالعزيز الفيفي</span>): ........................</div>
+        <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
     </div>
 
     <!-- قائمة الخيارات المنفذة للتحكم الموحد -->
@@ -615,8 +637,8 @@
             <option value="">⚙️ قائمة الإجراءات والتحكم الرئيسية...</option>
             <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
             <option value="open_saved">📂 التقارير المحفوظة والأرشيف السحابي (عرض الكل)</option>
-            <option value="share_link">🔗 مشاركة روابط المرشدين الديناميكية</option>
-            <option value="change_teacher">👨‍🏫 تعديل اسم معلم المادة</option>
+            <option value="share_link">🔗 مشاركة روابط المرشدين</option>
+            <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم (الاسم، البريد، المادة)</option>
             <option value="preview">👁️ معاينة الاستمارة الإدارية الفخمة</option>
             <option value="pdf">📄 تحميل الاستمارة ملف PDF</option>
             <option value="print">🖨️ طباعة الاستمارة</option>
@@ -702,10 +724,13 @@
     let studentCount = 0;
     let selectedStudentName = "";
     
-    let teacherName = localStorage.getItem("teacher_name") || "أ. عبدالعزيز الفيفي";
+    // جلب بيانات المعلم من ذاكرة المتصفح المحلية
+    let teacherName = localStorage.getItem("teacher_name") || "";
+    let teacherEmail = localStorage.getItem("teacher_email") || "";
+    let teacherSubject = localStorage.getItem("teacher_subject") || "";
     
-    // القائمة الافتتاحية المحدثة للمرشدين مع إمكانية التوسعة والإضافة
-    let counselorsList = JSON.parse(localStorage.getItem("school_counselors_list")) || [
+    // قائمة المرشدين الثابتة والمحددة بالأسماء الثلاثة المطلوبة حصرياً
+    const counselorsList = [
         "أ / عبدالمجيد الأحيدب",
         "أ / عبدالعزيز العتيبي",
         "أ / علي الناصر"
@@ -749,26 +774,10 @@
         });
     }
 
-    function addNewCounselorPrompt() {
-        const newC = prompt("أدخل اسم المرشد الطلابي الجديد:");
-        if (newC && newC.trim() !== "") {
-            const formattedName = newC.trim();
-            if (!counselorsList.includes(formattedName)) {
-                counselorsList.push(formattedName);
-                localStorage.setItem("school_counselors_list", JSON.stringify(counselorsList));
-                renderCounselorsDropdown();
-                document.getElementById("globalTargetCounselor").value = formattedName;
-                showToast(`تم إضافة المرشد (${formattedName}) بنجاح!`);
-            } else {
-                alert("هذا المرشد موجود مسبقاً في القائمة.");
-            }
-        }
-    }
-
     function updateNamesUI() {
-        document.querySelectorAll('.teacherNameDisplay').forEach(el => {
-            el.textContent = teacherName;
-        });
+        document.querySelectorAll('.teacherNameDisplay').forEach(el => el.textContent = teacherName || "غير محدد");
+        document.querySelectorAll('.teacherEmailDisplay').forEach(el => el.textContent = teacherEmail || "غير محدد");
+        document.querySelectorAll('.teacherSubjectDisplay').forEach(el => el.textContent = teacherSubject || "غير محدد");
         renderCounselorsDropdown();
         if (currentCounselorParam) {
             document.querySelectorAll('.counselorNameDisplay').forEach(el => {
@@ -777,13 +786,41 @@
         }
     }
 
-    function promptChangeTeacherName() {
-        const newName = prompt("أدخل اسم معلم المادة الجديد:", teacherName);
-        if (newName && newName.trim() !== "") {
-            teacherName = newName.trim();
-            localStorage.setItem("teacher_name", teacherName);
+    function checkTeacherInfoOnLoad() {
+        if (!teacherName || !teacherEmail) {
+            document.getElementById('teacherInfoModal').style.display = 'flex';
+        } else {
+            document.getElementById('teacherInfoModal').style.display = 'none';
             updateNamesUI();
-            showToast("تم تحديث اسم المعلم بنجاح!");
+        }
+    }
+
+    function promptChangeTeacherInfo() {
+        document.getElementById('modalTeacherName').value = teacherName;
+        document.getElementById('modalTeacherEmail').value = teacherEmail;
+        document.getElementById('modalTeacherSubject').value = teacherSubject;
+        document.getElementById('teacherInfoModal').style.display = 'flex';
+    }
+
+    function saveTeacherInfoModal() {
+        const nameVal = document.getElementById('modalTeacherName').value.trim();
+        const emailVal = document.getElementById('modalTeacherEmail').value.trim();
+        const subjectVal = document.getElementById('modalTeacherSubject').value.trim();
+
+        if (nameVal && emailVal) {
+            teacherName = nameVal;
+            teacherEmail = emailVal;
+            teacherSubject = subjectVal || "الكفايات اللغوية";
+
+            localStorage.setItem("teacher_name", teacherName);
+            localStorage.setItem("teacher_email", teacherEmail);
+            localStorage.setItem("teacher_subject", teacherSubject);
+
+            updateNamesUI();
+            document.getElementById('teacherInfoModal').style.display = 'none';
+            showToast("تم حفظ بيانات المعلم بنجاح!");
+        } else {
+            alert("يرجى إدخال اسم المعلم والبريد الإلكتروني على الأقل.");
         }
     }
 
@@ -843,7 +880,7 @@
         if (val === "save_all") saveCurrentReports();
         else if (val === "open_saved") openSavedReportsModal();
         else if (val === "share_link") shareCounselorLinksModal();
-        else if (val === "change_teacher") promptChangeTeacherName();
+        else if (val === "change_teacher_info") promptChangeTeacherInfo();
         else if (val === "preview") showPreview();
         else if (val === "pdf") downloadPDF();
         else if (val === "print") window.print();
@@ -863,7 +900,7 @@
     }
 
     function loadStudentsList() {
-        updateNamesUI();
+        checkTeacherInfoOnLoad();
         db.collection("allowed_students").orderBy("name").get().then((snapshot) => {
             allStudents = [];
             snapshot.forEach((doc) => {
@@ -1221,12 +1258,6 @@
                 const data = doc.data();
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
-
-                if (!counselorsList.includes(reportCounselor)) {
-                    counselorsList.push(reportCounselor);
-                    localStorage.setItem("school_counselors_list", JSON.stringify(counselorsList));
-                    renderCounselorsDropdown();
-                }
 
                 if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
                     return;
