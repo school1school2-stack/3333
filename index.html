@@ -3,429 +3,815 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - كشف المتابعة الاحترافي</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <!-- Firebase SDK v8 -->
+    <title>منظومة تحويل الطلاب السحابية 2026 - كشف المتابعة اليومية</title>
+    <!-- Google Fonts: Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <!-- html2pdf Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: all 0.2s ease-in-out;
+        }
+
         body {
             font-family: 'Tajawal', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1350px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .header-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+
+        .header-meta {
+            background: #eff6ff;
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            border-right: 4px solid var(--primary);
+            font-size: 0.88rem;
+        }
+
+        /* شريط إضافة طالب جديد للكشف */
+        .add-row-bar {
+            background: #fdf8f0;
+            border: 1px solid #fcd34d;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            flex-grow: 1;
+            min-width: 280px;
+        }
+
+        input[type="text"].student-search, select.toolbar-select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+            outline: none;
+        }
+
+        input[type="text"].student-search:focus, select.toolbar-select:focus {
+            border-color: var(--primary);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 105%;
+            right: 0;
+            left: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .search-results div {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.88rem;
+        }
+
+        .search-results div:hover {
+            background-color: #eff6ff;
+            color: var(--primary);
+        }
+
+        /* تصميم كشف المتابعة (جدول نظامي نظيف) */
+        .followup-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .followup-table th, .followup-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            vertical-align: middle;
+        }
+
+        .followup-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .followup-table tr:nth-child(even) {
             background-color: #f8fafc;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            height: 8px;
-            width: 8px;
+
+        select.table-select {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            background: white;
+            margin-bottom: 5px;
+            outline: none;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
+
+        textarea.table-textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            resize: vertical;
+            background: white;
+        }
+
+        textarea.counselor-reply-box {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        .violation-tag-box {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            text-align: right;
+        }
+
+        .tag-item {
+            background: #fffbeb;
+            border: 1px solid #fef08a;
+            padding: 3px 6px;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #92400e;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-add { background: var(--primary); color: white; width: 100%; }
+        .btn-mini-add { background: #d97706; color: white; padding: 4px 8px; font-size: 0.72rem; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: 700; margin-top: 2px; }
+        .btn-save { background: #16a34a; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+        .btn-view { background: #0284c7; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+        .btn-del { background: #dc2626; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+
+        .time-badge {
+            display: inline-block;
             background: #f1f5f9;
-            border-radius: 4px;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            margin-top: 3px;
+            border: 1px solid #e2e8f0;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+
+        .actions-bar {
+            margin-top: 25px;
+            display: flex;
+            justify-content: flex-end;
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+
+        select.main-actions-select {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            outline: none;
+            min-width: 240px;
+            text-align: center;
+        }
+
+        select.main-actions-select option {
+            background-color: white;
+            color: var(--text-main);
+            font-weight: 600;
+            padding: 8px;
+        }
+
+        .toast-notification {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: #0f172a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 9999;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+        .toast-notification.show { transform: translateY(0); }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(2px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            max-width: 850px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 25px;
+            box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .report-box {
+            background: #fff;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+
+        @media print {
+            .no-print, .add-row-bar, .actions-bar, .modal-overlay, .toast-notification { display: none !important; }
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+<body>
 
-    <header class="bg-slate-900 text-white shadow-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-3 space-x-reverse">
-                <div class="p-2.5 bg-slate-800 rounded-xl shadow-inner border border-slate-700">
-                    <i class="fa-solid fa-clipboard-user text-2xl text-amber-400"></i>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide">كشف المتابعة والإحالة الإرشادية</h1>
-                    <p class="text-slate-400 text-xs mt-0.5"><span id="headerTeacherName">-</span> - وزارة التعليم (المملكة العربية السعودية)</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-3">
-                <div class="bg-slate-800/80 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2 text-xs">
-                    <i id="cloudIcon" class="fa-solid fa-cloud text-emerald-400 animate-pulse"></i>
-                    <span id="cloudStatus" class="font-medium text-slate-200">السحابة متصلة</span>
-                </div>
-            </div>
+<div class="toast-notification" id="toast">
+    <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>
+    <span id="toastMsg">تمت العملية بنجاح</span>
+</div>
+
+<!-- نافذة إعدادات بيانات المعلم -->
+<div class="modal-overlay" id="teacherInfoModal" style="display: flex;">
+    <div class="modal-content" style="max-width: 400px;">
+        <h3 style="color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--accent); padding-bottom: 8px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">أدخل بياناتك لتظهر في ترويسة كشف المتابعة:</p>
+        <div style="margin-bottom: 10px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">اسم المعلم:</label>
+            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
-
-        <!-- شريط التحكم والبحث وإضافة طالب للكشف -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6 flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                <div class="relative w-full sm:w-72">
-                    <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                    <input type="text" id="searchInput" placeholder="ابحث عن طالب في السجل..." class="w-full pr-10 pl-4 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-slate-800 focus:outline-none">
-                </div>
-
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <input type="text" id="quickStudentInput" list="presetStudentsList" placeholder="أو اكتب اسم طالب جديد..." class="bg-slate-50 border border-slate-300 text-slate-800 font-medium px-3 py-2 rounded-xl text-sm focus:ring-2 focus:ring-slate-800 focus:outline-none flex-grow" autocomplete="off">
-                    <datalist id="presetStudentsList"></datalist>
-                    <button onclick="addStudentToFollowup()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5 shrink-0">
-                        <i class="fa-solid fa-user-plus"></i>
-                        إضافة للكشف
-                    </button>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-2 w-full lg:w-auto justify-end flex-wrap">
-                <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center gap-1.5 border border-slate-300">
-                    <i class="fa-solid fa-print"></i>
-                    طباعة الكشف
-                </button>
-            </div>
+        <div style="margin-bottom: 10px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">البريد الإلكتروني:</label>
+            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
-
-        <!-- جدول كشف المتابعة اليومية (تصميم احترافي مبسط) -->
-        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-right border-collapse min-w-[900px]">
-                    <thead>
-                        <tr class="bg-slate-100/80 text-slate-700 text-xs uppercase font-bold border-b border-slate-200">
-                            <th class="p-3.5 text-center w-12">م</th>
-                            <th class="p-3.5 w-48">بيانات الطالب</th>
-                            <th class="p-3.5 w-56">1. اختر الحالة والعدد</th>
-                            <th class="p-3.5 w-48">2. الحالات المرصودة</th>
-                            <th class="p-3.5">3. تفصيل الحالة وملاحظات المعلم</th>
-                            <th class="p-3.5 w-44 text-center">4. تحويل / رد المرشد</th>
-                            <th class="p-3.5 text-center w-24">إجراءات</th>
-                        </tr>
-                    </thead>
-                    <tbody id="followupTableBody" class="divide-y divide-slate-100 text-sm">
-                        <!-- تُحقن صفوف الكشف ديناميكياً هنا -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- حالة عدم وجود بيانات -->
-            <div id="emptyState" class="hidden p-12 text-center">
-                <div class="w-14 h-14 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
-                    <i class="fa-solid fa-folder-open"></i>
-                </div>
-                <h3 class="text-base font-bold text-slate-700 mb-1">كشف المتابعة فارغ حالياً</h3>
-                <p class="text-slate-500 text-xs">قم بالبحث عن اسم الطالب واختياره لإضافته إلى جدول المتابعة المباشر.</p>
-            </div>
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">المادة / الصف:</label>
+            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
+        <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
+    </div>
+</div>
 
-    </main>
-
-    <!-- نافذة إعدادات بيانات المعلم -->
-    <div id="teacherInfoModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 w-full max-w-md overflow-hidden">
-            <div class="p-4 bg-slate-900 text-white font-bold flex items-center gap-2">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                إعدادات بيانات المعلم الأساسية
-            </div>
-            <div class="p-5 space-y-3 text-sm">
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">اسم المعلم:</label>
-                    <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" class="w-full border border-slate-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">البريد الإلكتروني الوزاري:</label>
-                    <input type="text" id="modalTeacherEmail" placeholder="t486739@rb.moe.gov.sa" class="w-full border border-slate-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                </div>
-                <div>
-                    <label class="block font-bold text-slate-700 mb-1">المادة / الصف:</label>
-                    <input type="text" id="modalTeacherSubject" placeholder="الكفايات اللغوية (أول ثانوي)" class="w-full border border-slate-300 rounded-xl p-2.5 focus:outline-none focus:ring-2 focus:ring-slate-800">
-                </div>
-            </div>
-            <div class="p-4 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button onclick="saveTeacherInfo()" class="bg-slate-900 hover:bg-slate-800 text-white font-bold px-5 py-2 rounded-xl text-xs transition">
-                    حفظ ومتابعة العمل
-                </button>
-            </div>
+<div class="container" id="pdfContent">
+    <div class="header-box">
+        <div class="header-title">
+            <h2><i class="fa-solid fa-clipboard-list"></i> كشف متابعة وتحويل الطلاب السلوكي</h2>
+            <small style="color: var(--text-muted);">وزارة التعليم - المملكة العربية السعودية</small>
+        </div>
+        <div class="header-meta">
+            <div><strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
+            <div><strong>المعلم:</strong> <span class="teacherNameDisplay">-</span></div>
         </div>
     </div>
 
-    <!-- إشعار التنبيه السريع (Toast) -->
-    <div id="toast" class="fixed bottom-5 left-5 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-lg border border-slate-800 text-xs flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none translate-y-2 z-50">
-        <i class="fa-solid fa-circle-check text-emerald-400"></i>
-        <span id="toastText">تم الحفظ بنجاح</span>
+    <!-- شريط إضافة طالب لكشف المتابعة -->
+    <div class="add-row-bar no-print" id="controlSection">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب لإضافته للكشف..." oninput="filterStudents()" onfocus="filterStudents()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        <div style="min-width: 220px;">
+            <select id="globalTargetCounselor" class="toolbar-select">
+                <!-- يُعبأ بأسماء المرشدين -->
+            </select>
+        </div>
+        <div style="min-width: 150px;">
+            <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-plus"></i> إضافة للكشف</button>
+        </div>
     </div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkCO7FDQXd89YDf843J4_AtvEFvzzt-R0",
-            authDomain: "aztlg-494c3.firebaseapp.com",
-            projectId: "aztlg-494c3",
-            storageBucket: "aztlg-494c3.firebasestorage.app",
-            messagingSenderId: "597051893949",
-            appId: "1:597051893949:web:de5554ac900317a92b2fd4"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+    <!-- جدول كشف المتابعة -->
+    <table class="followup-table">
+        <thead>
+            <tr>
+                <th style="width: 4%;">م</th>
+                <th style="width: 17%;">اسم الطالب والمرشد</th>
+                <th style="width: 18%;" class="no-print">اختر الحالة والعدد</th>
+                <th style="width: 17%;">الحالات المرصودة</th>
+                <th style="width: 24%;">تفصيل الحالة ورد المرشد</th>
+                <th style="width: 20%;" class="no-print">الإجراءات والتوثيق</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- الصفوف تتحدث تلقائياً -->
+        </tbody>
+    </table>
 
-        let teacherName = localStorage.getItem("teacher_name") || "";
-        let teacherEmail = localStorage.getItem("teacher_email") || "";
-        let teacherSubject = localStorage.getItem("teacher_subject") || "";
-        
-        let allowedStudentsPreset = [];
-        let referralList = [];
+    <div style="margin-top: 30px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.85rem;">
+        <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
+        <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
+    </div>
 
-        const counselorsList = [
-            "أ / عبدالمجيد الأحيدب",
-            "أ / عبدالعزيز العتيبي",
-            "أ / علي الناصر"
-        ];
+    <!-- قائمة العمليات المنسدلة -->
+    <div class="actions-bar no-print">
+        <select class="main-actions-select" onchange="executeMainAction(this)">
+            <option value="">⚙️ خيارات الكشف والتقارير...</option>
+            <option value="save_all">💾 حفظ وأرشفة الكشف الحالي بالكامل</option>
+            <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم</option>
+            <option value="preview">👁️ معاينة وطباعة الكشف</option>
+            <option value="print">🖨️ طباعة جدول المتابعة</option>
+        </select>
+    </div>
+</div>
 
-        const countOptionsMap = {
-            "عدم إحضار الواجبات": ["واجب 1", "واجب 2", "واجب 3", "واجب 4", "واجب 5"],
-            "عدم إحضار البحث": ["1. لم يقدم البحث", "2. البحث غير مكتمل"],
-            "كثرة النوم": ["1. نوم خفيف", "2. نوم متكرر"],
-            "ضعف المشاركة": ["1. مشاركة ضعيفة", "2. عدم مشاركة مطلقاً"]
-        };
+<!-- نافذة المعاينة الفردية -->
+<div class="modal-overlay" id="previewModal">
+    <div class="modal-content">
+        <div class="no-print" style="text-align: left; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+            <button class="btn" style="background:var(--primary); color:white;" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة</button>
+            <button class="btn" style="background:#64748b; color:white;" onclick="document.getElementById('previewModal').style.display='none'">إغلاق</button>
+        </div>
+        <div id="previewArea"></div>
+    </div>
+</div>
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (!teacherName || !teacherEmail) {
-                document.getElementById('teacherInfoModal').classList.remove('hidden');
-            } else {
-                updateTeacherUI();
-            }
-            initCloudData();
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBkCO7FDQXd89YDf843J4_AtvEFvzzt-R0",
+        authDomain: "aztlg-494c3.firebaseapp.com",
+        projectId: "aztlg-494c3",
+        storageBucket: "aztlg-494c3.firebasestorage.app",
+        messagingSenderId: "597051893949",
+        appId: "1:597051893949:web:de5554ac900317a92b2fd4"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let allStudents = [];
+    let selectedStudentName = "";
+    
+    let teacherName = localStorage.getItem("teacher_name") || "";
+    let teacherEmail = localStorage.getItem("teacher_email") || "";
+    let teacherSubject = localStorage.getItem("teacher_subject") || "";
+    
+    const counselorsList = [
+        "أ / عبدالمجيد الأحيدب",
+        "أ / عبدالعزيز العتيبي",
+        "أ / علي الناصر"
+    ];
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const isCounselorView = urlParams.get('mode') === 'counselor';
+    const currentCounselorParam = urlParams.get('counselor') || "";
+
+    const countOptionsMap = {
+        "عدم إحضار الواجبات": [
+            { value: "واجب 1", text: "واجب 1" },
+            { value: "واجب 2", text: "واجب 2" },
+            { value: "واجب 3", text: "واجب 3" },
+            { value: "واجب 4", text: "واجب 4" },
+            { value: "واجب 5", text: "واجب 5" }
+        ],
+        "عدم إحضار البحث": [
+            { value: "1. لم يقدم البحث", text: "1. لم يقدم البحث" },
+            { value: "2. البحث غير مكتمل", text: "2. البحث غير مكتمل" }
+        ],
+        "كثرة النوم": [
+            { value: "1. نوم خفيف", text: "1. نوم خفيف" },
+            { value: "2. نوم متكرر", text: "2. نوم متكرر" }
+        ],
+        "ضعف المشاركة": [
+            { value: "1. مشاركة ضعيفة", text: "1. مشاركة ضعيفة" },
+            { value: "2. عدم مشاركة مطلقاً", text: "2. عدم مشاركة مطلقاً" }
+        ]
+    };
+
+    function renderCounselorsDropdown() {
+        const selectEl = document.getElementById("globalTargetCounselor");
+        if (!selectEl) return;
+        selectEl.innerHTML = "";
+        counselorsList.forEach(cName => {
+            const opt = document.createElement("option");
+            opt.value = cName;
+            opt.textContent = "تحويل إلى: " + cName;
+            selectEl.appendChild(opt);
         });
+    }
 
-        function updateTeacherUI() {
-            document.getElementById('headerTeacherName').textContent = `${teacherName} (${teacherSubject})`;
+    function updateNamesUI() {
+        document.querySelectorAll('.teacherNameDisplay').forEach(el => el.textContent = teacherName || "غير محدد");
+        document.querySelectorAll('.teacherEmailDisplay').forEach(el => el.textContent = teacherEmail || "غير محدد");
+        document.querySelectorAll('.teacherSubjectDisplay').forEach(el => el.textContent = teacherSubject || "غير محدد");
+        renderCounselorsDropdown();
+        if (currentCounselorParam) {
+            document.querySelectorAll('.counselorNameDisplay').forEach(el => el.textContent = decodeURIComponent(currentCounselorParam));
         }
+    }
 
-        function saveTeacherInfo() {
-            const name = document.getElementById('modalTeacherName').value.trim();
-            const email = document.getElementById('modalTeacherEmail').value.trim();
-            const subject = document.getElementById('modalTeacherSubject').value.trim();
+    function checkTeacherInfoOnLoad() {
+        if (!teacherName || !teacherEmail) {
+            document.getElementById('teacherInfoModal').style.display = 'flex';
+        } else {
+            document.getElementById('teacherInfoModal').style.display = 'none';
+            updateNamesUI();
+        }
+    }
 
-            if (!name || !email) {
-                alert("يرجى إدخال اسم المعلم والبريد الإلكتروني");
-                return;
-            }
+    function saveTeacherInfoModal() {
+        const nameVal = document.getElementById('modalTeacherName').value.trim();
+        const emailVal = document.getElementById('modalTeacherEmail').value.trim();
+        const subjectVal = document.getElementById('modalTeacherSubject').value.trim();
 
-            teacherName = name;
-            teacherEmail = email;
-            teacherSubject = subject || "الكفايات اللغوية";
+        if (nameVal && emailVal) {
+            teacherName = nameVal;
+            teacherEmail = emailVal;
+            teacherSubject = subjectVal || "الكفايات اللغوية";
 
             localStorage.setItem("teacher_name", teacherName);
             localStorage.setItem("teacher_email", teacherEmail);
             localStorage.setItem("teacher_subject", teacherSubject);
 
-            document.getElementById('teacherInfoModal').classList.add('hidden');
-            updateTeacherUI();
-            showToast("تم حفظ بيانات المعلم بنجاح");
+            updateNamesUI();
+            document.getElementById('teacherInfoModal').style.display = 'none';
+            showToast("تم حفظ بيانات المعلم بنجاح!");
+        } else {
+            alert("يرجى إدخال اسم المعلم والبريد الإلكتروني.");
         }
+    }
 
-        function initCloudData() {
-            db.collection("allowed_students").onSnapshot((snapshot) => {
-                allowedStudentsPreset = [];
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data && data.name) allowedStudentsPreset.push(data.name.trim());
-                });
-                populatePresetDropdown();
+    function formatTimestamp(timestamp) {
+        if (!timestamp) return 'تاريخ غير محدد';
+        let date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    function loadStudentsList() {
+        checkTeacherInfoOnLoad();
+        db.collection("allowed_students").orderBy("name").get().then((snapshot) => {
+            allStudents = [];
+            snapshot.forEach(doc => { if (doc.data().name) allStudents.push(doc.data().name); });
+        });
+        listenToCloudReferrals();
+        if (isCounselorView) {
+            document.getElementById('controlSection').style.display = 'none';
+            document.querySelector('.actions-bar').style.display = 'none';
+        }
+    }
+
+    function filterStudents() {
+        const q = document.getElementById("searchInput").value.trim().toLowerCase();
+        const res = document.getElementById("searchResults");
+        res.innerHTML = "";
+        if (!q) { res.style.display = "none"; return; }
+
+        const filtered = allStudents.filter(n => n.toLowerCase().includes(q));
+        if (filtered.length === 0) {
+            res.innerHTML = '<div style="color: #888;">لا توجد نتائج مطابقة</div>';
+        } else {
+            filtered.forEach(name => {
+                const div = document.createElement("div");
+                div.textContent = name;
+                div.onclick = () => {
+                    document.getElementById("searchInput").value = name;
+                    selectedStudentName = name;
+                    res.style.display = "none";
+                };
+                res.appendChild(div);
             });
-
-            db.collection("referral_list").onSnapshot((snapshot) => {
-                referralList = [];
-                snapshot.forEach(doc => {
-                    referralList.push({ id: doc.id, ...doc.data() });
-                });
-                renderFollowupTable();
-            });
         }
+        res.style.display = "block";
+    }
 
-        function populatePresetDropdown() {
-            const datalist = document.getElementById('presetStudentsList');
-            datalist.innerHTML = '';
-            allowedStudentsPreset.sort().forEach(name => {
-                const opt = document.createElement('option');
-                opt.value = name;
-                datalist.appendChild(opt);
-            });
-        }
+    async function addSelectedStudent() {
+        const inputVal = document.getElementById("searchInput").value.trim();
+        const studentName = selectedStudentName || inputVal;
+        const targetCounselor = document.getElementById("globalTargetCounselor").value;
+        if (!studentName) return alert("اختر اسم الطالب أولاً من قائمة البحث");
 
-        async function addStudentToFollowup() {
-            const input = document.getElementById('quickStudentInput');
-            const name = input.value.trim();
-            if (!name) {
-                showToast("اختر أو اكتب اسم الطالب أولاً", "warning");
-                return;
-            }
+        const studentId = "student_" + Date.now();
+        await db.collection("referral_list").doc(studentId).set({
+            name: studentName,
+            violations: [],
+            notes: "",
+            reply: "لم يتم الرد بعد",
+            isArchived: false,
+            teacherName: teacherName,
+            counselorName: targetCounselor,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("searchInput").value = "";
+        selectedStudentName = "";
+        showToast(`تم إدراج الطالب (${studentName}) في الكشف بنجاح!`);
+    }
 
-            try {
-                await db.collection("referral_list").add({
-                    name: name,
-                    violations: [],
-                    notes: "",
-                    reply: "لم يتم الرد بعد",
-                    counselorName: counselorsList[0],
-                    teacherName: teacherName,
-                    isArchived: false,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                input.value = '';
-                showToast(`تم إدراج الطالب (${name}) في الكشف بنجاح`);
-            } catch (err) {
-                console.error(err);
-                showToast("حدث خطأ أثناء الإضافة", "warning");
-            }
-        }
+    function listenToCloudReferrals() {
+        db.collection("referral_list").onSnapshot(snapshot => {
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+            let count = 0;
 
-        function renderFollowupTable() {
-            const tbody = document.getElementById('followupTableBody');
-            const emptyState = document.getElementById('emptyState');
-            tbody.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const id = doc.id;
+                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-            const activeList = referralList.filter(item => !item.isArchived);
+                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) return;
+                if (!isCounselorView && data.isArchived === true) return;
+                if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
 
-            if (activeList.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            }
-            emptyState.classList.add('hidden');
+                count++;
+                const createdTimeStr = formatTimestamp(data.createdAt);
+                const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
+                const studentDisplayName = data.name || "طالب";
 
-            activeList.forEach((item, index) => {
-                const tr = document.createElement('tr');
-                tr.className = 'hover:bg-slate-50/80 transition';
-
-                const violationsHtml = (item.violations || []).map((v, i) => `
-                    <div class="flex items-center justify-between bg-amber-50 border border-amber-200/80 rounded px-2 py-1 text-xs mb-1 font-bold text-amber-900">
-                        <span>• ${v}</span>
-                        <button onclick="removeViolation('${item.id}', ${i})" class="text-rose-500 hover:text-rose-700"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                `).join('') || '<span class="text-slate-400 text-xs italic">لا توجد حالات مسجلة</span>';
-
-                let counselorOptions = counselorsList.map(c => `<option value="${c}" ${item.counselorName === c ? 'selected' : ''}>${c}</option>`).join('');
-
-                tr.innerHTML = `
-                    <td class="p-3 text-center font-bold text-slate-500 text-xs">${index + 1}</td>
-                    <td class="p-3 font-bold text-slate-800">
-                        ${escapeHtml(item.name)}
-                        <div class="text-[10px] text-slate-400 font-normal mt-0.5">إحالة مباشرة للسحابة</div>
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${count}</td>
+                    <td style="text-align: right; font-weight: bold;">
+                        🎓 ${studentDisplayName}
+                        <br><span class="time-badge">${createdTimeStr}</span>
+                        <div style="font-size:0.72rem; color:#92400e; margin-top:2px;"><i class="fa-solid fa-user-shield"></i> ${reportCounselor}</div>
                     </td>
-                    <td class="p-3">
-                        <select id="type_${item.id}" onchange="onTypeChange('${item.id}')" class="w-full text-xs border border-slate-300 rounded-lg p-1.5 mb-1 bg-white focus:outline-none focus:ring-1 focus:ring-slate-800">
+                    <td class="no-print">
+                        <select id="type_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''} onchange="onTypeSelectChange('${id}')">
                             <option value="">-- اختر الحالة --</option>
                             <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
                             <option value="عدم إحضار البحث">عدم إحضار البحث</option>
                             <option value="كثرة النوم">كثرة النوم</option>
                             <option value="ضعف المشاركة">ضعف المشاركة</option>
                         </select>
-                        <select id="count_${item.id}" class="w-full text-xs border border-slate-300 rounded-lg p-1.5 mb-1 bg-white focus:outline-none focus:ring-1 focus:ring-slate-800">
-                            <option value="">-- اختر العدد / الوصف --</option>
+                        <select id="count_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''}>
+                            <option value="">-- اختر العدد --</option>
                         </select>
-                        <button onclick="addViolation('${item.id}')" class="w-full bg-amber-600 hover:bg-amber-700 text-white text-[11px] font-bold py-1 px-2 rounded transition shadow-sm">
-                            <i class="fa-solid fa-circle-plus"></i> إضافة للحالة
-                        </button>
+                        <button class="btn-mini-add" ${isCounselorView ? 'style="display:none;"' : ''} onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة الحالة</button>
                     </td>
-                    <td class="p-3">
-                        <div class="max-h-24 overflow-y-auto custom-scrollbar">${violationsHtml}</div>
+                    <td>
+                        <div id="violation_tags_${id}" class="violation-tag-box"></div>
                     </td>
-                    <td class="p-3">
-                        <textarea onblur="updateField('${item.id}', 'notes', this.value)" placeholder="تفصيل الحالة وملاحظات المعلم..." class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-1 focus:ring-slate-800 bg-white h-20 resize-none">${item.notes || ''}</textarea>
-                    </td>
-                    <td class="p-3 text-center">
-                        <select onchange="updateField('${item.id}', 'counselorName', this.value)" class="w-full text-[11px] font-bold border border-slate-300 rounded-lg p-1.5 mb-1 bg-indigo-50 text-indigo-900">
-                            ${counselorOptions}
-                        </select>
-                        <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-lg p-2 text-[11px] text-right mt-1">
-                            <span class="font-bold block text-[10px] text-emerald-700 mb-0.5"><i class="fa-solid fa-reply"></i> رد المرشد:</span>
-                            ${item.reply && item.reply !== "لم يتم الرد بعد" ? escapeHtml(item.reply) : '<span class="text-slate-400 italic">في انتظار رد المرشد...</span>'}
+                    <td>
+                        <textarea class="table-textarea" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب تفصيل الحالة وملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
+                        
+                        <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} margin-top: 6px;">
+                            <div style="font-size: 0.75rem; font-weight: bold; color: #166534; margin-bottom: 2px;"><i class="fa-solid fa-reply"></i> رد المرشد:</div>
+                            <textarea id="reply_${id}" class="table-textarea counselor-reply-box" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
+                            ${replyTimeStr ? `<div style="font-size:0.68rem; color:#0369a1; margin-top:2px;">وقت الرد: ${replyTimeStr}</div>` : ''}
+                            <button class="btn btn-save" style="margin-top:4px; font-size:0.75rem;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
                         </div>
                     </td>
-                    <td class="p-3 text-center">
-                        <div class="flex flex-col gap-1">
-                            <button onclick="archiveItem('${item.id}', '${item.name}')" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 px-2 rounded-lg text-[11px] transition shadow-sm">
-                                <i class="fa-solid fa-floppy-disk"></i> حفظ في التقارير
-                            </button>
-                            <button onclick="deleteItem('${item.id}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold py-1 transition">
-                                <i class="fa-regular fa-trash-can"></i> حذف
-                            </button>
+                    <td class="no-print">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <button class="btn btn-save" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}')"><i class="fa-solid fa-floppy-disk"></i> حفظ في التقارير</button>
+                            <button class="btn btn-view" onclick="openSingleReportModal('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(data.violations || []).replace(/"/g, '&quot;')}\`, \`${data.notes || ''}\`, \`${data.reply || ''}\`, '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة وطباعة</button>
+                            <button class="btn btn-del" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteRow('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
                         </div>
                     </td>
                 `;
-                tbody.appendChild(tr);
+                tbody.appendChild(row);
+                renderStudentViolationTags(id, data.violations || []);
+            });
+
+            if (isCounselorView) {
+                document.querySelectorAll('[id^="counselor_box_"]').forEach(box => box.style.display = 'block');
+            }
+        });
+    }
+
+    function onTypeSelectChange(id) {
+        const typeSelect = document.getElementById(`type_select_${id}`);
+        const countSelect = document.getElementById(`count_select_${id}`);
+        const selectedType = typeSelect.value;
+        countSelect.innerHTML = '<option value="">-- اختر العدد --</option>';
+        if (countOptionsMap[selectedType]) {
+            countOptionsMap[selectedType].forEach(opt => {
+                const optEl = document.createElement("option");
+                optEl.value = opt.value;
+                optEl.textContent = opt.text;
+                countSelect.appendChild(optEl);
             });
         }
+    }
 
-        function onTypeChange(id) {
-            const type = document.getElementById(`type_${id}`).value;
-            const countSel = document.getElementById(`count_${id}`);
-            countSel.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
-            if (countOptionsMap[type]) {
-                countOptionsMap[type].forEach(opt => {
-                    const el = document.createElement('option');
-                    el.value = opt;
-                    el.textContent = opt;
-                    countSel.appendChild(el);
-                });
-            }
+    async function addViolationToStudent(id) {
+        const typeVal = document.getElementById(`type_select_${id}`).value;
+        const countVal = document.getElementById(`count_select_${id}`).value;
+        if (!typeVal || !countVal) return alert("اختر الحالة والعدد أولاً");
+
+        const docRef = db.collection("referral_list").doc(id);
+        const doc = await docRef.get();
+        if (doc.exists) {
+            let arr = doc.data().violations || [];
+            arr.push(`${typeVal}: ${countVal}`);
+            await docRef.update({ violations: arr });
+            showToast("تمت إضافة الحالة بنجاح!");
         }
+    }
 
-        async function addViolation(id) {
-            const type = document.getElementById(`type_${id}`).value;
-            const count = document.getElementById(`count_${id}`).value;
-            if (!type || !count) {
-                alert("يرجى اختيار نوع الحالة والعدد أولاً");
-                return;
-            }
-
-            const itemRef = db.collection("referral_list").doc(id);
-            const doc = await itemRef.get();
-            if (doc.exists) {
-                let violations = doc.data().violations || [];
-                violations.push(`${type}: ${count}`);
-                await itemRef.update({ violations: violations });
-                showToast("تمت إضافة الحالة بنجاح");
-            }
+    async function removeViolation(id, index) {
+        const docRef = db.collection("referral_list").doc(id);
+        const doc = await docRef.get();
+        if (doc.exists) {
+            let arr = doc.data().violations || [];
+            arr.splice(index, 1);
+            await docRef.update({ violations: arr });
         }
+    }
 
-        async function removeViolation(id, index) {
-            const itemRef = db.collection("referral_list").doc(id);
-            const doc = await itemRef.get();
-            if (doc.exists) {
-                let violations = doc.data().violations || [];
-                violations.splice(index, 1);
-                await itemRef.update({ violations: violations });
-            }
+    function renderStudentViolationTags(id, arr) {
+        const container = document.getElementById(`violation_tags_${id}`);
+        if (!container) return;
+        if (!arr || arr.length === 0) {
+            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.78rem; font-style: italic;">لا توجد حالات</span>';
+            return;
         }
+        let html = "";
+        arr.forEach((item, idx) => {
+            const p = item.split(':');
+            html += `<div class="tag-item"><span>• ${p[0]} (${p[1] || ''})</span><button onclick="removeViolation('${id}', ${idx})" style="background:none; border:none; color:red; cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-xmark"></i></button></div>`;
+        });
+        container.innerHTML = html;
+    }
 
-        async function updateField(id, field, value) {
-            await db.collection("referral_list").doc(id).update({ [field]: value });
+    async function updateCloudField(id, field, val) {
+        if (!isCounselorView) await db.collection("referral_list").doc(id).update({ [field]: val });
+    }
+
+    async function saveSingleStudent(id, name) {
+        await db.collection("referral_list").doc(id).update({ isArchived: true, teacherName: teacherName });
+        showToast(`تم أرشفة تقرير الطالب (${name}) بنجاح!`);
+    }
+
+    async function saveReply(id, counselor) {
+        const replyText = document.getElementById(`reply_${id}`).value;
+        if (!replyText.trim()) return alert("اكتب رد المرشد أولاً");
+        await db.collection("referral_list").doc(id).update({
+            reply: replyText,
+            teacherName: teacherName,
+            counselorName: counselor,
+            replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast("تم حفظ وإرسال الرد بنجاح!");
+    }
+
+    async function deleteRow(id) {
+        if (confirm("حذف هذا الطالب من الكشف؟")) {
+            await db.collection("referral_list").doc(id).delete();
+            showToast("تم الحذف بنجاح");
         }
+    }
 
-        async function archiveItem(id, name) {
-            await db.collection("referral_list").doc(id).update({ isArchived: true, teacherName: teacherName });
-            showToast(`تم أرشفة وحفظ تقرير الطالب (${name}) بنجاح`);
-        }
+    function openSingleReportModal(name, dateStr, violationsInput, notes, reply, counselor) {
+        let arr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
+        let vHtml = arr.map(i => `• ${i}`).join('<br>');
+        document.getElementById('previewArea').innerHTML = `
+            <div class="report-box">
+                <div style="text-align:center; border-bottom:2px dashed #cbd5e1; padding-bottom:10px; margin-bottom:15px;">
+                    <h3 style="color:var(--primary); margin:0;">تقرير متابعة سلوكية</h3>
+                    <small>وزارة التعليم - المملكة العربية السعودية</small>
+                </div>
+                <p><b>اسم الطالب:</b> ${name}</p>
+                <p><b>التاريخ والوقت:</b> ${dateStr}</p>
+                <p><b>المرشد المختص:</b> ${counselor}</p>
+                <p><b>الحالات المسجلة:</b><br>${vHtml || 'لا توجد'}</p>
+                <p><b>تفصيل وملاحظات المعلم:</b><br>${notes || 'لا توجد'}</p>
+                <p style="color: #166534;"><b>رد وتوجيه المرشد:</b><br>${reply || 'لم يتم الرد بعد'}</p>
+            </div>
+        `;
+        document.getElementById('previewModal').style.display = 'flex';
+    }
 
-        async function deleteItem(id) {
-            if (confirm("هل أنت متأكد من حذف هذا الطالب من الكشف؟")) {
-                await db.collection("referral_list").doc(id).delete();
-                showToast("تم الحذف بنجاح");
-            }
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastText').textContent = message;
-            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
-            toast.classList.add('opacity-100', 'translate-y-0');
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
-                toast.classList.remove('opacity-100', 'translate-y-0');
-            }, 2500);
-        }
-
-        function escapeHtml(str) {
-            return String(str).replace(/[&<>"']/g, function(m) {
-                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+    function executeMainAction(sel) {
+        const val = sel.value;
+        sel.value = "";
+        if (val === "save_all") {
+            db.collection("referral_list").get().then(snap => {
+                const batch = db.batch();
+                snap.forEach(doc => { if (!doc.data().isArchived) batch.update(doc.ref, { isArchived: true }); });
+                batch.commit().then(() => showToast("تم أرشفة وحفظ الكشف بالكامل!"));
             });
+        } else if (val === "preview" || val === "print") {
+            window.print();
+        } else if (val === "change_teacher_info") {
+            document.getElementById('modalTeacherName').value = teacherName;
+            document.getElementById('modalTeacherEmail').value = teacherEmail;
+            document.getElementById('modalTeacherSubject').value = teacherSubject;
+            document.getElementById('teacherInfoModal').style.display = 'flex';
         }
-    </script>
+    }
+
+    window.onload = loadStudentsList;
+</script>
+
 </body>
 </html>
