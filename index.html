@@ -332,13 +332,12 @@
         }
 
         textarea.counselor-reply {
-            background-color: #f1f5f9;
+            background-color: #ffffff;
             color: #1e293b;
             font-weight: 600;
-            border-color: #cbd5e1;
+            border-color: #bae6fd;
         }
 
-        /* شريط التسلسل للأزرار داخل الكارت */
         .sequential-actions-bar {
             display: flex;
             align-items: center;
@@ -367,13 +366,11 @@
         .btn-add { background: var(--maroon); color: white; height: 100%; min-height: 48px; width: 100%; }
         .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
         
-        /* تسلسل الأزرار المطلوبة */
-        .btn-link-counselor { background: #d97706; color: white; } /* 1. رابط إرسال الحالة للمرشد */
-        .btn-save-reply { background: #16a34a; color: white; margin-top: 8px; width: 100%; display: none; } /* حفظ رد المرشد */
-        .btn-view-report { background: #0284c7; color: white; } /* 2. معاينة التقرير */
-        .btn-save-student { background: #16a34a; color: white; } /* 3. حفظ الأرشيف */
-        .btn-remove { background: #dc2626; color: white; } /* 4. حذف */
-        
+        .btn-link-counselor { background: #d97706; color: white; }
+        .btn-save-reply { background: #16a34a; color: white; margin-top: 8px; width: 100%; }
+        .btn-view-report { background: #0284c7; color: white; }
+        .btn-save-student { background: #16a34a; color: white; }
+        .btn-remove { background: #dc2626; color: white; }
         .btn-close { background: #64748b; color: white; }
 
         .time-badge-referral {
@@ -535,7 +532,7 @@
 <div class="modal-overlay" id="counselorLinkModal">
     <div class="modal-content" style="max-width: 500px;">
         <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-link"></i> رابط إرسال حالة الطالب للمرشد</h3>
-        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">انسخ هذا الرابط وأرسله للمرشد ليتمكن من الاطلاع على حالة هذا الطالب وإضافَة الرد المباشر:</p>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">انسخ هذا الرابط وأرسله للمرشد ليتمكن من الاطلاع على حالة هذا الطالب وإضافة الرد المباشر:</p>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <input type="text" id="generatedCounselorLink" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: #f8fafc; font-size: 0.85rem;">
             <button class="btn" style="background: var(--maroon); color: white; white-space: nowrap;" onclick="copyGeneratedLink()"><i class="fa-solid fa-copy"></i> نسخ</button>
@@ -585,7 +582,7 @@
     <div class="history-section no-print" id="studentHistorySection" style="display:none;"></div>
 
     <div id="cardsContainer">
-        <!-- البطاقات الاحترافية المعتمدة على التسلسل المطلوب -->
+        <!-- البطاقات الاحترافية -->
     </div>
 
     <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
@@ -603,7 +600,7 @@
     </div>
 </div>
 
-<!-- نافذة المعاينة الفخمة والمنفصلة تماماً عن الطباعة -->
+<!-- نافذة المعاينة المنفصلة -->
 <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
         <div class="modal-actions no-print" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 12px;">
@@ -681,7 +678,6 @@
         });
     }
 
-    // توليد رابط مخصص للطالب المحدد لإرساله للمرشد
     function generateCounselorLinkForStudent(studentId, counselorName) {
         const baseUrl = window.location.href.split('?')[0];
         const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(counselorName)}&studentId=${studentId}`;
@@ -842,7 +838,6 @@
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-                // تصفية العرض للمرشد بناءً على الرابط الخاص به والطالب المحدد إن وجد
                 if (isCounselorView) {
                     if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
                     if (targetStudentIdParam && id !== targetStudentIdParam) return;
@@ -855,6 +850,33 @@
                 const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
                 const studentDisplayName = data.name || "طالب";
                 const reportTeacher = data.teacherName || teacherName;
+                const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
+
+                // تحكم ديناميكي في إظهار شاشة الرد للمرشد أو المعلم
+                let counselorReplySectionHTML = '';
+                if (isCounselorView) {
+                    // شاشة المرشد: يظهر صندوق الكتابة وزر الحفظ
+                    counselorReplySectionHTML = `
+                        <div id="counselor_box_${id}" style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
+                            <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد وتوجيه المرشد (${reportCounselor}):</div>
+                            <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${hasReply ? data.reply : ''}</textarea>
+                            ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
+                            <button class="btn btn-save-reply" style="display:inline-flex;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
+                        </div>
+                    `;
+                } else {
+                    // شاشة المعلم: يظهر النص المقروء فقط إذا كان المرشد قد رد، أو حالة الانتظار
+                    counselorReplySectionHTML = `
+                        <div style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
+                            <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد المرشد الطلابي (${reportCounselor}):</div>
+                            ${hasReply ? `
+                                <div style="background: white; padding: 10px; border-radius: 6px; border: 1px solid #7dd3fc; font-weight: 600; color: #0369a1; white-space: pre-wrap;">${data.reply}</div>${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> تم الرد بتاريخ: ${replyTimeStr}</span></div>` : ''}
+                            ` : `
+                                <div style="color: #64748b; font-size: 0.85rem; font-style: italic;"><i class="fa-solid fa-hourglass-half"></i> في انتظار رد المرشد... (أرسل الرابط له عبر الزر أدناه)</div>
+                            `}
+                        </div>
+                    `;
+                }
 
                 const card = document.createElement("div");
                 card.className = "student-card-item";
@@ -902,21 +924,11 @@
                                 <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
                             </div>
                             
-                            <!-- 5. رد المرشد -->
-                            <div id="counselor_box_${id}" style="display:block; background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
-                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد وتوجيه المرشد (${reportCounselor}):</div>
-                                <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
-                                ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                                <button class="btn btn-save-reply" style="display:inline-flex;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
-                            </div>
+                            ${counselorReplySectionHTML}
                         </div>
                     </div>
 
-                    <!-- التسلسل المطلوب للأزرار السفلية لكل طالب بالترتيب:
-                         1. رابط إرسال الحالة للمرشد
-                         2. معاينة التقرير
-                         3. حفظ الأرشيف
-                         4. حذف -->
+                    <!-- الأزرار السفلية بالترتيب التسلسلي المطلوب -->
                     <div class="sequential-actions-bar no-print">
                         <button class="btn btn-link-counselor" ${isCounselorView ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
                         <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> 6. معاينة التقرير</button>
