@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - الاحترافية الفائقة</title>
+    <title>منظومة تحويل الطلاب السحابية 2026 - كشف المتابعة اليومية</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,20 +18,16 @@
     
     <style>
         :root {
-            --maroon: #6b0c22;
-            --maroon-light: #8e1432;
-            --gold: #d4af37;
-            --gold-light: #fef3c7;
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --accent: #f59e0b;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --border: #e2e8f0;
-            --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
-            --shadow-md: 0 15px 35px -5px rgba(0,0,0,0.07);
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 24px;
+            --border: #cbd5e1;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius: 8px;
         }
 
         * {
@@ -42,701 +38,404 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: var(--bg);
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 32px 32px;
             margin: 0;
-            padding: 40px 20px;
+            padding: 20px;
             color: var(--text-main);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1350px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
             position: relative;
-            overflow: hidden;
         }
 
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0; right: 0; left: 0;
-            height: 6px;
-            background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
-        }
-
-        .header-info {
+        .header-box {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 22px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .header-title-box {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .header-icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--maroon), var(--maroon-light));
-            color: white;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            box-shadow: 0 6px 15px rgba(107, 12, 34, 0.3);
-        }
-
-        .header-info h2 {
-            margin: 0;
-            color: var(--maroon);
-            font-size: 1.7rem;
-            font-weight: 800;
-        }
-
-        .header-badge {
-            background: #f8fafc;
-            padding: 12px 20px;
-            border-radius: var(--radius-md);
-            border-right: 4px solid var(--gold);
-            font-size: 0.9rem;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-
-        /* شريط الإضافة السريع */
-        .interactive-toolbar {
-            background: linear-gradient(135deg, #fffcf0 0%, #fff8e1 100%);
-            border: 1.5px solid #fef08a;
-            border-radius: var(--radius-md);
-            padding: 25px;
-            margin-bottom: 35px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .interactive-toolbar h3 {
-            margin: 0 0 15px 0;
-            color: var(--maroon);
-            font-size: 1.15rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .toolbar-grid {
-            display: grid;
-            grid-template-columns: 2fr 1.5fr auto;
-            gap: 15px;
-            align-items: center;
-        }
-
-        @media (max-width: 800px) {
-            .toolbar-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .search-box-wrapper {
-            position: relative;
-            width: 100%;
-        }
-
-        input[type="text"].student-search, select.toolbar-select {
-            width: 100%;
-            padding: 13px 18px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border);
-            font-size: 0.95rem;
-            font-family: inherit;
-            outline: none;
-            background: white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        input[type="text"].student-search:focus, select.toolbar-select:focus {
-            border-color: var(--maroon);
-            box-shadow: 0 0 0 4px rgba(107, 12, 34, 0.1);
-        }
-
-        .search-results {
-            position: absolute;
-            top: 108%;
-            right: 0;
-            left: 0;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            max-height: 240px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: var(--shadow-md);
-            display: none;
-        }
-
-        .search-results div {
-            padding: 12px 18px;
-            cursor: pointer;
-            border-bottom: 1px solid #f1f5f9;
-            font-weight: 500;
-        }
-
-        .search-results div:hover {
-            background-color: #fdf2f8;
-            color: var(--maroon);
-            font-weight: 700;
-        }
-
-        /* تصميم البطاقات الاحترافية لكل طالب (بدل الجدول المعقد) */
-        .student-card-item {
-            background: #ffffff;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--shadow-sm);
-            position: relative;
-            border-right: 5px solid var(--maroon);
-        }
-
-        .student-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #f1f5f9;
+            border-bottom: 2px solid var(--primary);
             padding-bottom: 15px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        .student-main-title {
-            font-size: 1.25rem;
+        .header-title h2 {
+            margin: 0;
+            color: var(--primary);
+            font-size: 1.5rem;
             font-weight: 800;
-            color: var(--maroon);
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .student-card-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .student-card-body {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card-section-box {
-            background: #f8fafc;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 18px;
-        }
-
-        .card-section-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--maroon);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .violation-builder {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        select.violation-select, select.count-select {
-            width: 100%;
-            padding: 11px 14px;
-            border-radius: var(--radius-sm);
-            border: 1.5px solid var(--border);
-            font-size: 0.9rem;
-            outline: none;
-            background-color: #fff;
-            cursor: pointer;
-            font-family: inherit;
-        }
-
-        select.violation-select:focus, select.count-select:focus {
-            border-color: var(--maroon);
-        }
-
-        .violation-tags-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .violation-tag-inline {
-            background: #fffbeb;
-            border: 1.5px solid #fef08a;
-            padding: 6px 12px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        }
-
-        .violation-name-text {
-            color: #854d0e;
-            font-weight: 800;
+        .header-meta {
+            background: #eff6ff;
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            border-right: 4px solid var(--primary);
             font-size: 0.88rem;
         }
 
-        .violation-count-text {
-            color: #1d4ed8;
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 0.8rem;
+        /* شريط إضافة طالب جديد للكشف */
+        .add-row-bar {
+            background: #fdf8f0;
+            border: 1px solid #fcd34d;
+            padding: 15px;
+            border-radius: var(--radius);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .btn-remove-tag {
-            background: transparent;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 0;
+        .search-box-wrapper {
+            position: relative;
+            flex-grow: 1;
+            min-width: 280px;
         }
 
-        textarea.notes-input, textarea.counselor-reply {
+        input[type="text"].student-search, select.toolbar-select {
             width: 100%;
-            min-height: 90px;
-            padding: 12px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
+            padding: 10px 14px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
             font-size: 0.9rem;
+            font-family: inherit;
+            background: white;
+            outline: none;
+        }
+
+        input[type="text"].student-search:focus, select.toolbar-select:focus {
+            border-color: var(--primary);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 105%;
+            right: 0;
+            left: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            display: none;
+        }
+
+        .search-results div {
+            padding: 10px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.88rem;
+        }
+
+        .search-results div:hover {
+            background-color: #eff6ff;
+            color: var(--primary);
+        }
+
+        /* تصميم كشف المتابعة (جدول نظامي نظيف) */
+        .followup-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .followup-table th, .followup-table td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            vertical-align: middle;
+        }
+
+        .followup-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .followup-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        select.table-select {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.82rem;
+            background: white;
+            margin-bottom: 5px;
+            outline: none;
+        }
+
+        textarea.table-textarea {
+            width: 100%;
+            min-height: 60px;
+            padding: 7px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 0.82rem;
             resize: vertical;
             background: white;
         }
 
-        textarea.counselor-reply {
-            background-color: #f1f5f9;
-            color: #1e293b;
+        textarea.counselor-reply-box {
+            background-color: #f0fdf4;
+            border-color: #bbf7d0;
+            color: #166534;
             font-weight: 600;
-            border-color: #cbd5e1;
         }
 
-        .student-card-footer {
+        .violation-tag-box {
             display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 15px;
-            margin-top: 20px;
+            flex-direction: column;
+            gap: 3px;
+            text-align: right;
         }
 
-        .history-section {
-            background: #f0f9ff;
-            border: 1.5px solid #bae6fd;
-            border-radius: var(--radius-md);
-            padding: 22px;
-            margin-bottom: 30px;
-            display: none;
-        }
-
-        .history-section h3 {
-            color: #0369a1;
-            margin-top: 0;
-            border-bottom: 1px solid #e0f2fe;
-            padding-bottom: 12px;
+        .tag-item {
+            background: #fffbeb;
+            border: 1px solid #fef08a;
+            padding: 3px 6px;
+            border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #92400e;
         }
 
-        .history-card {
-            background: white;
-            padding: 18px;
-            border-radius: var(--radius-sm);
+        .btn {
+            padding: 8px 14px;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .btn-add { background: var(--primary); color: white; width: 100%; }
+        .btn-mini-add { background: #d97706; color: white; padding: 4px 8px; font-size: 0.72rem; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: 700; margin-top: 2px; }
+        .btn-save { background: #16a34a; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+        .btn-view { background: #0284c7; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+        .btn-del { background: #dc2626; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+
+        .time-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.72rem;
+            margin-top: 3px;
             border: 1px solid #e2e8f0;
-            margin-bottom: 12px;
-            box-shadow: var(--shadow-sm);
         }
 
-        .actions-dropdown-container {
-            margin-top: 35px;
+        .actions-bar {
+            margin-top: 25px;
             display: flex;
             justify-content: flex-end;
-            align-items: center;
-            gap: 12px;
         }
 
         select.main-actions-select {
-            background: linear-gradient(135deg, var(--maroon), var(--maroon-light));
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
+            padding: 10px 18px;
+            border-radius: var(--radius);
             font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
+            font-size: 0.9rem;
+            font-weight: 700;
             cursor: pointer;
             outline: none;
-            box-shadow: 0 6px 20px rgba(107, 12, 34, 0.3);
+            min-width: 240px;
             text-align: center;
-            min-width: 280px;
         }
 
         select.main-actions-select option {
             background-color: white;
             color: var(--text-main);
-            font-weight: 700;
-            padding: 12px;
-            text-align: right;
-        }
-
-        select.action-dropdown {
-            padding: 8px 14px;
-            border-radius: 8px;
-            border: 1.5px solid var(--maroon);
-            background-color: #fff;
-            color: var(--maroon);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            cursor: pointer;
-            outline: none;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 0.9rem;
-            font-family: inherit;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-add { background: var(--maroon); color: white; width: 100%; height: 100%; min-height: 48px; }
-        .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
-        .btn-save-student { background: #16a34a; color: white; }
-        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; display: none; width: 100%; }
-        .btn-view-report { background: #0284c7; color: white; }
-        .btn-remove { background: #dc2626; color: white; }
-        .btn-close { background: #64748b; color: white; }
-
-        .time-badge-referral {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        .time-badge-reply {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            color: #0369a1;
-            border: 1px solid #7dd3fc;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            margin-top: 8px;
+            font-weight: 600;
+            padding: 8px;
         }
 
         .toast-notification {
             position: fixed;
-            bottom: 25px; right: 25px;
+            bottom: 20px; right: 20px;
             background: #0f172a;
             color: white;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 10px 18px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             z-index: 9999;
             transform: translateY(150%);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.3s ease;
             font-weight: 600;
+            font-size: 0.88rem;
         }
-
-        .toast-notification.show {
-            transform: translateY(0);
-        }
+        .toast-notification.show { transform: translateY(0); }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(2px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            padding: 20px;
+            padding: 15px;
         }
 
         .modal-content {
             background: white;
-            border-radius: var(--radius-lg);
-            max-width: 950px;
+            border-radius: var(--radius);
+            max-width: 850px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 40px;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            padding: 25px;
+            box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1);
         }
 
-        .executive-report-box {
-            background: #ffffff;
-            border: 2px solid var(--maroon);
-            border-radius: var(--radius-md);
-            padding: 30px;
-            margin-top: 10px;
-            box-shadow: var(--shadow-sm);
-        }
-        .executive-header {
-            text-align: center;
-            border-bottom: 2px dashed var(--gold);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .executive-header h3 {
-            color: var(--maroon);
-            margin: 0 0 5px 0;
-            font-size: 1.4rem;
-        }
-        .executive-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        .executive-grid-item {
-            font-size: 0.95rem;
-        }
-        .executive-section-title {
-            font-weight: 800;
-            color: var(--maroon);
-            margin-bottom: 8px;
-            border-right: 4px solid var(--gold);
-            padding-right: 8px;
-            font-size: 1.05rem;
-        }
-        .executive-content-card {
+        .report-box {
             background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            min-height: 60px;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            padding: 20px;
         }
 
         @media print {
-            .interactive-toolbar, .history-section, .actions-dropdown-container, .btn-remove, .btn-save-student, .btn-save-reply, .btn-add-violation, .btn-remove-tag, .action-dropdown, .no-print, .modal-overlay, .toast-notification {
-                display: none !important;
-            }
+            .no-print, .add-row-bar, .actions-bar, .modal-overlay, .toast-notification { display: none !important; }
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
-            .student-card-item { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; }
         }
     </style>
 </head>
 <body>
 
 <div class="toast-notification" id="toast">
-    <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 1.2rem;"></i>
+    <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>
     <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
-<!-- نافذة إعدادات بيانات المعلم الأولية -->
+<!-- نافذة إعدادات بيانات المعلم -->
 <div class="modal-overlay" id="teacherInfoModal" style="display: flex;">
-    <div class="modal-content" style="max-width: 450px;">
-        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
-        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 18px;">أدخل بياناتك لمرة واحدة فقط لتبقى محفوظة على جهازك تلقائياً:</p>
-        <div style="margin-bottom: 12px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 6px;">اسم المعلم:</label>
-            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+    <div class="modal-content" style="max-width: 400px;">
+        <h3 style="color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--accent); padding-bottom: 8px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">أدخل بياناتك لتظهر في ترويسة كشف المتابعة:</p>
+        <div style="margin-bottom: 10px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">اسم المعلم:</label>
+            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
-        <div style="margin-bottom: 12px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 6px;">البريد الإلكتروني:</label>
-            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+        <div style="margin-bottom: 10px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">البريد الإلكتروني:</label>
+            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
-        <div style="margin-bottom: 22px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 6px;">اسم المادة / الصف:</label>
-            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-family: inherit;">
+        <div style="margin-bottom: 15px;">
+            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">المادة / الصف:</label>
+            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
         </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
-        </div>
+        <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
     </div>
 </div>
 
 <div class="container" id="pdfContent">
-    <div class="header-info">
-        <div class="header-title-box">
-            <div class="header-icon">
-                <i class="fa-solid fa-graduation-cap"></i>
-            </div>
-            <div>
-                <h2>إشعار تحويل طلاب للمرشد الطلابي</h2>
-                <small style="color: var(--text-muted); font-weight: 600;">المملكة العربية السعودية - وزارة التعليم</small>
-            </div>
+    <div class="header-box">
+        <div class="header-title">
+            <h2><i class="fa-solid fa-clipboard-list"></i> كشف متابعة وتحويل الطلاب السلوكي</h2>
+            <small style="color: var(--text-muted);">وزارة التعليم - المملكة العربية السعودية</small>
         </div>
-        <div class="header-badge">
-            <div><i class="fa-solid fa-book-bookmark" style="color: var(--maroon);"></i> <strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
-            <div><i class="fa-solid fa-user-tie" style="color: var(--maroon);"></i> <strong>معلم المادة:</strong> <span class="teacherNameDisplay">-</span> (<span class="teacherEmailDisplay">-</span>)</div>
+        <div class="header-meta">
+            <div><strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
+            <div><strong>المعلم:</strong> <span class="teacherNameDisplay">-</span></div>
         </div>
     </div>
 
-    <!-- شريط الإضافة السريع والتفاعلي -->
-    <div class="interactive-toolbar no-print" id="controlSection">
-        <h3><i class="fa-solid fa-user-plus"></i> إضافة طالب جديد للتحويل والمتابعة</h3>
-        <div class="toolbar-grid">
-            <div class="search-box-wrapper">
-                <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
-                <div id="searchResults" class="search-results"></div>
-            </div>
-            <div>
-                <select id="globalTargetCounselor" class="toolbar-select">
-                    <!-- القائمة الثابتة للمرشدين الثلاثة -->
-                </select>
-            </div>
-            <div>
-                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب بالبطاقات</button>
-            </div>
+    <!-- شريط إضافة طالب لكشف المتابعة -->
+    <div class="add-row-bar no-print" id="controlSection">
+        <div class="search-box-wrapper">
+            <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب لإضافته للكشف..." oninput="filterStudents()" onfocus="filterStudents()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        <div style="min-width: 220px;">
+            <select id="globalTargetCounselor" class="toolbar-select">
+                <!-- يُعبأ بأسماء المرشدين -->
+            </select>
+        </div>
+        <div style="min-width: 150px;">
+            <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-plus"></i> إضافة للكشف</button>
         </div>
     </div>
 
-    <!-- قسم أرشيف التقارير السابقة للطالب -->
-    <div class="history-section no-print" id="studentHistorySection">
-        <h3 id="historyTitle">
-            <span><i class="fa-solid fa-folder-open"></i> سجل تقارير الطالب السابقة</span>
-            <button class="btn btn-close" style="padding: 4px 10px; font-size: 0.8rem;" onclick="document.getElementById('studentHistorySection').style.display='none'">إخفاء الأرشيف</button>
-        </h3>
-        <div id="historyContent">جاري البحث...</div>
-    </div>
+    <!-- جدول كشف المتابعة -->
+    <table class="followup-table">
+        <thead>
+            <tr>
+                <th style="width: 4%;">م</th>
+                <th style="width: 17%;">اسم الطالب والمرشد</th>
+                <th style="width: 18%;" class="no-print">اختر الحالة والعدد</th>
+                <th style="width: 17%;">الحالات المرصودة</th>
+                <th style="width: 24%;">تفصيل الحالة ورد المرشد</th>
+                <th style="width: 20%;" class="no-print">الإجراءات والتوثيق</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- الصفوف تتحدث تلقائياً -->
+        </tbody>
+    </table>
 
-    <!-- منطقة البطاقات التفاعلية للطلاب (بدل الجدول المزدحم) -->
-    <div id="cardsContainer">
-        <!-- يتم تعبئة البطاقات ديناميكياً هنا -->
-    </div>
-
-    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
+    <div style="margin-top: 30px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.85rem;">
         <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
         <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
     </div>
 
-    <!-- قائمة الخيارات المنسدلة للتحكم الموحد -->
-    <div class="actions-dropdown-container no-print">
+    <!-- قائمة العمليات المنسدلة -->
+    <div class="actions-bar no-print">
         <select class="main-actions-select" onchange="executeMainAction(this)">
-            <option value="">⚙️ قائمة الإجراءات والتحكم الرئيسية...</option>
-            <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
-            <option value="open_saved">📂 التقارير المحفوظة والأرشيف السحابي (عرض الكل)</option>
-            <option value="share_link">🔗 مشاركة روابط المرشدين</option>
-            <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم (الاسم، البريد، المادة)</option>
-            <option value="preview">👁️ معاينة الاستمارة الإدارية الفخمة</option>
-            <option value="pdf">📄 تحميل الاستمارة ملف PDF</option>
-            <option value="print">🖨️ طباعة الاستمارة</option>
+            <option value="">⚙️ خيارات الكشف والتقارير...</option>
+            <option value="save_all">💾 حفظ وأرشفة الكشف الحالي بالكامل</option>
+            <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم</option>
+            <option value="preview">👁️ معاينة وطباعة الكشف</option>
+            <option value="print">🖨️ طباعة جدول المتابعة</option>
         </select>
     </div>
 </div>
 
-<!-- نافذة معاينة تقرير إداري متوسع -->
+<!-- نافذة المعاينة الفردية -->
 <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
-        <div class="modal-actions no-print" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 12px;">
-            <button class="btn" style="background: var(--maroon); color: white;" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة التقرير</button>
-            <button class="btn" style="background: #dc2626; color: white;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> حفظ كـ PDF</button>
-            <button class="btn btn-close" onclick="closePreview()">✖ إغلاق</button>
+        <div class="no-print" style="text-align: left; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
+            <button class="btn" style="background:var(--primary); color:white;" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة</button>
+            <button class="btn" style="background:#64748b; color:white;" onclick="document.getElementById('previewModal').style.display='none'">إغلاق</button>
         </div>
         <div id="previewArea"></div>
-    </div>
-</div>
-
-<!-- نافذة التقارير المحفوظة الكاملة -->
-<div class="modal-overlay" id="savedReportsModal">
-    <div class="modal-content">
-        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
-            <span><i class="fa-solid fa-box-archive"></i> سجل التقارير المحولة للمرشدين</span>
-            <button class="btn btn-close" onclick="closeSavedReportsModal()">إغلاق</button>
-        </h3>
-        <div style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;" class="no-print">
-            <input type="text" id="allReportsSearch" placeholder="🔍 ابحث في التقارير المحفوظة..." oninput="filterAllSavedReports(this.value)" style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; width: 250px;">
-            <button class="btn" style="background: #0284c7; padding: 8px 15px; font-size: 0.85rem;" onclick="exportAllReportsToPrint()"><i class="fa-solid fa-print"></i> طباعة كشف التقارير الشامل</button>
-        </div>
-        <div id="savedReportsContainer" style="margin-top: 15px;">جاري تحميل التقارير المحفوظة...</div>
-    </div>
-</div>
-
-<!-- نافذة معاينة تقرير مفرد -->
-<div class="modal-overlay" id="singleReportModal">
-    <div class="modal-content" style="max-width: 700px;">
-        <div class="modal-actions no-print" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 12px;">
-            <button class="btn" style="background: var(--maroon); color: white;" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة التقرير</button>
-            <button class="btn btn-close" onclick="closeSingleReportModal()">✖ إغلاق</button>
-        </div>
-        <div id="singleReportContent" style="margin-bottom: 20px;"></div>
-    </div>
-</div>
-
-<!-- نافذة تعديل التقرير -->
-<div class="modal-overlay" id="editReportModal">
-    <div class="modal-content" style="max-width: 500px;">
-        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-pen-to-square"></i> تعديل بيانات التقرير</h3>
-        <input type="hidden" id="editDocId">
-        <div style="margin-bottom: 12px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 4px;">اسم الطالب:</label>
-            <input type="text" id="editStudentName" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
-        </div>
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; margin-bottom: 4px;">ملاحظات وسلوكيات المعلم:</label>
-            <textarea id="editNotes" style="width: 100%; min-height: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></textarea>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button class="btn btn-add" onclick="saveEditedReport()"><i class="fa-solid fa-floppy-disk"></i> حفظ التعديل</button>
-            <button class="btn btn-close" onclick="closeEditReportModal()">إلغاء</button>
-        </div>
     </div>
 </div>
 
@@ -754,14 +453,12 @@
     const db = firebase.firestore();
 
     let allStudents = [];
-    let studentCount = 0;
     let selectedStudentName = "";
     
     let teacherName = localStorage.getItem("teacher_name") || "";
     let teacherEmail = localStorage.getItem("teacher_email") || "";
     let teacherSubject = localStorage.getItem("teacher_subject") || "";
     
-    // قائمة المرشدين الثلاثة المعتمدة حصرياً
     const counselorsList = [
         "أ / عبدالمجيد الأحيدب",
         "أ / عبدالعزيز العتيبي",
@@ -801,7 +498,7 @@
         counselorsList.forEach(cName => {
             const opt = document.createElement("option");
             opt.value = cName;
-            opt.textContent = cName;
+            opt.textContent = "تحويل إلى: " + cName;
             selectEl.appendChild(opt);
         });
     }
@@ -812,9 +509,7 @@
         document.querySelectorAll('.teacherSubjectDisplay').forEach(el => el.textContent = teacherSubject || "غير محدد");
         renderCounselorsDropdown();
         if (currentCounselorParam) {
-            document.querySelectorAll('.counselorNameDisplay').forEach(el => {
-                el.textContent = decodeURIComponent(currentCounselorParam);
-            });
+            document.querySelectorAll('.counselorNameDisplay').forEach(el => el.textContent = decodeURIComponent(currentCounselorParam));
         }
     }
 
@@ -825,13 +520,6 @@
             document.getElementById('teacherInfoModal').style.display = 'none';
             updateNamesUI();
         }
-    }
-
-    function promptChangeTeacherInfo() {
-        document.getElementById('modalTeacherName').value = teacherName;
-        document.getElementById('modalTeacherEmail').value = teacherEmail;
-        document.getElementById('modalTeacherSubject').value = teacherSubject;
-        document.getElementById('teacherInfoModal').style.display = 'flex';
     }
 
     function saveTeacherInfoModal() {
@@ -852,531 +540,150 @@
             document.getElementById('teacherInfoModal').style.display = 'none';
             showToast("تم حفظ بيانات المعلم بنجاح!");
         } else {
-            alert("يرجى إدخال اسم المعلم والبريد الإلكتروني على الأقل.");
+            alert("يرجى إدخال اسم المعلم والبريد الإلكتروني.");
         }
     }
 
     function formatTimestamp(timestamp) {
         if (!timestamp) return 'تاريخ غير محدد';
-        let date;
-        if (timestamp.toDate) {
-            date = timestamp.toDate();
-        } else if (timestamp instanceof Date) {
-            date = timestamp;
-        } else {
-            date = new Date(timestamp);
-        }
-        
-        return date.toLocaleString('ar-SA', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
+        let date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+        return date.toLocaleString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    function generateFormattedViolationsHTML(violationsArray) {
-        if (!violationsArray || violationsArray.length === 0) {
-            return '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مسجلة</span>';
-        }
-
-        let html = '<div class="violation-tags-list">';
-        violationsArray.forEach(item => {
-            const parts = item.split(':');
-            const vName = parts[0] ? parts[0].trim() : item;
-            const vCount = parts[1] ? parts[1].trim() : '';
-            html += `
-                <div class="violation-tag-inline">
-                    <span class="violation-name-text">• ${vName}</span>
-                    ${vCount ? `<span class="violation-count-text">${vCount}</span>` : ''}
-                </div>
-            `;
-        });
-        html += '</div>';
-        return html;
-    }
-
-    function showToast(message) {
-        const toast = document.getElementById("toast");
-        document.getElementById("toastMsg").textContent = message;
-        toast.classList.add("show");
-        setTimeout(() => toast.classList.remove("show"), 3000);
-    }
-
-    function executeMainAction(selectEl) {
-        const val = selectEl.value;
-        selectEl.value = "";
-
-        if (val === "save_all") saveCurrentReports();
-        else if (val === "open_saved") openSavedReportsModal();
-        else if (val === "share_link") shareCounselorLinksModal();
-        else if (val === "change_teacher_info") promptChangeTeacherInfo();
-        else if (val === "preview") showPreview();
-        else if (val === "pdf") downloadPDF();
-        else if (val === "print") window.print();
-    }
-
-    function handleReportAction(selectEl, docId, studentName, createdTimeStr, violationsArray, notes, reply, replyTimeStr, savedTeacherName, savedCounselorName) {
-        const action = selectEl.value;
-        selectEl.value = "";
-
-        if (action === "view") {
-            openSingleReport(studentName, createdTimeStr, violationsArray, notes, reply, replyTimeStr, savedTeacherName, savedCounselorName);
-        } else if (action === "edit") {
-            openEditReportModal(docId, studentName, notes);
-        } else if (action === "delete") {
-            deleteSavedReport(docId);
-        }
+    function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
     }
 
     function loadStudentsList() {
         checkTeacherInfoOnLoad();
         db.collection("allowed_students").orderBy("name").get().then((snapshot) => {
             allStudents = [];
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                if (data.name) allStudents.push(data.name);
-            });
+            snapshot.forEach(doc => { if (doc.data().name) allStudents.push(doc.data().name); });
         });
-        
         listenToCloudReferrals();
-
         if (isCounselorView) {
             document.getElementById('controlSection').style.display = 'none';
-            document.querySelector('.actions-dropdown-container').style.display = 'none';
-            if(currentCounselorParam) {
-                const titleEl = document.querySelector('.header-info h2');
-                titleEl.textContent = `لوحة متابعة المرشد الطلابي (${decodeURIComponent(currentCounselorParam)})`;
-            }
+            document.querySelector('.actions-bar').style.display = 'none';
         }
     }
 
     function filterStudents() {
-        const query = document.getElementById("searchInput").value.trim().toLowerCase();
-        const resultsContainer = document.getElementById("searchResults");
-        resultsContainer.innerHTML = "";
-        if (!query) { resultsContainer.style.display = "none"; return; }
+        const q = document.getElementById("searchInput").value.trim().toLowerCase();
+        const res = document.getElementById("searchResults");
+        res.innerHTML = "";
+        if (!q) { res.style.display = "none"; return; }
 
-        const filtered = allStudents.filter(name => name.toLowerCase().includes(query));
+        const filtered = allStudents.filter(n => n.toLowerCase().includes(q));
         if (filtered.length === 0) {
-            resultsContainer.innerHTML = '<div style="color: #888;">لا توجد نتائج مطابقة</div>';
+            res.innerHTML = '<div style="color: #888;">لا توجد نتائج مطابقة</div>';
         } else {
             filtered.forEach(name => {
                 const div = document.createElement("div");
                 div.textContent = name;
-                div.onclick = function() {
+                div.onclick = () => {
                     document.getElementById("searchInput").value = name;
                     selectedStudentName = name;
-                    resultsContainer.style.display = "none";
-                    fetchStudentHistory(name);
+                    res.style.display = "none";
                 };
-                resultsContainer.appendChild(div);
+                res.appendChild(div);
             });
         }
-        resultsContainer.style.display = "block";
+        res.style.display = "block";
     }
-
-    async function fetchStudentHistory(studentName) {
-        const historySection = document.getElementById("studentHistorySection");
-        const historyTitle = document.getElementById("historyTitle").querySelector("span");
-        const historyContent = document.getElementById("historyContent");
-
-        historyTitle.innerHTML = `<i class="fa-solid fa-folder-open"></i> سجل تقارير الطالب السابقة: ${studentName}`;
-        historyContent.innerHTML = "جاري البحث في الأرشيف...";
-        historySection.style.display = "block";
-
-        try {
-            const snapshot = await db.collection("referral_list").where("name", "==", studentName).get();
-            
-            if (snapshot.empty) {
-                historyContent.innerHTML = "<p style='color: #666; margin: 0;'>لا توجد تقارير سابقة مسجلة لهذا الطالب في السحابة.</p>";
-                return;
-            }
-
-            let html = "";
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const docId = doc.id;
-                const createdTimeStr = formatTimestamp(data.createdAt);
-                const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
-                const currentViolations = data.violations || [];
-                const violationsHTML = generateFormattedViolationsHTML(currentViolations);
-                const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
-                
-                html += `
-                    <div class="history-card" id="history_card_${docId}">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> الإحالة (${reportTeacher} ⬅️ المرشد: ${reportCounselor}): ${createdTimeStr}</span>
-                            <div class="no-print">
-                                <select class="action-dropdown" onchange="handleReportAction(this, '${docId}', '${data.name}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')">
-                                    <option value="">⚙️ الإجراءات...</option>
-                                    <option value="view">👁️ معاينة التقرير الفخم</option>
-                                    <option value="edit">✏️ تعديل</option>
-                                    <option value="delete">🗑️ حذف</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="font-size: 0.85rem; margin-bottom: 6px;"><strong>المخالفات:</strong><br>${violationsHTML}</div>
-                        <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظات المعلم:</strong> ${data.notes || 'لا توجد ملاحظات'}</div>
-                        <div style="font-size: 0.85rem; color: #0284c7; margin-bottom: 4px;">
-                            <strong>رد المرشد (${reportCounselor}):</strong> ${data.reply || 'لم يتم الرد بعد'} 
-                            ${replyTimeStr ? `<br><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            historyContent.innerHTML = html;
-        } catch (error) {
-            console.error(error);
-            historyContent.innerHTML = "<p style='color: red;'>حدث خطأ أثناء جلب الأرشيف.</p>";
-        }
-    }
-
-    function openEditReportModal(id, name, notes) {
-        document.getElementById('editDocId').value = id;
-        document.getElementById('editStudentName').value = name;
-        document.getElementById('editNotes').value = notes;
-        document.getElementById('editReportModal').style.display = 'flex';
-    }
-
-    function closeEditReportModal() {
-        document.getElementById('editReportModal').style.display = 'none';
-    }
-
-    async function saveEditedReport() {
-        const id = document.getElementById('editDocId').value;
-        const name = document.getElementById('editStudentName').value.trim();
-        const notes = document.getElementById('editNotes').value.trim();
-
-        if (!name) return alert("اسم الطالب مطلوب");
-
-        try {
-            await db.collection("referral_list").doc(id).update({
-                name: name,
-                notes: notes
-            });
-            showToast("تم حفظ التعديلات بنجاح!");
-            closeEditReportModal();
-            fetchStudentHistory(name);
-        } catch (error) {
-            alert("حدث خطأ أثناء حفظ التعديل.");
-        }
-    }
-
-    async function saveSingleStudent(id, studentName, counselorNameVal) {
-        try {
-            await db.collection("referral_list").doc(id).update({
-                isArchived: true,
-                teacherName: teacherName,
-                counselorName: counselorNameVal
-            });
-            showToast(`تم أرشفة وحفظ تقرير الطالب (${studentName}) للمرشد (${counselorNameVal}) بنجاح!`);
-        } catch (error) {
-            alert("حدث خطأ أثناء الحفظ.");
-        }
-    }
-
-    async function saveCurrentReports() {
-        const cards = document.querySelectorAll(".student-card-item");
-        if (cards.length === 0) return alert("لا توجد بيانات طلاب نشطة لحفظها وأرشفتها.");
-
-        if (confirm("هل تريد أرشفة وحفظ جميع التقارير الحالية؟")) {
-            const batch = db.batch();
-            const snapshot = await db.collection("referral_list").get();
-            snapshot.forEach(doc => {
-                if (doc.data().isArchived !== true) {
-                    batch.update(doc.ref, { 
-                        isArchived: true, 
-                        teacherName: teacherName
-                    });
-                }
-            });
-            await batch.commit();
-            showToast("تم أرشفة وحفظ كافة التقارير بنجاح!");
-        }
-    }
-
-    async function openSavedReportsModal() {
-        const container = document.getElementById("savedReportsContainer");
-        container.innerHTML = "جاري جلب كافة التقارير المحفوظة...";
-        document.getElementById("savedReportsModal").style.display = "flex";
-
-        try {
-            const snapshot = await db.collection("referral_list").get();
-            if (snapshot.empty) {
-                container.innerHTML = "<p style='color: #666;'>لا توجد تقارير محفوظة حالياً.</p>";
-                return;
-            }
-
-            let html = "";
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                const docId = doc.id;
-                const createdTimeStr = formatTimestamp(data.createdAt);
-                const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
-                const currentViolations = data.violations || [];
-                const violationsHTML = generateFormattedViolationsHTML(currentViolations);
-                const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
-
-                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
-                    return;
-                }
-
-                html += `
-                    <div class="history-card report-item-card" data-search="${(data.name || '').toLowerCase()}">
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-weight: bold; color: var(--maroon); margin-bottom: 8px;">
-                            <span>🎓 الطالب: ${data.name || 'طالب'} (الموجه إلى: ${reportCounselor})</span>
-                            <div style="display: flex; align-items: center; gap: 10px;">
-                                <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
-                                <div class="no-print">
-                                    <select class="action-dropdown" onchange="handleReportAction(this, '${docId}', '${data.name}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')">
-                                        <option value="">⚙️ الإجراءات...</option>
-                                        <option value="view">👁️ معاينة التقرير الفخم</option>
-                                        <option value="edit">✏️ تعديل</option>
-                                        <option value="delete">🗑️ حذف</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="font-size: 0.85rem; margin-bottom: 6px;"><strong>المخالفات المسجلة:</strong><br>${violationsHTML}</div>
-                        <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظات المعلم (${reportTeacher}):</strong> ${data.notes || 'لا توجد'}</div>
-                        <div style="font-size: 0.85rem; color: #0284c7; margin-bottom: 4px;">
-                            <strong>رد المرشد (${reportCounselor}):</strong> ${data.reply || 'لم يتم الرد بعد'}
-                            ${replyTimeStr ? `<br><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html || "<p style='color: #666;'>لا توجد تقارير مطابقة.</p>";
-        } catch (error) {
-            console.error(error);
-            container.innerHTML = "<p style='color: red;'>حدث خطأ أثناء تحميل التقارير المحفوظة.</p>";
-        }
-    }
-
-    function filterAllSavedReports(query) {
-        const q = query.toLowerCase();
-        document.querySelectorAll('.report-item-card').forEach(card => {
-            const text = card.getAttribute('data-search') || '';
-            if (text.includes(q)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    }
-
-    function exportAllReportsToPrint() {
-        window.print();
-    }
-
-    function closeSavedReportsModal() {
-        document.getElementById("savedReportsModal").style.display = "none";
-    }
-
-    async function deleteSavedReport(docId) {
-        if (confirm("حذف هذا التقرير المحفوظ من السحابة؟")) {
-            try {
-                await db.collection("referral_list").doc(docId).delete();
-                showToast("تم الحذف بنجاح!");
-                openSavedReportsModal();
-            } catch (error) {
-                alert("حدث خطأ أثناء الحذف.");
-            }
-        }
-    }
-
-    function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
-        let violationsArr = [];
-        if (typeof violationsInput === 'string') {
-            try { violationsArr = JSON.parse(violationsInput); } catch(e) { violationsArr = [violationsInput]; }
-        } else if (Array.isArray(violationsInput)) {
-            violationsArr = violationsInput;
-        }
-
-        const formattedViolations = generateFormattedViolationsHTML(violationsArr);
-        const activeTeacher = customTeacher || teacherName;
-        const activeCounselor = customCounselor || "أ / عبدالمجيد الأحيدب";
-
-        const content = `
-            <div class="executive-report-box" id="printableSingleReport">
-                <div class="executive-header">
-                    <h3>تقرير إحالة ومتابعة سلوكية</h3>
-                    <small style="color: var(--text-muted); font-weight: 700;">المملكة العربية السعودية - وزارة التعليم | إدارة الشؤون التعليمية</small>
-                </div>
-
-                <div class="executive-grid">
-                    <div class="executive-grid-item"><i class="fa-solid fa-user-graduate" style="color:var(--maroon)"></i> <strong>اسم الطالب:</strong> ${name}</div>
-                    <div class="executive-grid-item"><i class="fa-solid fa-calendar-days" style="color:var(--maroon)"></i> <strong>تاريخ ووقت الإحالة:</strong> ${dateStr}</div>
-                    <div class="executive-grid-item"><i class="fa-solid fa-chalkboard-user" style="color:var(--maroon)"></i> <strong>معلم المادة:</strong> ${activeTeacher}</div>
-                    <div class="executive-grid-item"><i class="fa-solid fa-user-shield" style="color:var(--maroon)"></i> <strong>المرشد الطلابي المختص:</strong> ${activeCounselor}</div>
-                </div>
-
-                <div class="executive-section-title">قائمة المخالفات والسلوكيات المرصودة:</div>
-                <div class="executive-content-card">
-                    ${formattedViolations}
-                </div>
-
-                <div class="executive-section-title">ملاحظات وتقرير معلم المادة:</div>
-                <div class="executive-content-card" style="background: #fdf2f8;">
-                    <p style="margin: 0; white-space: pre-wrap; font-weight: 600;">${notes || 'لا توجد ملاحظات إضافية مسجلة.'}</p>
-                </div>
-
-                <div class="executive-section-title">التوجيه والإرشاد (رد المرشد الطلابي):</div>
-                <div class="executive-content-card" style="background: #f0f9ff; border-color: #bae6fd;">
-                    <p style="margin: 0 0 8px 0; white-space: pre-wrap; color: #0369a1; font-weight: 700;">${reply || 'لم يتم إدراج رد من المرشد الطلابي حتى الآن.'}</p>
-                    ${replyDateStr ? `<div style="text-align: left;"><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyDateStr}</span></div>` : ''}
-                </div>
-
-                <div style="margin-top: 25px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.9rem;">
-                    <div>توقيع المرشد الطلابي (${activeCounselor}): ........................</div>
-                    <div>توقيع معلم المادة (${activeTeacher}): ........................</div>
-                </div>
-            </div>
-        `;
-        document.getElementById('singleReportContent').innerHTML = content;
-        document.getElementById('singleReportModal').style.display = 'flex';
-    }
-
-    function closeSingleReportModal() {
-        document.getElementById('singleReportModal').style.display = 'none';
-    }
-
-    document.addEventListener("click", function(e) {
-        if (!e.target.closest(".search-box-wrapper")) {
-            const res = document.getElementById("searchResults");
-            if(res) res.style.display = "none";
-        }
-    });
 
     async function addSelectedStudent() {
         const inputVal = document.getElementById("searchInput").value.trim();
         const studentName = selectedStudentName || inputVal;
         const targetCounselor = document.getElementById("globalTargetCounselor").value;
-        if (!studentName) return alert("يرجى اختيار أو كتابة اسم الطالب أولاً");
+        if (!studentName) return alert("اختر اسم الطالب أولاً من قائمة البحث");
 
         const studentId = "student_" + Date.now();
-        try {
-            await db.collection("referral_list").doc(studentId).set({
-                name: studentName,
-                violations: [],
-                notes: "",
-                reply: "لم يتم الرد بعد",
-                isArchived: false,
-                teacherName: teacherName,
-                counselorName: targetCounselor,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            document.getElementById("searchInput").value = "";
-            selectedStudentName = "";
-            document.getElementById("studentHistorySection").style.display = "none";
-            showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
-        } catch (e) {
-            console.error(e);
-        }
+        await db.collection("referral_list").doc(studentId).set({
+            name: studentName,
+            violations: [],
+            notes: "",
+            reply: "لم يتم الرد بعد",
+            isArchived: false,
+            teacherName: teacherName,
+            counselorName: targetCounselor,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById("searchInput").value = "";
+        selectedStudentName = "";
+        showToast(`تم إدراج الطالب (${studentName}) في الكشف بنجاح!`);
     }
 
     function listenToCloudReferrals() {
         db.collection("referral_list").onSnapshot(snapshot => {
-            const container = document.getElementById("cardsContainer");
-            container.innerHTML = "";
-            studentCount = 0;
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+            let count = 0;
 
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
-                    return;
-                }
-
+                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) return;
                 if (!isCounselorView && data.isArchived === true) return;
                 if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
 
-                studentCount++;
-
-                const currentViolations = data.violations || [];
+                count++;
                 const createdTimeStr = formatTimestamp(data.createdAt);
                 const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
-                const studentDisplayName = data.name || "اسم الطالب";
-                const reportTeacher = data.teacherName || teacherName;
+                const studentDisplayName = data.name || "طالب";
 
-                const card = document.createElement("div");
-                card.className = "student-card-item";
-                card.innerHTML = `
-                    <div class="student-card-header">
-                        <div class="student-main-title">
-                            <span style="background: var(--maroon); color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${studentCount}</span>
-                            🎓 ${studentDisplayName}
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${count}</td>
+                    <td style="text-align: right; font-weight: bold;">
+                        🎓 ${studentDisplayName}
+                        <br><span class="time-badge">${createdTimeStr}</span>
+                        <div style="font-size:0.72rem; color:#92400e; margin-top:2px;"><i class="fa-solid fa-user-shield"></i> ${reportCounselor}</div>
+                    </td>
+                    <td class="no-print">
+                        <select id="type_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''} onchange="onTypeSelectChange('${id}')">
+                            <option value="">-- اختر الحالة --</option>
+                            <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
+                            <option value="عدم إحضار البحث">عدم إحضار البحث</option>
+                            <option value="كثرة النوم">كثرة النوم</option>
+                            <option value="ضعف المشاركة">ضعف المشاركة</option>
+                        </select>
+                        <select id="count_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''}>
+                            <option value="">-- اختر العدد --</option>
+                        </select>
+                        <button class="btn-mini-add" ${isCounselorView ? 'style="display:none;"' : ''} onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة الحالة</button>
+                    </td>
+                    <td>
+                        <div id="violation_tags_${id}" class="violation-tag-box"></div>
+                    </td>
+                    <td>
+                        <textarea class="table-textarea" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب تفصيل الحالة وملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
+                        
+                        <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} margin-top: 6px;">
+                            <div style="font-size: 0.75rem; font-weight: bold; color: #166534; margin-bottom: 2px;"><i class="fa-solid fa-reply"></i> رد المرشد:</div>
+                            <textarea id="reply_${id}" class="table-textarea counselor-reply-box" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
+                            ${replyTimeStr ? `<div style="font-size:0.68rem; color:#0369a1; margin-top:2px;">وقت الرد: ${replyTimeStr}</div>` : ''}
+                            <button class="btn btn-save" style="margin-top:4px; font-size:0.75rem;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
-                            <span style="font-size: 0.85rem; font-weight: 700; color: #854d0e; background: #fffbeb; border: 1px solid #fef08a; padding: 5px 12px; border-radius: 20px;">
-                                <i class="fa-solid fa-user-shield"></i> المرشد: ${reportCounselor}
-                            </span>
+                    </td>
+                    <td class="no-print">
+                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                            <button class="btn btn-save" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}')"><i class="fa-solid fa-floppy-disk"></i> حفظ في التقارير</button>
+                            <button class="btn btn-view" onclick="openSingleReportModal('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(data.violations || []).replace(/"/g, '&quot;')}\`, \`${data.notes || ''}\`, \`${data.reply || ''}\`, '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة وطباعة</button>
+                            <button class="btn btn-del" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteRow('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
                         </div>
-                    </div>
-
-                    <div class="student-card-body">
-                        <!-- القسم الأيمن: إضافة المخالفات والملاحظات -->
-                        <div class="card-section-box">
-                            <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> رصد المخالفات السلوكية</div>
-                            <div class="violation-builder no-print" ${isCounselorView ? 'style="display:none;"' : ''}>
-                                <select id="type_select_${id}" class="violation-select" onchange="onTypeSelectChange('${id}')">
-                                    <option value="">-- اختر نوع المخالفة --</option>
-                                    <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
-                                    <option value="عدم إحضار البحث">عدم إحضار البحث</option>
-                                    <option value="كثرة النوم">كثرة النوم</option>
-                                    <option value="ضعف المشاركة">ضعف المشاركة</option>
-                                </select>
-                                <select id="count_select_${id}" class="count-select">
-                                    <option value="">-- اختر العدد / الوصف --</option>
-                                </select>
-                                <button class="btn-add-violation" onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة المخالفة للقائمة</button>
-                            </div>
-
-                            <div style="margin-top: 10px;">
-                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">المخالفات المسجلة:</label>
-                                <div id="violation_tags_${id}"></div>
-                            </div>
-                        </div>
-
-                        <!-- القسم الأيسر: ملاحظات المعلم ورد المرشد -->
-                        <div class="card-section-box">
-                            <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> الملاحظات والتوجيه الإرشادي</div>
-                            <div style="margin-bottom: 12px;">
-                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">سلوكيات وملاحظات المعلم:</label>
-                                <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك السلوكية هنا..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
-                            </div>
-
-                            <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
-                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> رد المرشد الطلابي (${reportCounselor}):</div>
-                                <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب توجيهك وردك الإرشادي هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
-                                ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                                <button class="btn btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="student-card-footer no-print">
-                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> حفظ وأرشفة</button>
-                        <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة التقرير الفخم</button>
-                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
-                    </div>
+                    </td>
                 `;
-                container.appendChild(card);
-
-                renderStudentViolationTags(id, currentViolations);
+                tbody.appendChild(row);
+                renderStudentViolationTags(id, data.violations || []);
             });
 
             if (isCounselorView) {
                 document.querySelectorAll('[id^="counselor_box_"]').forEach(box => box.style.display = 'block');
-                document.querySelectorAll('.btn-save-reply').forEach(btn => btn.style.display = 'inline-block');
             }
         });
     }
@@ -1385,189 +692,122 @@
         const typeSelect = document.getElementById(`type_select_${id}`);
         const countSelect = document.getElementById(`count_select_${id}`);
         const selectedType = typeSelect.value;
-
-        countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
-
+        countSelect.innerHTML = '<option value="">-- اختر العدد --</option>';
         if (countOptionsMap[selectedType]) {
             countOptionsMap[selectedType].forEach(opt => {
-                const optionEl = document.createElement("option");
-                optionEl.value = opt.value;
-                optionEl.textContent = opt.text;
-                countSelect.appendChild(optionEl);
+                const optEl = document.createElement("option");
+                optEl.value = opt.value;
+                optEl.textContent = opt.text;
+                countSelect.appendChild(optEl);
             });
         }
     }
 
     async function addViolationToStudent(id) {
-        const typeSelect = document.getElementById(`type_select_${id}`);
-        const countSelect = document.getElementById(`count_select_${id}`);
-
-        const typeVal = typeSelect.value;
-        const countVal = countSelect.value;
-
-        if (!typeVal || !countVal) {
-            return alert("يرجى اختيار نوع المخالفة والعدد أولاً!");
-        }
-
-        const violationString = `${typeVal}: ${countVal}`;
+        const typeVal = document.getElementById(`type_select_${id}`).value;
+        const countVal = document.getElementById(`count_select_${id}`).value;
+        if (!typeVal || !countVal) return alert("اختر الحالة والعدد أولاً");
 
         const docRef = db.collection("referral_list").doc(id);
         const doc = await docRef.get();
         if (doc.exists) {
-            const currentArray = doc.data().violations || [];
-            currentArray.push(violationString);
-            await docRef.update({ violations: currentArray });
-            typeSelect.value = "";
-            countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
-            showToast("تمت إضافة المخالفة بنجاح!");
+            let arr = doc.data().violations || [];
+            arr.push(`${typeVal}: ${countVal}`);
+            await docRef.update({ violations: arr });
+            showToast("تمت إضافة الحالة بنجاح!");
         }
     }
 
-    async function removeViolationFromStudent(id, indexToRemove) {
+    async function removeViolation(id, index) {
         const docRef = db.collection("referral_list").doc(id);
         const doc = await docRef.get();
         if (doc.exists) {
-            let currentArray = doc.data().violations || [];
-            currentArray.splice(indexToRemove, 1);
-            await docRef.update({ violations: currentArray });
-            showToast("تم حذف المخالفة!");
+            let arr = doc.data().violations || [];
+            arr.splice(index, 1);
+            await docRef.update({ violations: arr });
         }
     }
 
-    function renderStudentViolationTags(id, violationsArray) {
+    function renderStudentViolationTags(id, arr) {
         const container = document.getElementById(`violation_tags_${id}`);
         if (!container) return;
-
-        container.innerHTML = "";
-
-        if (!violationsArray || violationsArray.length === 0) {
-            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مضافة بعد</span>';
+        if (!arr || arr.length === 0) {
+            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.78rem; font-style: italic;">لا توجد حالات</span>';
             return;
         }
-
-        let html = '<div class="violation-tags-list">';
-        violationsArray.forEach((vItem, index) => {
-            const parts = vItem.split(':');
-            const violationName = parts[0] ? parts[0].trim() : vItem;
-            const violationCount = parts[1] ? parts[1].trim() : '';
-
-            html += `
-                <div class="violation-tag-inline">
-                    <span class="violation-name-text">• ${violationName}</span>
-                    ${violationCount ? `<span class="violation-count-text">${violationCount}</span>` : ''}
-                    ${!isCounselorView ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${index})" title="حذف المخالفة"><i class="fa-solid fa-xmark"></i></button>` : ''}
-                </div>
-            `;
+        let html = "";
+        arr.forEach((item, idx) => {
+            const p = item.split(':');
+            html += `<div class="tag-item"><span>• ${p[0]} (${p[1] || ''})</span><button onclick="removeViolation('${id}', ${idx})" style="background:none; border:none; color:red; cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-xmark"></i></button></div>`;
         });
-        html += '</div>';
         container.innerHTML = html;
     }
 
-    async function updateCloudField(id, field, value) {
-        if (!isCounselorView) {
-            await db.collection("referral_list").doc(id).update({ [field]: value });
-        }
+    async function updateCloudField(id, field, val) {
+        if (!isCounselorView) await db.collection("referral_list").doc(id).update({ [field]: val });
     }
 
-    async function saveReply(id, counselorNameVal) {
+    async function saveSingleStudent(id, name) {
+        await db.collection("referral_list").doc(id).update({ isArchived: true, teacherName: teacherName });
+        showToast(`تم أرشفة تقرير الطالب (${name}) بنجاح!`);
+    }
+
+    async function saveReply(id, counselor) {
         const replyText = document.getElementById(`reply_${id}`).value;
-        if (!replyText.trim()) return alert("يرجى كتابة الرد قبل الحفظ!");
-
-        try {
-            await db.collection("referral_list").doc(id).update({ 
-                reply: replyText,
-                teacherName: teacherName,
-                counselorName: counselorNameVal,
-                replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            showToast("تم حفظ الرد وتوقيته وإخفاء التقرير من قائمة المرشد!");
-        } catch (error) {
-            alert("حدث خطأ أثناء حفظ الرد.");
-        }
+        if (!replyText.trim()) return alert("اكتب رد المرشد أولاً");
+        await db.collection("referral_list").doc(id).update({
+            reply: replyText,
+            teacherName: teacherName,
+            counselorName: counselor,
+            replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast("تم حفظ وإرسال الرد بنجاح!");
     }
 
-    async function deleteCloudStudent(id) {
-        if(!isCounselorView && confirm("إزالة هذا الطالب من القائمة الحالية؟")) {
+    async function deleteRow(id) {
+        if (confirm("حذف هذا الطالب من الكشف؟")) {
             await db.collection("referral_list").doc(id).delete();
-            showToast("تم إزالة الطالب من القائمة!");
+            showToast("تم الحذف بنجاح");
         }
     }
 
-    function shareCounselorLinksModal() {
-        const currentUrl = window.location.href.split('?')[0];
-        let msg = "روابط المرشدين المخصصة:\n\n";
-        counselorsList.forEach((cName, idx) => {
-            const link = currentUrl + "?mode=counselor&counselor=" + encodeURIComponent(cName);
-            msg += `${idx + 1}. رابط ${cName}:\n${link}\n\n`;
-        });
-        prompt("انسخ روابط المرشدين:", msg);
-    }
-
-    function showPreview() {
-        const contentClone = document.getElementById('pdfContent').cloneNode(true);
-        contentClone.querySelectorAll('.no-print').forEach(el => el.remove());
-        contentClone.querySelectorAll('.btn-save-reply').forEach(el => el.remove());
-
-        const textareas = contentClone.querySelectorAll('textarea');
-        const originalTextareas = document.querySelectorAll('.student-card-item textarea');
-        textareas.forEach((ta, idx) => {
-            if(!ta.classList.contains('counselor-reply')) {
-                const div = document.createElement('div');
-                div.textContent = originalTextareas[idx].value || '-';
-                div.style.textAlign = 'right';
-                div.style.padding = '8px';
-                div.style.fontSize = '0.9rem';
-                div.style.background = '#f8fafc';
-                div.style.border = '1px solid #e2e8f0';
-                div.style.borderRadius = '6px';
-                div.style.whiteSpace = 'pre-wrap';
-                ta.parentNode.replaceChild(div, ta);
-            }
-        });
-
-        const previewArea = document.getElementById('previewArea');
-        previewArea.innerHTML = '';
-        
-        const wrapper = document.createElement('div');
-        wrapper.className = 'executive-report-box';
-        wrapper.style.marginTop = '0';
-        wrapper.appendChild(contentClone);
-
-        previewArea.appendChild(wrapper);
+    function openSingleReportModal(name, dateStr, violationsInput, notes, reply, counselor) {
+        let arr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
+        let vHtml = arr.map(i => `• ${i}`).join('<br>');
+        document.getElementById('previewArea').innerHTML = `
+            <div class="report-box">
+                <div style="text-align:center; border-bottom:2px dashed #cbd5e1; padding-bottom:10px; margin-bottom:15px;">
+                    <h3 style="color:var(--primary); margin:0;">تقرير متابعة سلوكية</h3>
+                    <small>وزارة التعليم - المملكة العربية السعودية</small>
+                </div>
+                <p><b>اسم الطالب:</b> ${name}</p>
+                <p><b>التاريخ والوقت:</b> ${dateStr}</p>
+                <p><b>المرشد المختص:</b> ${counselor}</p>
+                <p><b>الحالات المسجلة:</b><br>${vHtml || 'لا توجد'}</p>
+                <p><b>تفصيل وملاحظات المعلم:</b><br>${notes || 'لا توجد'}</p>
+                <p style="color: #166534;"><b>رد وتوجيه المرشد:</b><br>${reply || 'لم يتم الرد بعد'}</p>
+            </div>
+        `;
         document.getElementById('previewModal').style.display = 'flex';
     }
 
-    function closePreview() {
-        document.getElementById('previewModal').style.display = 'none';
-    }
-
-    function downloadPDF() {
-        const element = document.getElementById('pdfContent').cloneNode(true);
-        element.querySelectorAll('.no-print').forEach(el => el.remove());
-        element.querySelectorAll('.btn-save-reply').forEach(el => el.remove());
-
-        const textareas = element.querySelectorAll('textarea');
-        const originalTextareas = document.querySelectorAll('.student-card-item textarea');
-        textareas.forEach((ta, idx) => {
-            if(!ta.classList.contains('counselor-reply')) {
-                const div = document.createElement('div');
-                div.textContent = originalTextareas[idx].value || '-';
-                div.style.textAlign = 'right';
-                div.style.padding = '4px';
-                div.style.fontSize = '0.85rem';
-                div.style.whiteSpace = 'pre-wrap';
-                ta.replaceWith(div);
-            }
-        });
-
-        const options = {
-            margin: 10,
-            filename: 'استمارة_تحويل_المرشد_الطلابي_الفخمة.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().from(element).set(options).save();
+    function executeMainAction(sel) {
+        const val = sel.value;
+        sel.value = "";
+        if (val === "save_all") {
+            db.collection("referral_list").get().then(snap => {
+                const batch = db.batch();
+                snap.forEach(doc => { if (!doc.data().isArchived) batch.update(doc.ref, { isArchived: true }); });
+                batch.commit().then(() => showToast("تم أرشفة وحفظ الكشف بالكامل!"));
+            });
+        } else if (val === "preview" || val === "print") {
+            window.print();
+        } else if (val === "change_teacher_info") {
+            document.getElementById('modalTeacherName').value = teacherName;
+            document.getElementById('modalTeacherEmail').value = teacherEmail;
+            document.getElementById('modalTeacherSubject').value = teacherSubject;
+            document.getElementById('teacherInfoModal').style.display = 'flex';
+        }
     }
 
     window.onload = loadStudentsList;
