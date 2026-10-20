@@ -572,7 +572,7 @@
         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <label style="margin: 0; font-size: 0.9rem;"><i class="fa-solid fa-user-shield"></i> تحويل إلى المرشد المختص:</label>
             <select id="globalTargetCounselor" class="target-counselor-select" style="max-width: 250px; margin: 0;">
-                <!-- يُعبأ تلقائياً بالمرشدين المخزنين -->
+                <!-- يُعبأ تلقائياً بالمرشدين -->
             </select>
             <button class="btn" style="background: #0284c7; padding: 8px 14px; font-size: 0.85rem;" onclick="addNewCounselorPrompt()"><i class="fa-solid fa-user-plus"></i> إضافة مرشد جديد</button>
         </div>
@@ -605,7 +605,7 @@
     </table>
 
     <div style="margin-top: 45px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
-        <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ. تركي العتيبي</span> ........................</div>
+        <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
         <div>توقيع معلم المادة (<span class="teacherNameDisplay">أ. عبدالعزيز الفيفي</span>): ........................</div>
     </div>
 
@@ -704,11 +704,11 @@
     
     let teacherName = localStorage.getItem("teacher_name") || "أ. عبدالعزيز الفيفي";
     
-    // قائمة المرشدين المخزنة محلياً أو افتراضياً
+    // القائمة الافتتاحية المحدثة للمرشدين مع إمكانية التوسعة والإضافة
     let counselorsList = JSON.parse(localStorage.getItem("school_counselors_list")) || [
-        "أ. تركي العتيبي",
-        "أ. محمد",
-        "أ. خالد"
+        "أ / عبدالمجيد الأحيدب",
+        "أ / عبدالعزيز العتيبي",
+        "أ / علي الناصر"
     ];
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -935,7 +935,7 @@
                 const currentViolations = data.violations || [];
                 const violationsHTML = generateFormattedViolationsHTML(currentViolations);
                 const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
+                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
                 
                 html += `
                     <div class="history-card" id="history_card_${docId}">
@@ -1051,7 +1051,7 @@
                 const currentViolations = data.violations || [];
                 const violationsHTML = generateFormattedViolationsHTML(currentViolations);
                 const reportTeacher = data.teacherName || teacherName;
-                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
+                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
                 if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) {
                     return;
@@ -1131,7 +1131,7 @@
 
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
         const activeTeacher = customTeacher || teacherName;
-        const activeCounselor = customCounselor || "أ. تركي العتيبي";
+        const activeCounselor = customCounselor || "أ / عبدالمجيد الأحيدب";
 
         const content = `
             <div class="executive-report-box" id="printableSingleReport">
@@ -1220,9 +1220,8 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const id = doc.id;
-                const reportCounselor = data.counselorName || "أ. تركي العتيبي";
+                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-                // تحديث القائمة ديناميكياً إذا وُجد مرشد جديد في السحابة
                 if (!counselorsList.includes(reportCounselor)) {
                     counselorsList.push(reportCounselor);
                     localStorage.setItem("school_counselors_list", JSON.stringify(counselorsList));
