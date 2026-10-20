@@ -837,11 +837,15 @@
                 const data = doc.data();
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
+                const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
 
+                // شرط إخفاء الحالة من عند المرشد فوراً بعد كتابة الرد وحفظه
                 if (isCounselorView) {
                     if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
                     if (targetStudentIdParam && id !== targetStudentIdParam) return;
+                    if (hasReply) return; // تختفي الحالة تلقائياً من صفحة المرشد بعد إتمام الرد
                 }
+
                 if (!isCounselorView && data.isArchived === true) return;
 
                 studentCount++;
@@ -850,12 +854,9 @@
                 const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
                 const studentDisplayName = data.name || "طالب";
                 const reportTeacher = data.teacherName || teacherName;
-                const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
 
-                // تحكم ديناميكي في إظهار شاشة الرد للمرشد أو المعلم
                 let counselorReplySectionHTML = '';
                 if (isCounselorView) {
-                    // شاشة المرشد: يظهر صندوق الكتابة وزر الحفظ
                     counselorReplySectionHTML = `
                         <div id="counselor_box_${id}" style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
                             <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد وتوجيه المرشد (${reportCounselor}):</div>
@@ -865,7 +866,6 @@
                         </div>
                     `;
                 } else {
-                    // شاشة المعلم: يظهر النص المقروء فقط إذا كان المرشد قد رد، أو حالة الانتظار
                     counselorReplySectionHTML = `
                         <div style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
                             <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد المرشد الطلابي (${reportCounselor}):</div>
