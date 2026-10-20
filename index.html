@@ -71,7 +71,6 @@
             background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
         }
 
-        /* نافذة إعدادات بيانات المعلم */
         .setup-card {
             max-width: 600px;
             margin: 50px auto;
@@ -506,10 +505,10 @@
     <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
-<!-- بطاقة إدخال بيانات المعلم عند البدء -->
+<!-- بطاقة إدخال بيانات المعلم والمرشد عند البدء -->
 <div class="setup-card" id="teacherSetupCard">
-    <h2 style="color: var(--maroon); margin-top: 0; text-align: center;"><i class="fas fa-user-gear"></i> إعداد بيانات المعلم</h2>
-    <p style="color: #64748b; font-size: 0.9rem; text-align: center; margin-bottom: 20px;">الرجاء إدخال بياناتك لاعتمادها في استمارة التحويل وربطها بسحابة المعلمين:</p>
+    <h2 style="color: var(--maroon); margin-top: 0; text-align: center;"><i class="fas fa-user-gear"></i> إعداد بيانات المعلم والمرشد</h2>
+    <p style="color: #64748b; font-size: 0.9rem; text-align: center; margin-bottom: 20px;">الرجاء إدخال بياناتك واسم المرشد الطلابي لاعتمادها في استمارة التحويل وربطها بسحابة المعلمين:</p>
     
     <label style="font-weight: bold; display: block; margin-bottom: 5px;">اسم المعلم الثلاثي:</label>
     <input type="text" id="setupTeacherName" class="auth-input" placeholder="مثال: أ. محمد بن أحمد الغامدي">
@@ -519,6 +518,9 @@
 
     <label style="font-weight: bold; display: block; margin-bottom: 5px;">المادة الدراسية:</label>
     <input type="text" id="setupTeacherSubject" class="auth-input" placeholder="مثال: لغتي الخالدة / رياضيات">
+
+    <label style="font-weight: bold; display: block; margin-bottom: 5px;">اسم المرشد الطلابي:</label>
+    <input type="text" id="setupCounselorName" class="auth-input" placeholder="مثال: أ. خالد بن سعد العمري">
 
     <button class="btn btn-add" onclick="saveTeacherSetup()"><i class="fas fa-check-circle"></i> بدء واستخدام المنصة</button>
 </div>
@@ -535,7 +537,7 @@
                 <small style="color: var(--text-muted); font-weight: 600;">المملكة العربية السعودية - وزارة التعليم</small>
             </div>
         </div>
-        <div class="header-badge" onclick="resetTeacherSetup()" title="اضغط لتعديل بيانات المعلم">
+        <div class="header-badge" onclick="resetTeacherSetup()" title="اضغط لتعديل البيانات">
             <div><i class="fa-solid fa-book-bookmark" style="color: var(--maroon);"></i> <strong>المادة:</strong> <span id="displaySubject">--</span></div>
             <div><i class="fa-solid fa-user-tie" style="color: var(--maroon);"></i> <strong>معلم المادة:</strong> <span id="displayTeacherName">--</span> <i class="fas fa-pen" style="font-size:0.75rem; margin-right:5px;"></i></div>
         </div>
@@ -580,7 +582,7 @@
     </table>
 
     <div style="margin-top: 45px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
-        <div>توقيع المرشد الطلابي: ........................</div>
+        <div>توقيع المرشد الطلابي (<span id="signatureCounselorName">--</span>): ........................</div>
         <div>توقيع معلم المادة (<span id="signatureTeacherName">--</span>): ........................</div>
     </div>
 
@@ -670,6 +672,7 @@
     let currentTeacherName = localStorage.getItem('general_teacher_name') || "";
     let currentTeacherEmail = localStorage.getItem('general_teacher_email') || "";
     let currentTeacherSubject = localStorage.getItem('general_teacher_subject') || "";
+    let currentCounselorName = localStorage.getItem('general_counselor_name') || "";
 
     let allStudents = [];
     let studentCount = 0;
@@ -679,33 +682,29 @@
 
     const countOptionsMap = {
         "عدم إحضار الواجبات": [
-            { value: "واجب 1", text: "واجب 1" },
-            { value: "واجب 2", text: "واجب 2" },
-            { value: "واجب 3", text: "واجب 3" },
-            { value: "واجب 4", text: "واجب 4" },
+            { value: "واجب 1", text: "واجب 1" }, { value: "واجب 2", text: "واجب 2" },
+            { value: "واجب 3", text: "واجب 3" }, { value: "واجب 4", text: "واجب 4" },
             { value: "واجب 5", text: "واجب 5" }
         ],
         "عدم إحضار البحث": [
-            { value: "1. لم يقدم البحث", text: "1. لم يقدم البحث" },
-            { value: "2. البحث غير مكتمل", text: "2. البحث غير مكتمل" }
+            { value: "1. لم يقدم البحث", text: "1. لم يقدم البحث" }, { value: "2. البحث غير مكتمل", text: "2. البحث غير مكتمل" }
         ],
         "كثرة النوم": [
-            { value: "1. نوم خفيف", text: "1. نوم خفيف" },
-            { value: "2. نوم متكرر", text: "2. نوم متكرر" }
+            { value: "1. نوم خفيف", text: "1. نوم خفيف" }, { value: "2. نوم متكرر", text: "2. نوم متكرر" }
         ],
         "ضعف المشاركة": [
-            { value: "1. مشاركة ضعيفة", text: "1. مشاركة ضعيفة" },
-            { value: "2. عدم مشاركة مطلقاً", text: "2. عدم مشاركة مطلقاً" }
+            { value: "1. مشاركة ضعيفة", text: "1. مشاركة ضعيفة" }, { value: "2. عدم مشاركة مطلقاً", text: "2. عدم مشاركة مطلقاً" }
         ]
     };
 
     function checkTeacherSetup() {
-        if (currentTeacherName && currentTeacherEmail && currentTeacherSubject) {
+        if (currentTeacherName && currentTeacherEmail && currentTeacherSubject && currentCounselorName) {
             document.getElementById('teacherSetupCard').style.display = 'none';
             document.getElementById('pdfContent').style.display = 'block';
             document.getElementById('displayTeacherName').textContent = currentTeacherName;
             document.getElementById('displaySubject').textContent = currentTeacherSubject;
             document.getElementById('signatureTeacherName').textContent = currentTeacherName;
+            document.getElementById('signatureCounselorName').textContent = currentCounselorName;
             loadStudentsList();
         } else {
             document.getElementById('teacherSetupCard').style.display = 'block';
@@ -717,28 +716,32 @@
         const name = document.getElementById('setupTeacherName').value.trim();
         const email = document.getElementById('setupTeacherEmail').value.trim().toLowerCase();
         const subject = document.getElementById('setupTeacherSubject').value.trim();
+        const counselor = document.getElementById('setupCounselorName').value.trim();
 
-        if (!name || !email || !subject) {
-            alert("الرجاء تعبئة جميع حقول بيانات المعلم بدقة!");
+        if (!name || !email || !subject || !counselor) {
+            alert("الرجاء تعبئة جميع حقول بيانات المعلم والمرشد بدقة!");
             return;
         }
 
         localStorage.setItem('general_teacher_name', name);
         localStorage.setItem('general_teacher_email', email);
         localStorage.setItem('general_teacher_subject', subject);
+        localStorage.setItem('general_counselor_name', counselor);
 
         currentTeacherName = name;
         currentTeacherEmail = email;
         currentTeacherSubject = subject;
+        currentCounselorName = counselor;
 
         checkTeacherSetup();
     }
 
     function resetTeacherSetup() {
-        if (confirm("هل تريد تعديل بيانات المعلم؟")) {
+        if (confirm("هل تريد تعديل البيانات؟")) {
             localStorage.removeItem('general_teacher_name');
             localStorage.removeItem('general_teacher_email');
             localStorage.removeItem('general_teacher_subject');
+            localStorage.removeItem('general_counselor_name');
             location.reload();
         }
     }
@@ -896,7 +899,7 @@
                         <div style="font-size: 0.85rem; margin-bottom: 6px;"><strong>المخالفات:</strong><br>${violationsHTML}</div>
                         <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظاتك:</strong> ${data.notes || 'لا توجد ملاحظات'}</div>
                         <div style="font-size: 0.85rem; color: #0284c7; margin-bottom: 4px;">
-                            <strong>رد المرشد الطلابي:</strong> ${data.reply || 'لم يتم الرد بعد'} 
+                            <strong>رد المرشد (${data.counselor_name || currentCounselorName}):</strong> ${data.reply || 'لم يتم الرد بعد'} 
                             ${replyTimeStr ? `<br><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span>` : ''}
                         </div>
                     </div>
@@ -999,7 +1002,7 @@
                         <div style="font-size: 0.85rem; margin-bottom: 6px;"><strong>المخالفات المسجلة:</strong><br>${violationsHTML}</div>
                         <div style="font-size: 0.85rem; margin-bottom: 4px;"><strong>ملاحظات المعلم:</strong> ${data.notes || 'لا توجد'}</div>
                         <div style="font-size: 0.85rem; color: #0284c7; margin-bottom: 4px;">
-                            <strong>رد المرشد:</strong> ${data.reply || 'لم يتم الرد بعد'}
+                            <strong>رد المرشد (${data.counselor_name || currentCounselorName}):</strong> ${data.reply || 'لم يتم الرد بعد'}
                             ${replyTimeStr ? `<br><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span>` : ''}
                         </div>
                     </div>
@@ -1071,6 +1074,7 @@
                 teacher_email: currentTeacherEmail,
                 teacher_name: currentTeacherName,
                 subject: currentTeacherSubject,
+                counselor_name: currentCounselorName,
                 name: studentName,
                 violations: [],
                 notes: "",
@@ -1236,6 +1240,7 @@
         try {
             await db.collection("referral_list").doc(id).update({ 
                 reply: replyText,
+                counselor_name: currentCounselorName,
                 replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
             });
             showToast("تم حفظ الرد وتوقيته وإخفاء التقرير من قائمة المرشد!");
