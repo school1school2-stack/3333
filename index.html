@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - كشف المتابعة اليومية</title>
+    <title>منظومة تحويل الطلاب السحابية 2026 - الاحترافية الفائقة</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,16 +18,20 @@
     
     <style>
         :root {
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
-            --accent: #f59e0b;
+            --maroon: #6b0c22;
+            --maroon-light: #8e1432;
+            --gold: #d4af37;
+            --gold-light: #fef3c7;
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --border: #cbd5e1;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            --radius: 8px;
+            --border: #e2e8f0;
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
+            --shadow-md: 0 15px 35px -5px rgba(0,0,0,0.07);
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
         }
 
         * {
@@ -38,402 +42,577 @@
         body {
             font-family: 'Tajawal', sans-serif;
             background-color: var(--bg);
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 32px 32px;
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
             color: var(--text-main);
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .container {
-            max-width: 1350px;
+            max-width: 1100px;
             margin: 0 auto;
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.9);
             position: relative;
+            overflow: hidden;
         }
 
-        .header-box {
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; left: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--maroon), var(--gold), var(--maroon));
+        }
+
+        .header-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 22px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-title-box {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--maroon), var(--maroon-light));
+            color: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            box-shadow: 0 6px 15px rgba(107, 12, 34, 0.3);
+        }
+
+        .header-info h2 {
+            margin: 0;
+            color: var(--maroon);
+            font-size: 1.7rem;
+            font-weight: 800;
+        }
+
+        .header-badge {
+            background: #f8fafc;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            border-right: 4px solid var(--gold);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* شريط الإضافة السريع */
+        .interactive-toolbar {
+            background: linear-gradient(135deg, #fffcf0 0%, #fff8e1 100%);
+            border: 1.5px solid #fef08a;
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 35px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .interactive-toolbar h3 {
+            margin: 0 0 15px 0;
+            color: var(--maroon);
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr auto auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .toolbar-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        input[type="text"].student-search, select.toolbar-select {
+            width: 100%;
+            padding: 13px 18px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        input[type="text"].student-search:focus, select.toolbar-select:focus {
+            border-color: var(--maroon);
+            box-shadow: 0 0 0 4px rgba(107, 12, 34, 0.1);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 108%;
+            right: 0;
+            left: 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            max-height: 240px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .search-results div {
+            padding: 12px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #f1f5f9;
+            font-weight: 500;
+        }
+
+        .search-results div:hover {
+            background-color: #fdf2f8;
+            color: var(--maroon);
+            font-weight: 700;
+        }
+
+        /* تصميم البطاقات الاحترافية */
+        .student-card-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            border-right: 5px solid var(--maroon);
+        }
+
+        .student-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
             padding-bottom: 15px;
             margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
-        .header-title h2 {
-            margin: 0;
-            color: var(--primary);
-            font-size: 1.5rem;
+        .student-main-title {
+            font-size: 1.25rem;
             font-weight: 800;
-        }
-
-        .header-meta {
-            background: #eff6ff;
-            padding: 8px 15px;
-            border-radius: var(--radius);
-            border-right: 4px solid var(--primary);
-            font-size: 0.88rem;
-        }
-
-        /* شريط إضافة طالب جديد للكشف */
-        .add-row-bar {
-            background: #fdf8f0;
-            border: 1px solid #fcd34d;
-            padding: 15px;
-            border-radius: var(--radius);
-            margin-bottom: 20px;
+            color: var(--maroon);
             display: flex;
-            gap: 12px;
             align-items: center;
-            flex-wrap: wrap;
+            gap: 10px;
         }
 
-        .search-box-wrapper {
-            position: relative;
-            flex-grow: 1;
-            min-width: 280px;
+        .student-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
 
-        input[type="text"].student-search, select.toolbar-select {
+        @media (max-width: 768px) {
+            .student-card-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-section-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+        }
+
+        .card-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--maroon);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .violation-builder {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        select.violation-select, select.count-select {
             width: 100%;
-            padding: 10px 14px;
-            border-radius: var(--radius);
-            border: 1px solid var(--border);
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
             font-size: 0.9rem;
-            font-family: inherit;
-            background: white;
             outline: none;
-        }
-
-        input[type="text"].student-search:focus, select.toolbar-select:focus {
-            border-color: var(--primary);
-        }
-
-        .search-results {
-            position: absolute;
-            top: 105%;
-            right: 0;
-            left: 0;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            max-height: 200px;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: var(--shadow);
-            display: none;
-        }
-
-        .search-results div {
-            padding: 10px 14px;
+            background-color: #fff;
             cursor: pointer;
-            border-bottom: 1px solid #f1f5f9;
+            font-family: inherit;
+        }
+
+        .violation-tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .violation-tag-inline {
+            background: #fffbeb;
+            border: 1.5px solid #fef08a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .violation-name-text {
+            color: #854d0e;
+            font-weight: 800;
             font-size: 0.88rem;
         }
 
-        .search-results div:hover {
+        .violation-count-text {
+            color: #1d4ed8;
             background-color: #eff6ff;
-            color: var(--primary);
+            border: 1px solid #bfdbfe;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.8rem;
         }
 
-        /* تصميم كشف المتابعة (جدول نظامي نظيف) */
-        .followup-table {
+        .btn-remove-tag {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0;
+        }
+
+        textarea.notes-input, textarea.counselor-reply {
             width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background: white;
-            border-radius: var(--radius);
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .followup-table th, .followup-table td {
-            border: 1px solid var(--border);
-            padding: 10px 12px;
-            text-align: center;
-            font-size: 0.85rem;
-            vertical-align: middle;
-        }
-
-        .followup-table th {
-            background-color: var(--primary);
-            color: white;
-            font-weight: 700;
-        }
-
-        .followup-table tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        select.table-select {
-            width: 100%;
-            padding: 7px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
+            min-height: 90px;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
             font-family: inherit;
-            font-size: 0.82rem;
-            background: white;
-            margin-bottom: 5px;
-            outline: none;
-        }
-
-        textarea.table-textarea {
-            width: 100%;
-            min-height: 60px;
-            padding: 7px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 0.82rem;
+            font-size: 0.9rem;
             resize: vertical;
             background: white;
         }
 
-        textarea.counselor-reply-box {
-            background-color: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #166534;
+        textarea.counselor-reply {
+            background-color: #f1f5f9;
+            color: #1e293b;
             font-weight: 600;
+            border-color: #cbd5e1;
         }
 
-        .violation-tag-box {
+        .student-card-footer {
             display: flex;
-            flex-direction: column;
-            gap: 3px;
-            text-align: right;
-        }
-
-        .tag-item {
-            background: #fffbeb;
-            border: 1px solid #fef08a;
-            padding: 3px 6px;
-            border-radius: 4px;
-            display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #92400e;
+            gap: 10px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 8px 14px;
+            padding: 10px 20px;
             border: none;
-            border-radius: var(--radius);
+            border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-family: inherit;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            gap: 8px;
+            box-shadow: var(--shadow-sm);
         }
 
-        .btn-add { background: var(--primary); color: white; width: 100%; }
-        .btn-mini-add { background: #d97706; color: white; padding: 4px 8px; font-size: 0.72rem; width: 100%; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; font-weight: 700; margin-top: 2px; }
-        .btn-save { background: #16a34a; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
-        .btn-view { background: #0284c7; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
-        .btn-del { background: #dc2626; color: white; padding: 5px 8px; font-size: 0.78rem; width: 100%; }
+        .btn-add { background: var(--maroon); color: white; height: 100%; min-height: 48px; width: 100%; }
+        .btn-link-counselor { background: #d97706; color: white; height: 100%; min-height: 48px; width: 100%; }
+        .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
+        .btn-save-student { background: #16a34a; color: white; }
+        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; display: none; width: 100%; }
+        .btn-view-report { background: #0284c7; color: white; }
+        .btn-print-report { background: #475569; color: white; }
+        .btn-remove { background: #dc2626; color: white; }
+        .btn-close { background: #64748b; color: white; }
 
-        .time-badge {
-            display: inline-block;
-            background: #f1f5f9;
-            color: #475569;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 0.72rem;
-            margin-top: 3px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .actions-bar {
-            margin-top: 25px;
-            display: flex;
-            justify-content: flex-end;
-        }
-
-        select.main-actions-select {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 18px;
-            border-radius: var(--radius);
-            font-family: 'Tajawal', sans-serif;
-            font-size: 0.9rem;
+        .time-badge-referral {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
             font-weight: 700;
-            cursor: pointer;
-            outline: none;
-            min-width: 240px;
-            text-align: center;
         }
 
-        select.main-actions-select option {
-            background-color: white;
-            color: var(--text-main);
-            font-weight: 600;
-            padding: 8px;
+        .time-badge-reply {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 8px;
         }
 
         .toast-notification {
             position: fixed;
-            bottom: 20px; right: 20px;
+            bottom: 25px; right: 25px;
             background: #0f172a;
             color: white;
-            padding: 10px 18px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
+            padding: 14px 24px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             z-index: 9999;
             transform: translateY(150%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: 600;
-            font-size: 0.88rem;
         }
         .toast-notification.show { transform: translateY(0); }
 
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(2px);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 2000;
-            padding: 15px;
+            padding: 20px;
         }
 
         .modal-content {
             background: white;
-            border-radius: var(--radius);
-            max-width: 850px;
+            border-radius: var(--radius-lg);
+            max-width: 950px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 25px;
-            box-shadow: 0 15px 25px -5px rgba(0,0,0,0.1);
+            padding: 40px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
         }
 
-        .report-box {
+        .executive-report-box {
+            background: #ffffff;
+            border: 2px solid var(--maroon);
+            border-radius: var(--radius-md);
+            padding: 30px;
+            margin-top: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        .executive-header {
+            text-align: center;
+            border-bottom: 2px dashed var(--gold);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .executive-header h3 {
+            color: var(--maroon);
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+        }
+        .executive-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        .executive-section-title {
+            font-weight: 800;
+            color: var(--maroon);
+            margin-bottom: 8px;
+            border-right: 4px solid var(--gold);
+            padding-right: 8px;
+            font-size: 1.05rem;
+        }
+        .executive-content-card {
             background: #fff;
-            border: 2px solid var(--primary);
-            border-radius: var(--radius);
-            padding: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            min-height: 60px;
         }
 
         @media print {
-            .no-print, .add-row-bar, .actions-bar, .modal-overlay, .toast-notification { display: none !important; }
+            .interactive-toolbar, .history-section, .actions-dropdown-container, .btn-remove, .btn-save-student, .btn-save-reply, .btn-add-violation, .btn-remove-tag, .action-dropdown, .no-print, .modal-overlay, .toast-notification {
+                display: none !important;
+            }
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
+            .student-card-item { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; }
+            .executive-report-box { border: none; box-shadow: none; padding: 0; }
         }
     </style>
 </head>
 <body>
 
 <div class="toast-notification" id="toast">
-    <i class="fa-solid fa-circle-check" style="color: #4ade80;"></i>
+    <i class="fa-solid fa-circle-check" style="color: #4ade80; font-size: 1.2rem;"></i>
     <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
 <!-- نافذة إعدادات بيانات المعلم -->
 <div class="modal-overlay" id="teacherInfoModal" style="display: flex;">
-    <div class="modal-content" style="max-width: 400px;">
-        <h3 style="color: var(--primary); margin-top: 0; border-bottom: 2px solid var(--accent); padding-bottom: 8px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">أدخل بياناتك لتظهر في ترويسة كشف المتابعة:</p>
-        <div style="margin-bottom: 10px;">
-            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">اسم المعلم:</label>
-            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+    <div class="modal-content" style="max-width: 450px;">
+        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 18px;">أدخل بياناتك لتبقى محفوظة على جهازك:</p>
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 6px;">اسم المعلم:</label>
+            <input type="text" id="modalTeacherName" placeholder="مثال: أ. عبدالعزيز الفيفي" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px;">
         </div>
-        <div style="margin-bottom: 10px;">
-            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">البريد الإلكتروني:</label>
-            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+        <div style="margin-bottom: 12px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 6px;">البريد الإلكتروني:</label>
+            <input type="text" id="modalTeacherEmail" placeholder="البريد الوزاري..." style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px;">
         </div>
-        <div style="margin-bottom: 15px;">
-            <label style="display: block; font-weight: bold; font-size: 0.82rem; margin-bottom: 3px;">المادة / الصف:</label>
-            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px;">
+        <div style="margin-bottom: 22px;">
+            <label style="display: block; font-weight: bold; margin-bottom: 6px;">اسم المادة / الصف:</label>
+            <input type="text" id="modalTeacherSubject" placeholder="مثال: الكفايات اللغوية (أول ثانوي)" style="width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 6px;">
         </div>
-        <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
+        </div>
+    </div>
+</div>
+
+<!-- نافذة توليد رابط المرشد -->
+<div class="modal-overlay" id="counselorLinkModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-link"></i> رابط متابعة المرشد الطلابي</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">انسخ هذا الرابط وأرسله للمرشد المحدد ليتمكن من متابعة الطلبة والرد عليهم:</p>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <input type="text" id="generatedCounselorLink" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: #f8fafc; font-size: 0.85rem;">
+            <button class="btn" style="background: var(--maroon); color: white; white-space: nowrap;" onclick="copyGeneratedLink()"><i class="fa-solid fa-copy"></i> نسخ</button>
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="btn btn-close" onclick="document.getElementById('counselorLinkModal').style.display='none'">إغلاق</button>
+        </div>
     </div>
 </div>
 
 <div class="container" id="pdfContent">
-    <div class="header-box">
-        <div class="header-title">
-            <h2><i class="fa-solid fa-clipboard-list"></i> كشف متابعة وتحويل الطلاب السلوكي</h2>
-            <small style="color: var(--text-muted);">وزارة التعليم - المملكة العربية السعودية</small>
+    <div class="header-info">
+        <div class="header-title-box">
+            <div class="header-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+                <h2>إشعار تحويل طلاب للمرشد الطلابي</h2>
+                <small style="color: var(--text-muted); font-weight: 600;">المملكة العربية السعودية - وزارة التعليم</small>
+            </div>
         </div>
-        <div class="header-meta">
-            <div><strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
-            <div><strong>المعلم:</strong> <span class="teacherNameDisplay">-</span></div>
-        </div>
-    </div>
-
-    <!-- شريط إضافة طالب لكشف المتابعة -->
-    <div class="add-row-bar no-print" id="controlSection">
-        <div class="search-box-wrapper">
-            <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب لإضافته للكشف..." oninput="filterStudents()" onfocus="filterStudents()">
-            <div id="searchResults" class="search-results"></div>
-        </div>
-        <div style="min-width: 220px;">
-            <select id="globalTargetCounselor" class="toolbar-select">
-                <!-- يُعبأ بأسماء المرشدين -->
-            </select>
-        </div>
-        <div style="min-width: 150px;">
-            <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-plus"></i> إضافة للكشف</button>
+        <div class="header-badge">
+            <div><i class="fa-solid fa-book-bookmark" style="color: var(--maroon);"></i> <strong>المادة:</strong> <span class="teacherSubjectDisplay">-</span></div>
+            <div><i class="fa-solid fa-user-tie" style="color: var(--maroon);"></i> <strong>معلم المادة:</strong> <span class="teacherNameDisplay">-</span></div>
         </div>
     </div>
 
-    <!-- جدول كشف المتابعة -->
-    <table class="followup-table">
-        <thead>
-            <tr>
-                <th style="width: 4%;">م</th>
-                <th style="width: 17%;">اسم الطالب والمرشد</th>
-                <th style="width: 18%;" class="no-print">اختر الحالة والعدد</th>
-                <th style="width: 17%;">الحالات المرصودة</th>
-                <th style="width: 24%;">تفصيل الحالة ورد المرشد</th>
-                <th style="width: 20%;" class="no-print">الإجراءات والتوثيق</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <!-- الصفوف تتحدث تلقائياً -->
-        </tbody>
-    </table>
+    <!-- شريط الإضافة السريع وتوليد الرابط للمرشد -->
+    <div class="interactive-toolbar no-print" id="controlSection">
+        <h3><i class="fa-solid fa-user-plus"></i> إضافة طالب جديد وإدارة الروابط</h3>
+        <div class="toolbar-grid">
+            <div class="search-box-wrapper">
+                <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <div>
+                <select id="globalTargetCounselor" class="toolbar-select">
+                    <!-- المرشدون -->
+                </select>
+            </div>
+            <div>
+                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب</button>
+            </div>
+            <div>
+                <button class="btn btn-link-counselor" onclick="generateCounselorLink()"><i class="fa-solid fa-share-nodes"></i> رابط المرشد</button>
+            </div>
+        </div>
+    </div>
 
-    <div style="margin-top: 30px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.85rem;">
+    <div class="history-section no-print" id="studentHistorySection" style="display:none;"></div>
+
+    <div id="cardsContainer">
+        <!-- البطاقات الاحترافية -->
+    </div>
+
+    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
         <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
         <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
     </div>
 
-    <!-- قائمة العمليات المنسدلة -->
-    <div class="actions-bar no-print">
-        <select class="main-actions-select" onchange="executeMainAction(this)">
-            <option value="">⚙️ خيارات الكشف والتقارير...</option>
-            <option value="save_all">💾 حفظ وأرشفة الكشف الحالي بالكامل</option>
+    <div class="actions-dropdown-container no-print" style="margin-top: 35px; display: flex; justify-content: flex-end;">
+        <select class="main-actions-select" onchange="executeMainAction(this)" style="background: var(--maroon); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
+            <option value="">⚙️ خيارات الإدارة الشاملة...</option>
+            <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
             <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم</option>
-            <option value="preview">👁️ معاينة وطباعة الكشف</option>
-            <option value="print">🖨️ طباعة جدول المتابعة</option>
+            <option value="print">🖨️ طباعة السجل بالكامل</option>
         </select>
     </div>
 </div>
 
-<!-- نافذة المعاينة الفردية -->
+<!-- نافذة المعاينة الفخمة والمنفصلة تماماً عن الطباعة -->
 <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
-        <div class="no-print" style="text-align: left; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">
-            <button class="btn" style="background:var(--primary); color:white;" onclick="window.print()"><i class="fa-solid fa-print"></i> طباعة</button>
-            <button class="btn" style="background:#64748b; color:white;" onclick="document.getElementById('previewModal').style.display='none'">إغلاق</button>
+        <div class="modal-actions no-print" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 12px;">
+            <button class="btn" style="background: #475569; color: white;" onclick="printPreviewContent()"><i class="fa-solid fa-print"></i> طباعة التقرير فقط</button>
+            <button class="btn" style="background: #dc2626; color: white;" onclick="downloadPDF()"><i class="fa-solid fa-file-pdf"></i> حفظ كـ PDF</button>
+            <button class="btn btn-close" onclick="closePreview()">✖ إغلاق</button>
         </div>
         <div id="previewArea"></div>
     </div>
@@ -453,6 +632,7 @@
     const db = firebase.firestore();
 
     let allStudents = [];
+    let studentCount = 0;
     let selectedStudentName = "";
     
     let teacherName = localStorage.getItem("teacher_name") || "";
@@ -498,9 +678,24 @@
         counselorsList.forEach(cName => {
             const opt = document.createElement("option");
             opt.value = cName;
-            opt.textContent = "تحويل إلى: " + cName;
+            opt.textContent = "المرشد: " + cName;
             selectEl.appendChild(opt);
         });
+    }
+
+    function generateCounselorLink() {
+        const selectedCounselor = document.getElementById("globalTargetCounselor").value;
+        const baseUrl = window.location.href.split('?')[0];
+        const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(selectedCounselor)}`;
+        document.getElementById("generatedCounselorLink").value = link;
+        document.getElementById("counselorLinkModal").style.display = "flex";
+    }
+
+    function copyGeneratedLink() {
+        const input = document.getElementById("generatedCounselorLink");
+        input.select();
+        document.execCommand("copy");
+        showToast("تم نسخ رابط المرشد بنجاح!");
     }
 
     function updateNamesUI() {
@@ -509,7 +704,9 @@
         document.querySelectorAll('.teacherSubjectDisplay').forEach(el => el.textContent = teacherSubject || "غير محدد");
         renderCounselorsDropdown();
         if (currentCounselorParam) {
-            document.querySelectorAll('.counselorNameDisplay').forEach(el => el.textContent = decodeURIComponent(currentCounselorParam));
+            document.querySelectorAll('.counselorNameDisplay').forEach(el => {
+                el.textContent = decodeURIComponent(currentCounselorParam);
+            });
         }
     }
 
@@ -550,11 +747,26 @@
         return date.toLocaleString('ar-SA', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true });
     }
 
-    function showToast(msg) {
-        const t = document.getElementById("toast");
-        document.getElementById("toastMsg").textContent = msg;
-        t.classList.add("show");
-        setTimeout(() => t.classList.remove("show"), 3000);
+    function generateFormattedViolationsHTML(violationsArray) {
+        if (!violationsArray || violationsArray.length === 0) {
+            return '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مسجلة</span>';
+        }
+        let html = '<div class="violation-tags-list">';
+        violationsArray.forEach(item => {
+            const parts = item.split(':');
+            const vName = parts[0] ? parts[0].trim() : item;
+            const vCount = parts[1] ? parts[1].trim() : '';
+            html += `<div class="violation-tag-inline"><span class="violation-name-text">• ${vName}</span>${vCount ? `<span class="violation-count-text">${vCount}</span>` : ''}</div>`;
+        });
+        html += '</div>';
+        return html;
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = message;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
     }
 
     function loadStudentsList() {
@@ -564,9 +776,13 @@
             snapshot.forEach(doc => { if (doc.data().name) allStudents.push(doc.data().name); });
         });
         listenToCloudReferrals();
+
         if (isCounselorView) {
             document.getElementById('controlSection').style.display = 'none';
-            document.querySelector('.actions-bar').style.display = 'none';
+            document.querySelector('.actions-dropdown-container').style.display = 'none';
+            if(currentCounselorParam) {
+                document.querySelector('.header-info h2').textContent = `لوحة متابعة المرشد الطلابي (${decodeURIComponent(currentCounselorParam)})`;
+            }
         }
     }
 
@@ -598,7 +814,7 @@
         const inputVal = document.getElementById("searchInput").value.trim();
         const studentName = selectedStudentName || inputVal;
         const targetCounselor = document.getElementById("globalTargetCounselor").value;
-        if (!studentName) return alert("اختر اسم الطالب أولاً من قائمة البحث");
+        if (!studentName) return alert("اختر اسم الطالب أولاً");
 
         const studentId = "student_" + Date.now();
         await db.collection("referral_list").doc(studentId).set({
@@ -613,14 +829,14 @@
         });
         document.getElementById("searchInput").value = "";
         selectedStudentName = "";
-        showToast(`تم إدراج الطالب (${studentName}) في الكشف بنجاح!`);
+        showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
     }
 
     function listenToCloudReferrals() {
         db.collection("referral_list").onSnapshot(snapshot => {
-            const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
-            let count = 0;
+            const container = document.getElementById("cardsContainer");
+            container.innerHTML = "";
+            studentCount = 0;
 
             snapshot.forEach(doc => {
                 const data = doc.data();
@@ -631,59 +847,79 @@
                 if (!isCounselorView && data.isArchived === true) return;
                 if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
 
-                count++;
+                studentCount++;
+                const currentViolations = data.violations || [];
                 const createdTimeStr = formatTimestamp(data.createdAt);
                 const replyTimeStr = data.replyCreatedAt ? formatTimestamp(data.replyCreatedAt) : null;
                 const studentDisplayName = data.name || "طالب";
+                const reportTeacher = data.teacherName || teacherName;
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${count}</td>
-                    <td style="text-align: right; font-weight: bold;">
-                        🎓 ${studentDisplayName}
-                        <br><span class="time-badge">${createdTimeStr}</span>
-                        <div style="font-size:0.72rem; color:#92400e; margin-top:2px;"><i class="fa-solid fa-user-shield"></i> ${reportCounselor}</div>
-                    </td>
-                    <td class="no-print">
-                        <select id="type_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''} onchange="onTypeSelectChange('${id}')">
-                            <option value="">-- اختر الحالة --</option>
-                            <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
-                            <option value="عدم إحضار البحث">عدم إحضار البحث</option>
-                            <option value="كثرة النوم">كثرة النوم</option>
-                            <option value="ضعف المشاركة">ضعف المشاركة</option>
-                        </select>
-                        <select id="count_select_${id}" class="table-select" ${isCounselorView ? 'disabled' : ''}>
-                            <option value="">-- اختر العدد --</option>
-                        </select>
-                        <button class="btn-mini-add" ${isCounselorView ? 'style="display:none;"' : ''} onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة الحالة</button>
-                    </td>
-                    <td>
-                        <div id="violation_tags_${id}" class="violation-tag-box"></div>
-                    </td>
-                    <td>
-                        <textarea class="table-textarea" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب تفصيل الحالة وملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
-                        
-                        <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} margin-top: 6px;">
-                            <div style="font-size: 0.75rem; font-weight: bold; color: #166534; margin-bottom: 2px;"><i class="fa-solid fa-reply"></i> رد المرشد:</div>
-                            <textarea id="reply_${id}" class="table-textarea counselor-reply-box" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
-                            ${replyTimeStr ? `<div style="font-size:0.68rem; color:#0369a1; margin-top:2px;">وقت الرد: ${replyTimeStr}</div>` : ''}
-                            <button class="btn btn-save" style="margin-top:4px; font-size:0.75rem;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
+                const card = document.createElement("div");
+                card.className = "student-card-item";
+                card.innerHTML = `
+                    <div class="student-card-header">
+                        <div class="student-main-title">
+                            <span style="background: var(--maroon); color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${studentCount}</span>
+                            🎓 ${studentDisplayName}
                         </div>
-                    </td>
-                    <td class="no-print">
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                            <button class="btn btn-save" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}')"><i class="fa-solid fa-floppy-disk"></i> حفظ في التقارير</button>
-                            <button class="btn btn-view" onclick="openSingleReportModal('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(data.violations || []).replace(/"/g, '&quot;')}\`, \`${data.notes || ''}\`, \`${data.reply || ''}\`, '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة وطباعة</button>
-                            <button class="btn btn-del" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteRow('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
+                            <span style="font-size: 0.85rem; font-weight: 700; color: #854d0e; background: #fffbeb; border: 1px solid #fef08a; padding: 5px 12px; border-radius: 20px;">
+                                <i class="fa-solid fa-user-shield"></i> المرشد: ${reportCounselor}
+                            </span>
                         </div>
-                    </td>
+                    </div>
+
+                    <div class="student-card-body">
+                        <div class="card-section-box">
+                            <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> رصد المخالفات السلوكية</div>
+                            <div class="violation-builder no-print" ${isCounselorView ? 'style="display:none;"' : ''}>
+                                <select id="type_select_${id}" class="violation-select" onchange="onTypeSelectChange('${id}')">
+                                    <option value="">-- اختر نوع المخالفة --</option>
+                                    <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
+                                    <option value="عدم إحضار البحث">عدم إحضار البحث</option>
+                                    <option value="كثرة النوم">كثرة النوم</option>
+                                    <option value="ضعف المشاركة">ضعف المشاركة</option>
+                                </select>
+                                <select id="count_select_${id}" class="count-select">
+                                    <option value="">-- اختر العدد / الوصف --</option>
+                                </select>
+                                <button class="btn-add-violation" onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة المخالفة</button>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">المخالفات المسجلة:</label>
+                                <div id="violation_tags_${id}"></div>
+                            </div>
+                        </div>
+
+                        <div class="card-section-box">
+                            <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> الملاحظات والتوجيه الإرشادي</div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ملاحظات المعلم:</label>
+                                <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
+                            </div>
+                            <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> رد المرشد (${reportCounselor}):</div>
+                                <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
+                                ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
+                                <button class="btn btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال الرد</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-card-footer no-print">
+                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> حفظ وأرشفة</button>
+                        <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة فخمة</button>
+                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
                 `;
-                tbody.appendChild(row);
-                renderStudentViolationTags(id, data.violations || []);
+                container.appendChild(card);
+                renderStudentViolationTags(id, currentViolations);
             });
 
             if (isCounselorView) {
                 document.querySelectorAll('[id^="counselor_box_"]').forEach(box => box.style.display = 'block');
+                document.querySelectorAll('.btn-save-reply').forEach(btn => btn.style.display = 'inline-block');
             }
         });
     }
@@ -692,7 +928,7 @@
         const typeSelect = document.getElementById(`type_select_${id}`);
         const countSelect = document.getElementById(`count_select_${id}`);
         const selectedType = typeSelect.value;
-        countSelect.innerHTML = '<option value="">-- اختر العدد --</option>';
+        countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
         if (countOptionsMap[selectedType]) {
             countOptionsMap[selectedType].forEach(opt => {
                 const optEl = document.createElement("option");
@@ -706,7 +942,7 @@
     async function addViolationToStudent(id) {
         const typeVal = document.getElementById(`type_select_${id}`).value;
         const countVal = document.getElementById(`count_select_${id}`).value;
-        if (!typeVal || !countVal) return alert("اختر الحالة والعدد أولاً");
+        if (!typeVal || !countVal) return alert("اختر نوع المخالفة والعدد أولاً");
 
         const docRef = db.collection("referral_list").doc(id);
         const doc = await docRef.get();
@@ -714,16 +950,16 @@
             let arr = doc.data().violations || [];
             arr.push(`${typeVal}: ${countVal}`);
             await docRef.update({ violations: arr });
-            showToast("تمت إضافة الحالة بنجاح!");
+            showToast("تمت إضافة المخالفة!");
         }
     }
 
-    async function removeViolation(id, index) {
+    async function removeViolationFromStudent(id, idx) {
         const docRef = db.collection("referral_list").doc(id);
         const doc = await docRef.get();
         if (doc.exists) {
             let arr = doc.data().violations || [];
-            arr.splice(index, 1);
+            arr.splice(idx, 1);
             await docRef.update({ violations: arr });
         }
     }
@@ -732,14 +968,15 @@
         const container = document.getElementById(`violation_tags_${id}`);
         if (!container) return;
         if (!arr || arr.length === 0) {
-            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.78rem; font-style: italic;">لا توجد حالات</span>';
+            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مسجلة</span>';
             return;
         }
-        let html = "";
+        let html = '<div class="violation-tags-list">';
         arr.forEach((item, idx) => {
             const p = item.split(':');
-            html += `<div class="tag-item"><span>• ${p[0]} (${p[1] || ''})</span><button onclick="removeViolation('${id}', ${idx})" style="background:none; border:none; color:red; cursor:pointer; font-size:0.8rem;"><i class="fa-solid fa-xmark"></i></button></div>`;
+            html += `<div class="violation-tag-inline"><span class="violation-name-text">• ${p[0]}</span>${p[1] ? `<span class="violation-count-text">${p[1]}</span>` : ''}${!isCounselorView ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${idx})"><i class="fa-solid fa-xmark"></i></button>` : ''}</div>`;
         });
+        html += '</div>';
         container.innerHTML = html;
     }
 
@@ -747,7 +984,7 @@
         if (!isCounselorView) await db.collection("referral_list").doc(id).update({ [field]: val });
     }
 
-    async function saveSingleStudent(id, name) {
+    async function saveSingleStudent(id, name, counselor) {
         await db.collection("referral_list").doc(id).update({ isArchived: true, teacherName: teacherName });
         showToast(`تم أرشفة تقرير الطالب (${name}) بنجاح!`);
     }
@@ -761,34 +998,74 @@
             counselorName: counselor,
             replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        showToast("تم حفظ وإرسال الرد بنجاح!");
+        showToast("تم حفظ وإرسال رد المرشد بنجاح!");
     }
 
-    async function deleteRow(id) {
-        if (confirm("حذف هذا الطالب من الكشف؟")) {
+    async function deleteCloudStudent(id) {
+        if (!isCounselorView && confirm("إزالة هذا الطالب من القائمة؟")) {
             await db.collection("referral_list").doc(id).delete();
             showToast("تم الحذف بنجاح");
         }
     }
 
-    function openSingleReportModal(name, dateStr, violationsInput, notes, reply, counselor) {
-        let arr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
-        let vHtml = arr.map(i => `• ${i}`).join('<br>');
-        document.getElementById('previewArea').innerHTML = `
-            <div class="report-box">
-                <div style="text-align:center; border-bottom:2px dashed #cbd5e1; padding-bottom:10px; margin-bottom:15px;">
-                    <h3 style="color:var(--primary); margin:0;">تقرير متابعة سلوكية</h3>
-                    <small>وزارة التعليم - المملكة العربية السعودية</small>
+    // المعاينة والطباعة مفصولتان تماماً بنوافذ مستقلة
+    function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
+        let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
+        const formattedViolations = generateFormattedViolationsHTML(violationsArr);
+        const activeTeacher = customTeacher || teacherName;
+        const activeCounselor = customCounselor || "أ / عبدالمجيد الأحيدب";
+
+        const content = `
+            <div class="executive-report-box" id="printableReportCard">
+                <div class="executive-header">
+                    <h3>تقرير إحالة ومتابعة سلوكية</h3>
+                    <small style="color: var(--text-muted); font-weight: 700;">المملكة العربية السعودية - وزارة التعليم</small>
                 </div>
-                <p><b>اسم الطالب:</b> ${name}</p>
-                <p><b>التاريخ والوقت:</b> ${dateStr}</p>
-                <p><b>المرشد المختص:</b> ${counselor}</p>
-                <p><b>الحالات المسجلة:</b><br>${vHtml || 'لا توجد'}</p>
-                <p><b>تفصيل وملاحظات المعلم:</b><br>${notes || 'لا توجد'}</p>
-                <p style="color: #166534;"><b>رد وتوجيه المرشد:</b><br>${reply || 'لم يتم الرد بعد'}</p>
+                <div class="executive-grid">
+                    <div><strong>اسم الطالب:</strong> ${name}</div>
+                    <div><strong>تاريخ ووقت الإحالة:</strong> ${dateStr}</div>
+                    <div><strong>معلم المادة:</strong> ${activeTeacher}</div>
+                    <div><strong>المرشد الطلابي:</strong> ${activeCounselor}</div>
+                </div>
+                <div class="executive-section-title">المخالفات والسلوكيات المرصودة:</div>
+                <div class="executive-content-card">${formattedViolations}</div>
+                <div class="executive-section-title">ملاحظات وتقرير المعلم:</div>
+                <div class="executive-content-card" style="background: #fdf2f8;"><p style="margin: 0; white-space: pre-wrap; font-weight: 600;">${notes || 'لا توجد ملاحظات.'}</p></div>
+                <div class="executive-section-title">رد وتوجيه المرشد الطلابي:</div>
+                <div class="executive-content-card" style="background: #f0f9ff; border-color: #bae6fd;"><p style="margin: 0 0 8px 0; white-space: pre-wrap; color: #0369a1; font-weight: 700;">${reply || 'لم يتم الرد بعد.'}</p>${replyDateStr ? `<div><span class="time-badge-reply">وقت الرد: ${replyDateStr}</span></div>` : ''}</div>
+                <div style="margin-top: 25px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.9rem;">
+                    <div>توقيع المرشد (${activeCounselor}): ........................</div>
+                    <div>توقيع المعلم (${activeTeacher}): ........................</div>
+                </div>
             </div>
         `;
+        document.getElementById('previewArea').innerHTML = content;
         document.getElementById('previewModal').style.display = 'flex';
+    }
+
+    function closePreview() {
+        document.getElementById('previewModal').style.display = 'none';
+    }
+
+    function printPreviewContent() {
+        const printContent = document.getElementById('previewArea').innerHTML;
+        const originalBody = document.body.innerHTML;
+        document.body.innerHTML = `<div style="padding: 20px;">${printContent}</div>`;
+        window.print();
+        document.body.innerHTML = originalBody;
+        location.reload();
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('previewArea');
+        const options = {
+            margin: 10,
+            filename: 'تقرير_تحويل_الطالب.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().from(element).set(options).save();
     }
 
     function executeMainAction(sel) {
@@ -798,9 +1075,9 @@
             db.collection("referral_list").get().then(snap => {
                 const batch = db.batch();
                 snap.forEach(doc => { if (!doc.data().isArchived) batch.update(doc.ref, { isArchived: true }); });
-                batch.commit().then(() => showToast("تم أرشفة وحفظ الكشف بالكامل!"));
+                batch.commit().then(() => showToast("تم أرشفة كافة التقارير بنجاح!"));
             });
-        } else if (val === "preview" || val === "print") {
+        } else if (val === "print") {
             window.print();
         } else if (val === "change_teacher_info") {
             document.getElementById('modalTeacherName').value = teacherName;
