@@ -117,7 +117,6 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* شريط الإضافة السريع */
         .interactive-toolbar {
             background: linear-gradient(135deg, #fffcf0 0%, #fff8e1 100%);
             border: 1.5px solid #fef08a;
@@ -199,7 +198,6 @@
             font-weight: 700;
         }
 
-        /* تصميم البطاقات الاحترافية */
         .student-card-item {
             background: #ffffff;
             border: 1px solid var(--border);
@@ -370,9 +368,8 @@
         .btn-link-counselor { background: #d97706; color: white; height: 100%; min-height: 48px; width: 100%; }
         .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
         .btn-save-student { background: #16a34a; color: white; }
-        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; display: none; width: 100%; }
+        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; width: 100%; }
         .btn-view-report { background: #0284c7; color: white; }
-        .btn-print-report { background: #475569; color: white; }
         .btn-remove { background: #dc2626; color: white; }
         .btn-close { background: #64748b; color: white; }
 
@@ -553,7 +550,7 @@
                 <i class="fa-solid fa-graduation-cap"></i>
             </div>
             <div>
-                <h2>إشعار تحويل طلاب للمرشد الطلابي</h2>
+                <h2 id="mainHeadingTitle">إشعار تحويل طلاب للمرشد الطلابي</h2>
                 <small style="color: var(--text-muted); font-weight: 600;">المملكة العربية السعودية - وزارة التعليم</small>
             </div>
         </div>
@@ -647,7 +644,7 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const isCounselorView = urlParams.get('mode') === 'counselor';
-    const currentCounselorParam = urlParams.get('counselor') || "";
+    const currentCounselorParam = urlParams.get('counselor') ? decodeURIComponent(urlParams.get('counselor')) : "";
 
     const countOptionsMap = {
         "عدم إحضار الواجبات": [
@@ -705,12 +702,21 @@
         renderCounselorsDropdown();
         if (currentCounselorParam) {
             document.querySelectorAll('.counselorNameDisplay').forEach(el => {
-                el.textContent = decodeURIComponent(currentCounselorParam);
+                el.textContent = currentCounselorParam;
             });
         }
     }
 
     function checkTeacherInfoOnLoad() {
+        if (isCounselorView) {
+            document.getElementById('teacherInfoModal').style.display = 'none';
+            document.getElementById('controlSection').style.display = 'none';
+            document.querySelector('.actions-dropdown-container').style.display = 'none';
+            document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة المرشد الطلابي (${currentCounselorParam})`;
+            updateNamesUI();
+            return;
+        }
+
         if (!teacherName || !teacherEmail) {
             document.getElementById('teacherInfoModal').style.display = 'flex';
         } else {
@@ -776,14 +782,6 @@
             snapshot.forEach(doc => { if (doc.data().name) allStudents.push(doc.data().name); });
         });
         listenToCloudReferrals();
-
-        if (isCounselorView) {
-            document.getElementById('controlSection').style.display = 'none';
-            document.querySelector('.actions-dropdown-container').style.display = 'none';
-            if(currentCounselorParam) {
-                document.querySelector('.header-info h2').textContent = `لوحة متابعة المرشد الطلابي (${decodeURIComponent(currentCounselorParam)})`;
-            }
-        }
     }
 
     function filterStudents() {
@@ -843,7 +841,8 @@
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-                if (isCounselorView && currentCounselorParam && reportCounselor !== decodeURIComponent(currentCounselorParam)) return;
+                // تصفية العرض للمرشد بناءً على الرابط الخاص به
+                if (isCounselorView && currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
                 if (!isCounselorView && data.isArchived === true) return;
                 if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
 
@@ -898,7 +897,7 @@
                                 <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ملاحظات المعلم:</label>
                                 <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
                             </div>
-                            <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
+                            <div id="counselor_box_${id}" style="display:block; background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
                                 <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> رد المرشد (${reportCounselor}):</div>
                                 <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
                                 ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
@@ -916,11 +915,6 @@
                 container.appendChild(card);
                 renderStudentViolationTags(id, currentViolations);
             });
-
-            if (isCounselorView) {
-                document.querySelectorAll('[id^="counselor_box_"]').forEach(box => box.style.display = 'block');
-                document.querySelectorAll('.btn-save-reply').forEach(btn => btn.style.display = 'inline-block');
-            }
         });
     }
 
@@ -1008,7 +1002,6 @@
         }
     }
 
-    // المعاينة والطباعة مفصولتان تماماً بنوافذ مستقلة
     function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
         let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
