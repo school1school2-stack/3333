@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - الاحترافية الفائقة</title>
+    <title>منظومة تحويل الطلاب السحابية 2026 - التسلسل المتكامل</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -137,7 +137,7 @@
 
         .toolbar-grid {
             display: grid;
-            grid-template-columns: 2fr 1.5fr auto auto;
+            grid-template-columns: 2fr 1.5fr auto;
             gap: 15px;
             align-items: center;
         }
@@ -338,39 +338,42 @@
             border-color: #cbd5e1;
         }
 
-        .student-card-footer {
+        /* شريط التسلسل للأزرار داخل الكارت */
+        .sequential-actions-bar {
             display: flex;
-            justify-content: flex-end;
             align-items: center;
-            gap: 10px;
-            border-top: 1px solid #f1f5f9;
-            padding-top: 15px;
-            margin-top: 20px;
+            gap: 8px;
             flex-wrap: wrap;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 18px;
+            margin-top: 20px;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 8px 14px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-family: inherit;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 6px;
             box-shadow: var(--shadow-sm);
         }
 
         .btn-add { background: var(--maroon); color: white; height: 100%; min-height: 48px; width: 100%; }
-        .btn-link-counselor { background: #d97706; color: white; height: 100%; min-height: 48px; width: 100%; }
         .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
-        .btn-save-student { background: #16a34a; color: white; }
-        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; width: 100%; }
-        .btn-view-report { background: #0284c7; color: white; }
-        .btn-remove { background: #dc2626; color: white; }
+        
+        /* تسلسل الأزرار المطلوبة */
+        .btn-link-counselor { background: #d97706; color: white; } /* 1. رابط إرسال الحالة للمرشد */
+        .btn-save-reply { background: #16a34a; color: white; margin-top: 8px; width: 100%; display: none; } /* حفظ رد المرشد */
+        .btn-view-report { background: #0284c7; color: white; } /* 2. معاينة التقرير */
+        .btn-save-student { background: #16a34a; color: white; } /* 3. حفظ الأرشيف */
+        .btn-remove { background: #dc2626; color: white; } /* 4. حذف */
+        
         .btn-close { background: #64748b; color: white; }
 
         .time-badge-referral {
@@ -488,7 +491,7 @@
         }
 
         @media print {
-            .interactive-toolbar, .history-section, .actions-dropdown-container, .btn-remove, .btn-save-student, .btn-save-reply, .btn-add-violation, .btn-remove-tag, .action-dropdown, .no-print, .modal-overlay, .toast-notification {
+            .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
                 display: none !important;
             }
             body { background: white; padding: 0; }
@@ -528,11 +531,11 @@
     </div>
 </div>
 
-<!-- نافذة توليد رابط المرشد -->
+<!-- نافذة توليد رابط المرشد الفردي للطالب -->
 <div class="modal-overlay" id="counselorLinkModal">
     <div class="modal-content" style="max-width: 500px;">
-        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-link"></i> رابط متابعة المرشد الطلابي</h3>
-        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">انسخ هذا الرابط وأرسله للمرشد المحدد ليتمكن من متابعة الطلبة والرد عليهم:</p>
+        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-link"></i> رابط إرسال حالة الطالب للمرشد</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">انسخ هذا الرابط وأرسله للمرشد ليتمكن من الاطلاع على حالة هذا الطالب وإضافَة الرد المباشر:</p>
         <div style="display: flex; gap: 10px; margin-bottom: 20px;">
             <input type="text" id="generatedCounselorLink" readonly style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; background: #f8fafc; font-size: 0.85rem;">
             <button class="btn" style="background: var(--maroon); color: white; white-space: nowrap;" onclick="copyGeneratedLink()"><i class="fa-solid fa-copy"></i> نسخ</button>
@@ -560,9 +563,9 @@
         </div>
     </div>
 
-    <!-- شريط الإضافة السريع وتوليد الرابط للمرشد -->
+    <!-- 1. إضافة الطالب (أول خطوة في التسلسل العلوي) -->
     <div class="interactive-toolbar no-print" id="controlSection">
-        <h3><i class="fa-solid fa-user-plus"></i> إضافة طالب جديد وإدارة الروابط</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> 1. إضافة طالب جديد إلى السجل</h3>
         <div class="toolbar-grid">
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
@@ -574,10 +577,7 @@
                 </select>
             </div>
             <div>
-                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب</button>
-            </div>
-            <div>
-                <button class="btn btn-link-counselor" onclick="generateCounselorLink()"><i class="fa-solid fa-share-nodes"></i> رابط المرشد</button>
+                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب للكشف</button>
             </div>
         </div>
     </div>
@@ -585,7 +585,7 @@
     <div class="history-section no-print" id="studentHistorySection" style="display:none;"></div>
 
     <div id="cardsContainer">
-        <!-- البطاقات الاحترافية -->
+        <!-- البطاقات الاحترافية المعتمدة على التسلسل المطلوب -->
     </div>
 
     <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
@@ -645,6 +645,7 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isCounselorView = urlParams.get('mode') === 'counselor';
     const currentCounselorParam = urlParams.get('counselor') ? decodeURIComponent(urlParams.get('counselor')) : "";
+    const targetStudentIdParam = urlParams.get('studentId') || "";
 
     const countOptionsMap = {
         "عدم إحضار الواجبات": [
@@ -680,10 +681,10 @@
         });
     }
 
-    function generateCounselorLink() {
-        const selectedCounselor = document.getElementById("globalTargetCounselor").value;
+    // توليد رابط مخصص للطالب المحدد لإرساله للمرشد
+    function generateCounselorLinkForStudent(studentId, counselorName) {
         const baseUrl = window.location.href.split('?')[0];
-        const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(selectedCounselor)}`;
+        const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(counselorName)}&studentId=${studentId}`;
         document.getElementById("generatedCounselorLink").value = link;
         document.getElementById("counselorLinkModal").style.display = "flex";
     }
@@ -692,7 +693,7 @@
         const input = document.getElementById("generatedCounselorLink");
         input.select();
         document.execCommand("copy");
-        showToast("تم نسخ رابط المرشد بنجاح!");
+        showToast("تم نسخ رابط إرسال الحالة للمرشد بنجاح!");
     }
 
     function updateNamesUI() {
@@ -841,10 +842,12 @@
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
 
-                // تصفية العرض للمرشد بناءً على الرابط الخاص به
-                if (isCounselorView && currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
+                // تصفية العرض للمرشد بناءً على الرابط الخاص به والطالب المحدد إن وجد
+                if (isCounselorView) {
+                    if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
+                    if (targetStudentIdParam && id !== targetStudentIdParam) return;
+                }
                 if (!isCounselorView && data.isArchived === true) return;
-                if (isCounselorView && (data.reply && data.reply !== "لم يتم الرد بعد")) return;
 
                 studentCount++;
                 const currentViolations = data.violations || [];
@@ -870,8 +873,9 @@
                     </div>
 
                     <div class="student-card-body">
+                        <!-- 2. المخالفة السلوكية -->
                         <div class="card-section-box">
-                            <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> رصد المخالفات السلوكية</div>
+                            <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> 2. رصد المخالفات السلوكية</div>
                             <div class="violation-builder no-print" ${isCounselorView ? 'style="display:none;"' : ''}>
                                 <select id="type_select_${id}" class="violation-select" onchange="onTypeSelectChange('${id}')">
                                     <option value="">-- اختر نوع المخالفة --</option>
@@ -891,25 +895,33 @@
                             </div>
                         </div>
 
+                        <!-- 3. تعليق المعلم و 5. رد المرشد -->
                         <div class="card-section-box">
-                            <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> الملاحظات والتوجيه الإرشادي</div>
+                            <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> 3. ملاحظات وتعليق المعلم</div>
                             <div style="margin-bottom: 12px;">
-                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">ملاحظات المعلم:</label>
                                 <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
                             </div>
+                            
+                            <!-- 5. رد المرشد -->
                             <div id="counselor_box_${id}" style="display:block; background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
-                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> رد المرشد (${reportCounselor}):</div>
+                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد وتوجيه المرشد (${reportCounselor}):</div>
                                 <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
                                 ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                                <button class="btn btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال الرد</button>
+                                <button class="btn btn-save-reply" style="display:inline-flex;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
                             </div>
                         </div>
                     </div>
 
-                    <div class="student-card-footer no-print">
-                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> حفظ وأرشفة</button>
-                        <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة فخمة</button>
-                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                    <!-- التسلسل المطلوب للأزرار السفلية لكل طالب بالترتيب:
+                         1. رابط إرسال الحالة للمرشد
+                         2. معاينة التقرير
+                         3. حفظ الأرشيف
+                         4. حذف -->
+                    <div class="sequential-actions-bar no-print">
+                        <button class="btn btn-link-counselor" ${isCounselorView ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
+                        <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> 6. معاينة التقرير</button>
+                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ الأرشيف</button>
+                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> 8. حذف</button>
                     </div>
                 `;
                 container.appendChild(card);
