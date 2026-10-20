@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - الاحترافية التفاعلية</title>
+    <title>منظومة تحويل الطلاب السحابية 2026 - الاحترافية الفائقة</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,8 +27,8 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border: #e2e8f0;
-            --shadow-sm: 0 4px 12px rgba(0,0,0,0.03);
-            --shadow-md: 0 15px 35px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);
+            --shadow-sm: 0 4px 15px rgba(0,0,0,0.03);
+            --shadow-md: 0 15px 35px -5px rgba(0,0,0,0.07);
             --radius-sm: 10px;
             --radius-md: 16px;
             --radius-lg: 24px;
@@ -43,7 +43,7 @@
             font-family: 'Tajawal', sans-serif;
             background-color: var(--bg);
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 28px 28px;
+            background-size: 32px 32px;
             margin: 0;
             padding: 40px 20px;
             color: var(--text-main);
@@ -51,7 +51,7 @@
         }
 
         .container {
-            max-width: 1250px;
+            max-width: 1100px;
             margin: 0 auto;
             background: var(--card-bg);
             padding: 40px;
@@ -117,13 +117,13 @@
             box-shadow: var(--shadow-sm);
         }
 
-        /* واجهة الجدول التفاعلي السريع للإضافة */
+        /* شريط الإضافة السريع */
         .interactive-toolbar {
             background: linear-gradient(135deg, #fffcf0 0%, #fff8e1 100%);
             border: 1.5px solid #fef08a;
             border-radius: var(--radius-md);
             padding: 25px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             box-shadow: var(--shadow-sm);
         }
 
@@ -138,12 +138,12 @@
 
         .toolbar-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
+            grid-template-columns: 2fr 1.5fr auto;
             gap: 15px;
             align-items: center;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 800px) {
             .toolbar-grid {
                 grid-template-columns: 1fr;
             }
@@ -156,7 +156,7 @@
 
         input[type="text"].student-search, select.toolbar-select {
             width: 100%;
-            padding: 13px 16px;
+            padding: 13px 18px;
             border-radius: var(--radius-sm);
             border: 1.5px solid var(--border);
             font-size: 0.95rem;
@@ -199,21 +199,160 @@
             font-weight: 700;
         }
 
-        select.violation-select, select.count-select, select.target-counselor-select {
+        /* تصميم البطاقات الاحترافية لكل طالب (بدل الجدول المعقد) */
+        .student-card-item {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            border-right: 5px solid var(--maroon);
+        }
+
+        .student-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .student-main-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--maroon);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-card-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .student-card-body {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-section-box {
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+        }
+
+        .card-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--maroon);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .violation-builder {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        select.violation-select, select.count-select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 11px 14px;
             border-radius: var(--radius-sm);
             border: 1.5px solid var(--border);
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             outline: none;
             background-color: #fff;
             cursor: pointer;
             font-family: inherit;
-            margin-bottom: 6px;
         }
 
-        select.violation-select:focus, select.count-select:focus, select.target-counselor-select:focus {
+        select.violation-select:focus, select.count-select:focus {
             border-color: var(--maroon);
+        }
+
+        .violation-tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .violation-tag-inline {
+            background: #fffbeb;
+            border: 1.5px solid #fef08a;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .violation-name-text {
+            color: #854d0e;
+            font-weight: 800;
+            font-size: 0.88rem;
+        }
+
+        .violation-count-text {
+            color: #1d4ed8;
+            background-color: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        .btn-remove-tag {
+            background: transparent;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 0.9rem;
+            padding: 0;
+        }
+
+        textarea.notes-input, textarea.counselor-reply {
+            width: 100%;
+            min-height: 90px;
+            padding: 12px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: white;
+        }
+
+        textarea.counselor-reply {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            font-weight: 600;
+            border-color: #cbd5e1;
+        }
+
+        .student-card-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+            margin-top: 20px;
         }
 
         .history-section {
@@ -243,135 +382,6 @@
             border: 1px solid #e2e8f0;
             margin-bottom: 12px;
             box-shadow: var(--shadow-sm);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin-top: 20px;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-        }
-
-        th, td {
-            padding: 14px;
-            text-align: center;
-            font-size: 0.92rem;
-            vertical-align: middle;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background-color: var(--maroon);
-            color: white;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        .violation-tags-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 4px;
-            text-align: right;
-        }
-
-        .violation-tag-inline {
-            background: #fffbeb;
-            border: 1.5px solid #fef08a;
-            padding: 6px 12px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            width: fit-content;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-        }
-
-        .violation-name-text {
-            color: #854d0e;
-            font-weight: 800;
-            font-size: 0.88rem;
-        }
-
-        .violation-count-text {
-            color: #1d4ed8;
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 0.8rem;
-        }
-
-        .btn-remove-tag {
-            background: transparent;
-            border: none;
-            color: #ef4444;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 0 4px;
-            margin-right: 6px;
-        }
-
-        textarea.notes-input, textarea.counselor-reply {
-            width: 100%;
-            min-height: 65px;
-            padding: 10px 12px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-sm);
-            font-family: inherit;
-            font-size: 0.88rem;
-            resize: vertical;
-            margin-bottom: 4px;
-        }
-
-        textarea.counselor-reply {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            font-weight: 600;
-            border-color: #cbd5e1;
-        }
-
-        .time-badge-referral {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            box-shadow: 0 2px 4px rgba(220, 38, 38, 0.08);
-            margin-top: 4px;
-        }
-
-        .time-badge-reply {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-            color: #0369a1;
-            border: 1px solid #7dd3fc;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            box-shadow: 0 2px 4px rgba(2, 132, 199, 0.08);
-            margin-top: 4px;
         }
 
         .actions-dropdown-container {
@@ -420,11 +430,11 @@
         }
 
         .btn {
-            padding: 12px 22px;
+            padding: 10px 20px;
             border: none;
             border-radius: var(--radius-sm);
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-family: inherit;
             cursor: pointer;
             display: inline-flex;
@@ -435,12 +445,39 @@
         }
 
         .btn-add { background: var(--maroon); color: white; width: 100%; height: 100%; min-height: 48px; }
-        .btn-add-violation { background: #d97706; color: white; padding: 6px 12px; font-size: 0.8rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; margin-top: 6px; font-family: inherit; font-weight: 700; }
-        .btn-save-student { background: #16a34a; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; font-family: inherit; font-weight: 700; }
-        .btn-save-reply { background: #16a34a; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; display: none; margin-top: 6px; font-family: inherit; font-weight: 700; }
-        .btn-view-report { background: #0284c7; color: white; padding: 8px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; }
-        .btn-remove { background: #dc2626; color: white; padding: 8px 12px; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; }
+        .btn-add-violation { background: #d97706; color: white; padding: 8px 14px; font-size: 0.85rem; border-radius: 6px; cursor: pointer; border: none; width: 100%; font-weight: 700; }
+        .btn-save-student { background: #16a34a; color: white; }
+        .btn-save-reply { background: #16a34a; color: white; margin-top: 10px; display: none; width: 100%; }
+        .btn-view-report { background: #0284c7; color: white; }
+        .btn-remove { background: #dc2626; color: white; }
         .btn-close { background: #64748b; color: white; }
+
+        .time-badge-referral {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .time-badge-reply {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            color: #0369a1;
+            border: 1px solid #7dd3fc;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
 
         .toast-notification {
             position: fixed;
@@ -541,6 +578,7 @@
             }
             body { background: white; padding: 0; }
             .container { box-shadow: none; border: none; width: 100%; max-width: 100%; padding: 0; }
+            .student-card-item { break-inside: avoid; border: 1px solid #ccc; box-shadow: none; }
         }
     </style>
 </head>
@@ -591,9 +629,9 @@
         </div>
     </div>
 
-    <!-- شريط الإضافة السريع والتفاعلي (بدل الواجهة التقليدية) -->
+    <!-- شريط الإضافة السريع والتفاعلي -->
     <div class="interactive-toolbar no-print" id="controlSection">
-        <h3><i class="fa-solid fa-table-list"></i> لوحة الإضافة السريعة وإرسال الطلاب</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> إضافة طالب جديد للتحويل والمتابعة</h3>
         <div class="toolbar-grid">
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
@@ -605,7 +643,7 @@
                 </select>
             </div>
             <div>
-                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-plus-circle"></i> إدراج الطالب بالجدول</button>
+                <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب بالبطاقات</button>
             </div>
         </div>
     </div>
@@ -619,22 +657,10 @@
         <div id="historyContent">جاري البحث...</div>
     </div>
 
-    <!-- الجدول التفاعلي للتحويل والمتابعة -->
-    <table id="referralTable">
-        <thead>
-            <tr>
-                <th style="width: 5%;">#</th>
-                <th style="width: 22%;">اسم الطالب والتاريخ والمرشد</th>
-                <th style="width: 25%;" class="no-print">اختيار المخالفة وإضافتها</th>
-                <th style="width: 25%;">قائمة المخالفات المسجلة</th>
-                <th style="width: 18%;">ملاحظات المعلم ورد المرشد</th>
-                <th class="no-print" style="width: 12%;">الإجراءات</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <!-- يُضاف الطلاب النشطون هنا ديناميكياً -->
-        </tbody>
-    </table>
+    <!-- منطقة البطاقات التفاعلية للطلاب (بدل الجدول المزدحم) -->
+    <div id="cardsContainer">
+        <!-- يتم تعبئة البطاقات ديناميكياً هنا -->
+    </div>
 
     <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
         <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
@@ -853,10 +879,10 @@
 
     function generateFormattedViolationsHTML(violationsArray) {
         if (!violationsArray || violationsArray.length === 0) {
-            return '<span style="color: #94a3b8; font-size: 0.8rem; font-style: italic;">لا توجد مخالفات مسجلة</span>';
+            return '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مسجلة</span>';
         }
 
-        let html = '<div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; margin-top: 4px;">';
+        let html = '<div class="violation-tags-list">';
         violationsArray.forEach(item => {
             const parts = item.split(':');
             const vName = parts[0] ? parts[0].trim() : item;
@@ -1054,8 +1080,8 @@
     }
 
     async function saveCurrentReports() {
-        const rows = document.querySelectorAll("#tableBody tr");
-        if (rows.length === 0) return alert("لا توجد بيانات طلاب نشطة لحفظها وأرشفتها.");
+        const cards = document.querySelectorAll(".student-card-item");
+        if (cards.length === 0) return alert("لا توجد بيانات طلاب نشطة لحفظها وأرشفتها.");
 
         if (confirm("هل تريد أرشفة وحفظ جميع التقارير الحالية؟")) {
             const batch = db.batch();
@@ -1248,7 +1274,7 @@
             document.getElementById("searchInput").value = "";
             selectedStudentName = "";
             document.getElementById("studentHistorySection").style.display = "none";
-            showToast(`تم إدراج الطالب (${studentName}) وتحويله إلى (${targetCounselor})!`);
+            showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
         } catch (e) {
             console.error(e);
         }
@@ -1256,8 +1282,8 @@
 
     function listenToCloudReferrals() {
         db.collection("referral_list").onSnapshot(snapshot => {
-            const tbody = document.getElementById("tableBody");
-            tbody.innerHTML = "";
+            const container = document.getElementById("cardsContainer");
+            container.innerHTML = "";
             studentCount = 0;
 
             snapshot.forEach(doc => {
@@ -1280,49 +1306,70 @@
                 const studentDisplayName = data.name || "اسم الطالب";
                 const reportTeacher = data.teacherName || teacherName;
 
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${studentCount}</td>
-                    <td style="text-align: right; font-weight: bold;">
-                        ${studentDisplayName}
-                        <br>
-                        <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
-                        <div style="font-size:0.75rem; color:#854d0e; margin-top:3px;"><i class="fa-solid fa-user-shield"></i> المرشد: ${reportCounselor}</div>
-                    </td>
-                    <td class="no-print">
-                        <select id="type_select_${id}" class="violation-select" ${isCounselorView ? 'disabled' : ''} onchange="onTypeSelectChange('${id}')">
-                            <option value="">-- اختر نوع المخالفة --</option>
-                            <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
-                            <option value="عدم إحضار البحث">عدم إحضار البحث</option>
-                            <option value="كثرة النوم">كثرة النوم</option>
-                            <option value="ضعف المشاركة">ضعف المشاركة</option>
-                        </select>
-                        
-                        <select id="count_select_${id}" class="count-select" ${isCounselorView ? 'disabled' : ''}>
-                            <option value="">-- اختر العدد --</option>
-                        </select>
-                        
-                        <button class="btn-add-violation" ${isCounselorView ? 'style="display:none;"' : ''} onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة المخالفة للقائمة</button>
-                    </td>
-                    <td>
-                        <div id="violation_tags_${id}" class="violation-tags-list"></div>
-                    </td>
-                    <td>
-                        <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="سلوكيات وملاحظات المعلم..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
-                        <div id="counselor_box_${id}" style="display:none; margin-top: 5px;">
-                            <div style="font-size: 0.8rem; font-weight: bold; color: var(--maroon); margin-bottom: 2px;">المرشد: <span class="counselorNameDisplay">${reportCounselor}</span></div>
-                            <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد الطلابي هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
-                            ${replyTimeStr ? `<div style="text-align: right;"><span class="time-badge-reply"><i class="fa-solid fa-reply-all"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                            <button class="btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ رد المرشد</button>
+                const card = document.createElement("div");
+                card.className = "student-card-item";
+                card.innerHTML = `
+                    <div class="student-card-header">
+                        <div class="student-main-title">
+                            <span style="background: var(--maroon); color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${studentCount}</span>
+                            🎓 ${studentDisplayName}
                         </div>
-                    </td>
-                    <td class="no-print" style="display: flex; gap: 4px; justify-content: center; align-items: center; padding-top: 15px;">
-                        <button class="btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')" title="حفظ وأرشفة الطالب"><i class="fa-solid fa-floppy-disk"></i></button>
-                        <button class="btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')" title="معاينة التقرير الفخم"><i class="fa-solid fa-eye"></i></button>
-                        <button class="btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')" title="حذف"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
+                            <span style="font-size: 0.85rem; font-weight: 700; color: #854d0e; background: #fffbeb; border: 1px solid #fef08a; padding: 5px 12px; border-radius: 20px;">
+                                <i class="fa-solid fa-user-shield"></i> المرشد: ${reportCounselor}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="student-card-body">
+                        <!-- القسم الأيمن: إضافة المخالفات والملاحظات -->
+                        <div class="card-section-box">
+                            <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> رصد المخالفات السلوكية</div>
+                            <div class="violation-builder no-print" ${isCounselorView ? 'style="display:none;"' : ''}>
+                                <select id="type_select_${id}" class="violation-select" onchange="onTypeSelectChange('${id}')">
+                                    <option value="">-- اختر نوع المخالفة --</option>
+                                    <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
+                                    <option value="عدم إحضار البحث">عدم إحضار البحث</option>
+                                    <option value="كثرة النوم">كثرة النوم</option>
+                                    <option value="ضعف المشاركة">ضعف المشاركة</option>
+                                </select>
+                                <select id="count_select_${id}" class="count-select">
+                                    <option value="">-- اختر العدد / الوصف --</option>
+                                </select>
+                                <button class="btn-add-violation" onclick="addViolationToStudent('${id}')"><i class="fa-solid fa-circle-plus"></i> إضافة المخالفة للقائمة</button>
+                            </div>
+
+                            <div style="margin-top: 10px;">
+                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 6px;">المخالفات المسجلة:</label>
+                                <div id="violation_tags_${id}"></div>
+                            </div>
+                        </div>
+
+                        <!-- القسم الأيسر: ملاحظات المعلم ورد المرشد -->
+                        <div class="card-section-box">
+                            <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> الملاحظات والتوجيه الإرشادي</div>
+                            <div style="margin-bottom: 12px;">
+                                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">سلوكيات وملاحظات المعلم:</label>
+                                <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك السلوكية هنا..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
+                            </div>
+
+                            <div id="counselor_box_${id}" style="${isCounselorView ? 'display:block;' : 'display:none;'} background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 8px;">
+                                <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> رد المرشد الطلابي (${reportCounselor}):</div>
+                                <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب توجيهك وردك الإرشادي هنا...">${data.reply !== "لم يتم الرد بعد" ? (data.reply || '') : ''}</textarea>
+                                ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
+                                <button class="btn btn-save-reply" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="student-card-footer no-print">
+                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> حفظ وأرشفة</button>
+                        <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> معاينة التقرير الفخم</button>
+                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+                    </div>
                 `;
-                tbody.appendChild(row);
+                container.appendChild(card);
 
                 renderStudentViolationTags(id, currentViolations);
             });
@@ -1339,7 +1386,7 @@
         const countSelect = document.getElementById(`count_select_${id}`);
         const selectedType = typeSelect.value;
 
-        countSelect.innerHTML = '<option value="">-- اختر العدد --</option>';
+        countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
 
         if (countOptionsMap[selectedType]) {
             countOptionsMap[selectedType].forEach(opt => {
@@ -1359,7 +1406,7 @@
         const countVal = countSelect.value;
 
         if (!typeVal || !countVal) {
-            return alert("يرجى اختيار نوع المخالفة والعدد قبل الضغط على إضافة!");
+            return alert("يرجى اختيار نوع المخالفة والعدد أولاً!");
         }
 
         const violationString = `${typeVal}: ${countVal}`;
@@ -1371,8 +1418,8 @@
             currentArray.push(violationString);
             await docRef.update({ violations: currentArray });
             typeSelect.value = "";
-            countSelect.innerHTML = '<option value="">-- اختر العدد --</option>';
-            showToast("تمت إضافة المخالفة للقائمة بنجاح!");
+            countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
+            showToast("تمت إضافة المخالفة بنجاح!");
         }
     }
 
@@ -1394,24 +1441,26 @@
         container.innerHTML = "";
 
         if (!violationsArray || violationsArray.length === 0) {
-            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.8rem; font-style: italic;">لا توجد مخالفات مضافة</span>';
+            container.innerHTML = '<span style="color: #94a3b8; font-size: 0.85rem; font-style: italic;">لا توجد مخالفات مضافة بعد</span>';
             return;
         }
 
+        let html = '<div class="violation-tags-list">';
         violationsArray.forEach((vItem, index) => {
             const parts = vItem.split(':');
             const violationName = parts[0] ? parts[0].trim() : vItem;
             const violationCount = parts[1] ? parts[1].trim() : '';
 
-            const tag = document.createElement("div");
-            tag.className = "violation-tag-inline";
-            tag.innerHTML = `
-                <span class="violation-name-text">• ${violationName}</span>
-                ${violationCount ? `<span class="violation-count-text">${violationCount}</span>` : ''}
-                ${!isCounselorView ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${index})" title="حذف المخالفة"><i class="fa-solid fa-xmark"></i></button>` : ''}
+            html += `
+                <div class="violation-tag-inline">
+                    <span class="violation-name-text">• ${violationName}</span>
+                    ${violationCount ? `<span class="violation-count-text">${violationCount}</span>` : ''}
+                    ${!isCounselorView ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${index})" title="حذف المخالفة"><i class="fa-solid fa-xmark"></i></button>` : ''}
+                </div>
             `;
-            container.appendChild(tag);
         });
+        html += '</div>';
+        container.innerHTML = html;
     }
 
     async function updateCloudField(id, field, value) {
@@ -1460,7 +1509,7 @@
         contentClone.querySelectorAll('.btn-save-reply').forEach(el => el.remove());
 
         const textareas = contentClone.querySelectorAll('textarea');
-        const originalTextareas = document.querySelectorAll('#tableBody textarea');
+        const originalTextareas = document.querySelectorAll('.student-card-item textarea');
         textareas.forEach((ta, idx) => {
             if(!ta.classList.contains('counselor-reply')) {
                 const div = document.createElement('div');
@@ -1498,7 +1547,7 @@
         element.querySelectorAll('.btn-save-reply').forEach(el => el.remove());
 
         const textareas = element.querySelectorAll('textarea');
-        const originalTextareas = document.querySelectorAll('#tableBody textarea');
+        const originalTextareas = document.querySelectorAll('.student-card-item textarea');
         textareas.forEach((ta, idx) => {
             if(!ta.classList.contains('counselor-reply')) {
                 const div = document.createElement('div');
