@@ -121,11 +121,11 @@
             background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
             border: 2px solid #f97316;
             border-radius: var(--radius-md);
-            padding: 18px 25px;
+            padding: 20px 25px;
             margin-bottom: 25px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 15px;
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
             animation: pulse-border 2s infinite;
         }
@@ -137,6 +137,14 @@
         }
 
         .counselor-alert-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .counselor-alert-icon-text {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -615,15 +623,24 @@
     </div>
 </div>
 
-<!-- شريط تنبيه حالات التحويل الجديد الخاص بالمرشد -->
+<!-- شريط تنبيه حالات التحويل الجديد الخاص بالمرشد ومزود بالقائمة المباشرة لاستعراض الحالات -->
 <div class="counselor-alert-banner no-print" id="counselorNotificationBanner" style="display: none;">
     <div class="counselor-alert-content">
-        <div class="counselor-alert-icon">
-            <i class="fa-solid fa-bell"></i>
+        <div class="counselor-alert-icon-text">
+            <div class="counselor-alert-icon">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+            <div class="counselor-alert-text" id="counselorNotificationText">
+                تنبيه: لديك حالات تحويل جديدة بانتظار الرد والتوجيه.
+            </div>
         </div>
-        <div class="counselor-alert-text" id="counselorNotificationText">
-            تنبيه: لديك حالات تحويل جديدة بانتظار الرد والتوجيه.
-        </div>
+        <button class="btn" style="background: #ea580c; color: white;" onclick="togglePendingListDropdown()"><i class="fa-solid fa-list-check"></i> <span id="toggleListBtnText">عرض واستعراض الحالات المعلقة</span></button>
+    </div>
+    <div id="pendingStudentsDropdownSection" style="display: none; border-top: 1px dashed #f97316; padding-top: 15px; margin-top: 5px;">
+        <label style="font-weight: 800; color: #9a3412; display: block; margin-bottom: 8px;"><i class="fa-solid fa-hand-pointer"></i> اختر اسماً من قائمة الطلاب المحولين بانتظار الرد لاستعراض كشفه فوراً:</label>
+        <select id="pendingStudentsSelect" class="toolbar-select" onchange="selectPendingStudentFromDropdown(this.value)" style="border-color: #f97316;">
+            <!-- قائمة أسماء الطلاب المحولين بانتظار الرد -->
+        </select>
     </div>
 </div>
 
@@ -948,6 +965,24 @@
         res.style.display = "block";
     }
 
+    function togglePendingListDropdown() {
+        const sec = document.getElementById("pendingStudentsDropdownSection");
+        const btnText = document.getElementById("toggleListBtnText");
+        if (sec.style.display === "none") {
+            sec.style.display = "block";
+            btnText.textContent = "إخفاء القائمة";
+        } else {
+            sec.style.display = "none";
+            btnText.textContent = "عرض واستعراض الحالات المعلقة";
+        }
+    }
+
+    function selectPendingStudentFromDropdown(studentName) {
+        if (!studentName) return;
+        document.getElementById("counselorSearchInput").value = studentName;
+        executeCounselorSearch();
+    }
+
     function executeCounselorSearch() {
         const q = document.getElementById("counselorSearchInput").value.trim().toLowerCase();
         const resContainer = document.getElementById("counselorSearchResultsContainer");
@@ -1135,7 +1170,8 @@
             container.innerHTML = "";
             allReferralData = [];
             let cardIndex = 0;
-            let pendingCasesCount = 0;
+
+            const pendingStudentsMap = new Map();
 
             snapshot.forEach(doc => {
                 const data = doc.data();
@@ -1145,11 +1181,10 @@
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
                 const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
 
-                // حساب الحالات المحولة بانتظار الرد الخاصة بالمرشد الحالي
                 if (isCounselorView) {
                     if (!hasReply) {
                         if (!currentCounselorParam || reportCounselor.trim() === currentCounselorParam.trim()) {
-                            pendingCasesCount++;
+                            pendingStudentsMap.set(data.name, (pendingStudentsMap.get(data.name) || 0) + 1);
                         }
                     }
                     return;
@@ -1163,19 +1198,32 @@
                 container.appendChild(cardEl);
             });
 
-            // تحديث شريط التنبيه بصفحة المرشد
+            // تحديث شريط التنبيه ومعدل القائمة المباشرة لصفحة المرشد
             if (isCounselorView) {
                 const bannerEl = document.getElementById("counselorNotificationBanner");
                 const textEl = document.getElementById("counselorNotificationText");
+                const pendingSelect = document.getElementById("pendingStudentsSelect");
 
-                if (pendingCasesCount > 0) {
+                const pendingCount = pendingStudentsMap.size;
+
+                if (pendingCount > 0) {
                     let caseWord = "حالة محولة";
-                    if (pendingCasesCount === 1) caseWord = "حالة محولة واحدة";
-                    else if (pendingCasesCount === 2) caseWord = "حالتان محولتان";
-                    else if (pendingCasesCount >= 3 && pendingCasesCount <= 10) caseWord = `${pendingCasesCount} حالات محولة`;
-                    else caseWord = `${pendingCasesCount} حالة محولة`;
+                    if (pendingCount === 1) caseWord = "طالب واحد محول";
+                    else if (pendingCount === 2) caseWord = "طالبان محولان";
+                    else if (pendingCount >= 3 && pendingCount <= 10) caseWord = `${pendingCount} طلاب محولين`;
+                    else caseWord = `${pendingCount} طالباً محولاً`;
 
-                    textEl.innerHTML = `🔔 <strong>تنبيه للمرشد:</strong> لديك <strong>${caseWord}</strong> بانتظار الرد والتوجيه. نرجو البحث والرد عليها.`;
+                    textEl.innerHTML = `🔔 <strong>تنبيه للمرشد:</strong> لديك <strong>${caseWord}</strong> بانتظار الرد والتوجيه.`;
+                    
+                    // تعبئة الخيارات بالأسماء
+                    pendingSelect.innerHTML = '<option value="">-- اضغط واختر اسم الطالب من القائمة --</option>';
+                    pendingStudentsMap.forEach((cases, studentName) => {
+                        const opt = document.createElement("option");
+                        opt.value = studentName;
+                        opt.textContent = `🎓 ${studentName} (${cases} حالة محولة)`;
+                        pendingSelect.appendChild(opt);
+                    });
+
                     bannerEl.style.display = "flex";
                 } else {
                     bannerEl.style.display = "none";
