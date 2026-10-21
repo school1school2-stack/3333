@@ -503,7 +503,6 @@
             min-height: 60px;
         }
 
-        /* حاوية التوقيع المرتبة */
         .signatures-footer {
             margin-top: 40px;
             display: flex;
@@ -573,7 +572,6 @@
             <input type="text" id="modalArchiveSearchInput" class="student-search" placeholder="🔍 اكتب اسم الطالب للبحث..." oninput="executeArchiveSearch()">
         </div>
         
-        <!-- الحاوية المخصصة لعرض نتائج الطالب بداخل النافذة نفسها -->
         <div id="archiveSearchResults" style="max-height: 50vh; overflow-y: auto; padding-top: 10px;">
             <div style="text-align: center; color: #94a3b8; font-weight: 600; padding: 20px;">ابدأ بكتابة اسم الطالب لعرض بطاقته هنا...</div>
         </div>
@@ -637,7 +635,6 @@
         <!-- البطاقات الاحترافية النشطة -->
     </div>
 
-    <!-- التوقيعات السفلية المرتبة للسطر الثاني -->
     <div class="signatures-footer">
         <div class="signature-block">
             <div><strong>المرشد الطلابي:</strong> <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span></div>
@@ -649,7 +646,6 @@
         </div>
     </div>
 
-    <!-- الخيارات الشاملة -->
     <div class="actions-dropdown-container no-print" style="margin-top: 35px; display: flex; justify-content: flex-end;">
         <select class="main-actions-select" onchange="executeMainAction(this)" style="background: var(--maroon); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
             <option value="">⚙️ خيارات الإدارة الشاملة...</option>
@@ -661,7 +657,6 @@
     </div>
 </div>
 
-<!-- نافذة المعاينة المنفصلة للطباعة والـ PDF -->
 <div class="modal-overlay" id="previewModal">
     <div class="modal-content">
         <div class="modal-actions no-print" style="display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid var(--gold-light); padding-bottom: 12px;">
@@ -674,7 +669,6 @@
 </div>
 
 <script>
-    // إعدادات فايربيس
     const firebaseConfig = {
         apiKey: "AIzaSyDhd5CSkNMoppGby6uKx#sQC...",
         authDomain: "aaaa-a2380.firebaseapp.com",
@@ -907,7 +901,6 @@
         document.getElementById('searchArchiveModal').style.display = 'none';
         document.getElementById('modalArchiveSearchInput').value = '';
         document.getElementById('archiveSearchResults').innerHTML = '<div style="text-align: center; color: #94a3b8; font-weight: 600; padding: 20px;">ابدأ بكتابة اسم الطالب لعرض بطاقته هنا...</div>';
-        listenToCloudReferrals();
     }
 
     async function addSelectedStudent() {
@@ -928,6 +921,8 @@
             counselorName: targetCounselor,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+        
+        // تفريغ الحقول وإلغاء تحديد اسم الطالب السابق تماماً
         document.getElementById("searchInput").value = "";
         selectedStudentName = "";
         showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
@@ -987,7 +982,6 @@
             </div>
 
             <div class="student-card-body">
-                <!-- 2. المخالفة السلوكية -->
                 <div class="card-section-box">
                     <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> 2. رصد المخالفات السلوكية</div>
                     <div class="violation-builder no-print" ${isCounselorView || isArchived ? 'style="display:none;"' : ''}>
@@ -1009,7 +1003,6 @@
                     </div>
                 </div>
 
-                <!-- 3. تعليق المعلم و 5. رد المرشد -->
                 <div class="card-section-box">
                     <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> 3. ملاحظات وتعليق المعلم</div>
                     <div style="margin-bottom: 12px;">
@@ -1020,7 +1013,6 @@
                 </div>
             </div>
 
-            <!-- الأزرار السفلية بالترتيب التسلسلي -->
             <div class="sequential-actions-bar no-print">
                 <button class="btn btn-link-counselor" ${isCounselorView || isArchived ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
                 <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> 6. معاينة التقرير</button>
@@ -1067,11 +1059,6 @@
                 const cardEl = createStudentCardElement(data, cardIndex, false);
                 container.appendChild(cardEl);
             });
-
-            // التأكد من تجدد البحث فقط إن كانت النافذة المنفصلة مفتوحة
-            if (document.getElementById('searchArchiveModal').style.display === 'flex') {
-                executeArchiveSearch();
-            }
         });
     }
 
@@ -1169,7 +1156,6 @@
         }
     }
 
-    // بناء تقرير طباعة معاينة مع حذف كلمة "المختص" وتنسيق التوقيعات
     function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
         let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
