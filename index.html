@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - التسلسل المتكامل</title>
+    <title>منظومة تحويل الطلاب السحابية 2026 - الأرشيف الشامل</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,7 +122,7 @@
             border: 1.5px solid #fef08a;
             border-radius: var(--radius-md);
             padding: 25px;
-            margin-bottom: 35px;
+            margin-bottom: 20px;
             box-shadow: var(--shadow-sm);
         }
 
@@ -198,6 +198,28 @@
             font-weight: 700;
         }
 
+        .view-mode-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 25px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .view-mode-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: var(--maroon);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .student-card-item {
             background: #ffffff;
             border: 1px solid var(--border);
@@ -207,6 +229,11 @@
             box-shadow: var(--shadow-sm);
             position: relative;
             border-right: 5px solid var(--maroon);
+        }
+
+        .student-card-item.archived-card {
+            border-right-color: #64748b;
+            background: #f8fafc;
         }
 
         .student-card-header {
@@ -370,8 +397,10 @@
         .btn-save-reply { background: #16a34a; color: white; margin-top: 8px; width: 100%; }
         .btn-view-report { background: #0284c7; color: white; }
         .btn-save-student { background: #16a34a; color: white; }
+        .btn-unarchive { background: #475569; color: white; }
         .btn-remove { background: #dc2626; color: white; }
         .btn-close { background: #64748b; color: white; }
+        .btn-archive-toggle { background: #0f172a; color: white; }
 
         .time-badge-referral {
             display: inline-flex;
@@ -398,6 +427,16 @@
             font-size: 0.8rem;
             font-weight: 700;
             margin-top: 8px;
+        }
+
+        .badge-archived {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
         }
 
         .toast-notification {
@@ -488,7 +527,7 @@
         }
 
         @media print {
-            .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
+            .interactive-toolbar, .view-mode-bar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
                 display: none !important;
             }
             body { background: white; padding: 0; }
@@ -505,7 +544,7 @@
     <span id="toastMsg">تمت العملية بنجاح</span>
 </div>
 
-<!-- نافذة إعدادات بيانات المعلم (بتحقق بريد منصة مدرستي) -->
+<!-- نافذة إعدادات بيانات المعلم -->
 <div class="modal-overlay" id="teacherInfoModal" style="display: flex;">
     <div class="modal-content" style="max-width: 450px;">
         <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-chalkboard-user"></i> إعدادات بيانات المعلم</h3>
@@ -560,9 +599,9 @@
         </div>
     </div>
 
-    <!-- 1. إضافة الطالب (أول خطوة في التسلسل العلوي) -->
+    <!-- 1. إضافة طالب جديد أو البحث المباشر -->
     <div class="interactive-toolbar no-print" id="controlSection">
-        <h3><i class="fa-solid fa-user-plus"></i> 1. إضافة طالب جديد إلى السجل</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> 1. إدراج طالب جديد للكشف</h3>
         <div class="toolbar-grid">
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
@@ -576,6 +615,21 @@
             <div>
                 <button class="btn btn-add" onclick="addSelectedStudent()"><i class="fa-solid fa-circle-plus"></i> إدراج الطالب للكشف</button>
             </div>
+        </div>
+    </div>
+
+    <!-- شريط التحكم بوضع العرض وشريط البحث العام في التقارير والأرشيف -->
+    <div class="view-mode-bar no-print">
+        <div class="view-mode-title" id="viewModeStatus">
+            <i class="fa-solid fa-folder-open"></i> العرض الحالي: <span id="modeText" style="color: #16a34a;">السجلات النشطة الحالية</span>
+        </div>
+        <div style="flex: 1; max-width: 320px;">
+            <input type="text" id="filterCardInput" class="student-search" placeholder="🔍 تصفية/بحث باسم الطالب..." oninput="filterRenderedCards()">
+        </div>
+        <div>
+            <button class="btn btn-archive-toggle" id="btnToggleArchive" onclick="toggleArchiveView()">
+                <i class="fa-solid fa-box-archive"></i> فتح وسجل الأرشيف الكامل
+            </button>
         </div>
     </div>
 
@@ -594,6 +648,7 @@
         <select class="main-actions-select" onchange="executeMainAction(this)" style="background: var(--maroon); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
             <option value="">⚙️ خيارات الإدارة الشاملة...</option>
             <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
+            <option value="toggle_archive">📁 فتح / إغلاق سجل الأرشيف</option>
             <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم</option>
             <option value="print">🖨️ طباعة السجل بالكامل</option>
         </select>
@@ -613,9 +668,9 @@
 </div>
 
 <script>
-    // إعدادات فايربيس الجديدة المستخرجة من مشروعك (aaaa-a2380)
+    // إعدادات فايربيس الخاصة بمشروعك
     const firebaseConfig = {
-        apiKey: "AIzaSyDhd5CSkNMoppGby6uKx#sQC...", // سيتم تفعيل إعدادات المشروع الجديدة بدقة
+        apiKey: "AIzaSyDhd5CSkNMoppGby6uKx#sQC...",
         authDomain: "aaaa-a2380.firebaseapp.com",
         databaseURL: "https://aaaa-a2380-default-rtdb.firebaseio.com",
         projectId: "aaaa-a2380",
@@ -631,6 +686,7 @@
     let allStudents = [];
     let studentCount = 0;
     let selectedStudentName = "";
+    let showArchiveMode = false; // متغير حالة العرض الأرشيفي
     
     let teacherName = localStorage.getItem("teacher_name") || "";
     let teacherEmail = localStorage.getItem("teacher_email") || "";
@@ -712,6 +768,7 @@
             document.getElementById('teacherInfoModal').style.display = 'none';
             document.getElementById('controlSection').style.display = 'none';
             document.querySelector('.actions-dropdown-container').style.display = 'none';
+            document.querySelector('.view-mode-bar').style.display = 'none';
             document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة المرشد الطلابي (${currentCounselorParam})`;
             updateNamesUI();
             return;
@@ -817,6 +874,38 @@
         res.style.display = "block";
     }
 
+    function toggleArchiveView() {
+        showArchiveMode = !showArchiveMode;
+        const modeText = document.getElementById("modeText");
+        const btnToggle = document.getElementById("btnToggleArchive");
+
+        if (showArchiveMode) {
+            modeText.textContent = "سجل الأرشيف الكامل (المؤرشفة والنشطة معاً)";
+            modeText.style.color = "#d97706";
+            btnToggle.innerHTML = '<i class="fa-solid fa-list-check"></i> العودة للسجلات النشطة فقط';
+            showToast("تم فتح سجل الأرشيف الكامل");
+        } else {
+            modeText.textContent = "السجلات النشطة الحالية";
+            modeText.style.color = "#16a34a";
+            btnToggle.innerHTML = '<i class="fa-solid fa-box-archive"></i> فتح وسجل الأرشيف الكامل';
+            showToast("تم العودة للسجلات النشطة");
+        }
+        listenToCloudReferrals();
+    }
+
+    function filterRenderedCards() {
+        const q = document.getElementById("filterCardInput").value.trim().toLowerCase();
+        const cards = document.querySelectorAll(".student-card-item");
+        cards.forEach(card => {
+            const name = card.getAttribute("data-student-name") || "";
+            if (name.toLowerCase().includes(q)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    }
+
     async function addSelectedStudent() {
         const inputVal = document.getElementById("searchInput").value.trim();
         const studentName = selectedStudentName || inputVal;
@@ -841,7 +930,7 @@
     }
 
     function listenToCloudReferrals() {
-        db.collection("referral_list").onSnapshot(snapshot => {
+        db.collection("referral_list").orderBy("createdAt", "desc").onSnapshot(snapshot => {
             const container = document.getElementById("cardsContainer");
             container.innerHTML = "";
             studentCount = 0;
@@ -851,6 +940,7 @@
                 const id = doc.id;
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
                 const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
+                const isArchived = data.isArchived === true;
 
                 if (isCounselorView) {
                     if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
@@ -858,7 +948,8 @@
                     if (hasReply) return;
                 }
 
-                if (!isCounselorView && data.isArchived === true) return;
+                // فلترة الأرشيف: إخفاء المؤشف إلا إذا تم تفعيل الأرشيف الكامل
+                if (!isCounselorView && isArchived && !showArchiveMode) return;
 
                 studentCount++;
                 const currentViolations = data.violations || [];
@@ -891,12 +982,15 @@
                 }
 
                 const card = document.createElement("div");
-                card.className = "student-card-item";
+                card.className = `student-card-item ${isArchived ? 'archived-card' : ''}`;
+                card.setAttribute("data-student-name", studentDisplayName);
+
                 card.innerHTML = `
                     <div class="student-card-header">
                         <div class="student-main-title">
-                            <span style="background: var(--maroon); color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${studentCount}</span>
+                            <span style="background: ${isArchived ? '#64748b' : 'var(--maroon)'}; color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${studentCount}</span>
                             🎓 ${studentDisplayName}
+                            ${isArchived ? '<span class="badge-archived"><i class="fa-solid fa-box-archive"></i> في الأرشيف</span>' : ''}
                         </div>
                         <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                             <span class="time-badge-referral"><i class="fa-solid fa-calendar-check"></i> ${createdTimeStr}</span>
@@ -910,7 +1004,7 @@
                         <!-- 2. المخالفة السلوكية -->
                         <div class="card-section-box">
                             <div class="card-section-title"><i class="fa-solid fa-triangle-exclamation"></i> 2. رصد المخالفات السلوكية</div>
-                            <div class="violation-builder no-print" ${isCounselorView ? 'style="display:none;"' : ''}>
+                            <div class="violation-builder no-print" ${isCounselorView || isArchived ? 'style="display:none;"' : ''}>
                                 <select id="type_select_${id}" class="violation-select" onchange="onTypeSelectChange('${id}')">
                                     <option value="">-- اختر نوع المخالفة --</option>
                                     <option value="عدم إحضار الواجبات">عدم إحضار الواجبات</option>
@@ -933,24 +1027,33 @@
                         <div class="card-section-box">
                             <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> 3. ملاحظات وتعليق المعلم</div>
                             <div style="margin-bottom: 12px;">
-                                <textarea class="notes-input" ${isCounselorView ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
+                                <textarea class="notes-input" ${isCounselorView || isArchived ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
                             </div>
                             
                             ${counselorReplySectionHTML}
                         </div>
                     </div>
 
-                    <!-- الأزرار السفلية بالترتيب التسلسلي المطلوب -->
+                    <!-- الأزرار السفلية بالترتيب التسلسلي -->
                     <div class="sequential-actions-bar no-print">
-                        <button class="btn btn-link-counselor" ${isCounselorView ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
+                        <button class="btn btn-link-counselor" ${isCounselorView || isArchived ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
                         <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> 6. معاينة التقرير</button>
-                        <button class="btn btn-save-student" ${isCounselorView ? 'style="display:none;"' : ''} onclick="saveSingleStudent('${id}', '${studentDisplayName}', '${reportCounselor}')"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ الأرشيف</button>
-                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}')"><i class="fa-solid fa-trash"></i> 8. حذف</button>
+                        
+                        ${!isCounselorView ? (
+                            isArchived ? 
+                            `<button class="btn btn-unarchive" onclick="unarchiveStudent('${id}', '${studentDisplayName}')"><i class="fa-solid fa-box-open"></i> استعادة من الأرشيف</button>` :
+                            `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}')"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
+                        ) : ''}
+
+                        <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}', '${studentDisplayName}', ${isArchived})"><i class="fa-solid fa-trash"></i> ${isArchived ? 'حذف من الأرشيف' : '8. حذف'}</button>
                     </div>
                 `;
                 container.appendChild(card);
-                renderStudentViolationTags(id, currentViolations);
+                renderStudentViolationTags(id, currentViolations, isArchived);
             });
+
+            // تطبيق التصفية الفورية إذا كان هناك نص مكتوب في شريط التصفية
+            filterRenderedCards();
         });
     }
 
@@ -994,7 +1097,7 @@
         }
     }
 
-    function renderStudentViolationTags(id, arr) {
+    function renderStudentViolationTags(id, arr, isArchived) {
         const container = document.getElementById(`violation_tags_${id}`);
         if (!container) return;
         if (!arr || arr.length === 0) {
@@ -1004,7 +1107,7 @@
         let html = '<div class="violation-tags-list">';
         arr.forEach((item, idx) => {
             const p = item.split(':');
-            html += `<div class="violation-tag-inline"><span class="violation-name-text">• ${p[0]}</span>${p[1] ? `<span class="violation-count-text">${p[1]}</span>` : ''}${!isCounselorView ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${idx})"><i class="fa-solid fa-xmark"></i></button>` : ''}</div>`;
+            html += `<div class="violation-tag-inline"><span class="violation-name-text">• ${p[0]}</span>${p[1] ? `<span class="violation-count-text">${p[1]}</span>` : ''}${!isCounselorView && !isArchived ? `<button class="btn-remove-tag no-print" onclick="removeViolationFromStudent('${id}',${idx})"><i class="fa-solid fa-xmark"></i></button>` : ''}</div>`;
         });
         html += '</div>';
         container.innerHTML = html;
@@ -1014,9 +1117,14 @@
         if (!isCounselorView) await db.collection("referral_list").doc(id).update({ [field]: val });
     }
 
-    async function saveSingleStudent(id, name, counselor) {
+    async function saveSingleStudent(id, name) {
         await db.collection("referral_list").doc(id).update({ isArchived: true, teacherName: teacherName });
         showToast(`تم أرشفة تقرير الطالب (${name}) بنجاح!`);
+    }
+
+    async function unarchiveStudent(id, name) {
+        await db.collection("referral_list").doc(id).update({ isArchived: false });
+        showToast(`تمت استعادة الطالب (${name}) للقائمة النشطة بنجاح!`);
     }
 
     async function saveReply(id, counselor) {
@@ -1031,8 +1139,9 @@
         showToast("تم حفظ وإرسال رد المرشد بنجاح!");
     }
 
-    async function deleteCloudStudent(id) {
-        if (!isCounselorView && confirm("إزالة هذا الطالب من القائمة؟")) {
+    async function deleteCloudStudent(id, name, isArchived) {
+        const msg = isArchived ? `هل أنت تأكد من حذف تقرير الطالب (${name}) نهائياً من الأرشيف؟` : `إزالة الطالب (${name}) من القائمة؟`;
+        if (!isCounselorView && confirm(msg)) {
             await db.collection("referral_list").doc(id).delete();
             showToast("تم الحذف بنجاح");
         }
@@ -1106,6 +1215,8 @@
                 snap.forEach(doc => { if (!doc.data().isArchived) batch.update(doc.ref, { isArchived: true }); });
                 batch.commit().then(() => showToast("تم أرشفة كافة التقارير بنجاح!"));
             });
+        } else if (val === "toggle_archive") {
+            toggleArchiveView();
         } else if (val === "print") {
             window.print();
         } else if (val === "change_teacher_info") {
