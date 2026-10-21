@@ -503,6 +503,23 @@
             min-height: 60px;
         }
 
+        /* حاوية التوقيع المرتبة */
+        .signatures-footer {
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            border-top: 1px dashed var(--border);
+            padding-top: 20px;
+            font-size: 0.95rem;
+        }
+        .signature-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 45%;
+        }
+
         @media print {
             .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
                 display: none !important;
@@ -595,7 +612,7 @@
         </div>
     </div>
 
-    <!-- 1. إضافة الطالب (التسلسل الأساسي) -->
+    <!-- 1. إضافة الطالب -->
     <div class="interactive-toolbar no-print" id="controlSection">
         <h3><i class="fa-solid fa-user-plus"></i> 1. إضافة طالب جديد إلى السجل</h3>
         <div class="toolbar-grid">
@@ -620,12 +637,19 @@
         <!-- البطاقات الاحترافية النشطة -->
     </div>
 
-    <div style="margin-top: 50px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 20px;">
-        <div>توقيع المرشد الطلابي المختص: <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span> ........................</div>
-        <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
+    <!-- التوقيعات السفلية المرتبة للسطر الثاني -->
+    <div class="signatures-footer">
+        <div class="signature-block">
+            <div><strong>المرشد الطلابي المختص:</strong> <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span></div>
+            <div><strong>التوقيع:</strong> ....................................</div>
+        </div>
+        <div class="signature-block">
+            <div><strong>معلم المادة:</strong> <span class="teacherNameDisplay">-</span></div>
+            <div><strong>التوقيع:</strong> ....................................</div>
+        </div>
     </div>
 
-    <!-- الخيارات الشاملة تحتوي على زر البحث المخصص والوصول للأرشيف -->
+    <!-- الخيارات الشاملة -->
     <div class="actions-dropdown-container no-print" style="margin-top: 35px; display: flex; justify-content: flex-end;">
         <select class="main-actions-select" onchange="executeMainAction(this)" style="background: var(--maroon); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
             <option value="">⚙️ خيارات الإدارة الشاملة...</option>
@@ -666,9 +690,8 @@
     const db = firebase.firestore();
 
     let allStudents = [];
-    let allReferralData = []; // تخزين نسبي لكل السجلات
+    let allReferralData = [];
     let selectedStudentName = "";
-    let activeFilterQuery = "";  
     
     let teacherName = localStorage.getItem("teacher_name") || "";
     let teacherEmail = localStorage.getItem("teacher_email") || "";
@@ -855,7 +878,6 @@
         res.style.display = "block";
     }
 
-    // تنفيـذ البحث المباشر وبناء النتائج في النافذة المنفصلة دون المساس بالخلفية
     function executeArchiveSearch() {
         const q = document.getElementById("modalArchiveSearchInput").value.trim().toLowerCase();
         const resultsContainer = document.getElementById("archiveSearchResults");
@@ -910,7 +932,6 @@
         showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
     }
 
-    // دالة إنشاء عنصر البطاقة لتستخدم في الواجهة وفي شاشة البحث المنفصلة
     function createStudentCardElement(data, indexCount, isInsideModal = false) {
         const id = data.id;
         const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
@@ -1005,8 +1026,8 @@
                 
                 ${!isCounselorView ? (
                     isArchived ? 
-                    `<button class="btn btn-unarchive" onclick="unarchiveStudent('${id}', '${studentDisplayName}', ${isInsideModal})"><i class="fa-solid fa-box-open"></i> استعادة من الأرشيف</button>` :
-                    `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}', ${isInsideModal})"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
+                    `<button class="btn btn-unarchive" onclick="unarchiveStudent('${id}', '${studentDisplayName}',${isInsideModal})"><i class="fa-solid fa-box-open"></i> استعادة من الأرشيف</button>` :
+                    `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}',${isInsideModal})"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
                 ) : ''}
 
                 <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}', '${studentDisplayName}', ${isArchived}, ${isInsideModal})"><i class="fa-solid fa-trash"></i> ${isArchived ? 'حذف من الأرشيف' : '8. حذف'}</button>
@@ -1039,7 +1060,6 @@
                     if (hasReply) return;
                 }
 
-                // عرض العناصر النشطة فقط في الرئيسية (تتجاهل الأرشيف نهائياً في الرئيسية)
                 if (!isCounselorView && isArchived) return;
 
                 cardIndex++;
@@ -1047,7 +1067,6 @@
                 container.appendChild(cardEl);
             });
 
-            // تحديث نافذة البحث المنفصلة تلقائياً إذا كانت مفتوحة لضمان دقة البيانات
             if (document.getElementById('searchArchiveModal').style.display === 'flex') {
                 executeArchiveSearch();
             }
@@ -1148,6 +1167,7 @@
         }
     }
 
+    // بناء تقرير طباعة معاينة مع توقيعات مرتبة في أسطر مستقلة
     function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
         let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
@@ -1172,9 +1192,16 @@
                 <div class="executive-content-card" style="background: #fdf2f8;"><p style="margin: 0; white-space: pre-wrap; font-weight: 600;">${notes || 'لا توجد ملاحظات.'}</p></div>
                 <div class="executive-section-title">رد وتوجيه المرشد الطلابي:</div>
                 <div class="executive-content-card" style="background: #f0f9ff; border-color: #bae6fd;"><p style="margin: 0 0 8px 0; white-space: pre-wrap; color: #0369a1; font-weight: 700;">${reply || 'لم يتم الرد بعد.'}</p>${replyDateStr ? `<div><span class="time-badge-reply">وقت الرد: ${replyDateStr}</span></div>` : ''}</div>
-                <div style="margin-top: 25px; display: flex; justify-content: space-between; font-weight: 700; border-top: 1px dashed var(--border); padding-top: 15px; font-size: 0.9rem;">
-                    <div>توقيع المرشد (${activeCounselor}): ........................</div>
-                    <div>توقيع المعلم (${activeTeacher}): ........................</div>
+                
+                <div class="signatures-footer">
+                    <div class="signature-block">
+                        <div><strong>المرشد الطلابي المختص:</strong> ${activeCounselor}</div>
+                        <div><strong>التوقيع:</strong> ....................................</div>
+                    </div>
+                    <div class="signature-block">
+                        <div><strong>معلم المادة:</strong> ${activeTeacher}</div>
+                        <div><strong>التوقيع:</strong> ....................................</div>
+                    </div>
                 </div>
             </div>
         `;
@@ -1189,7 +1216,7 @@
     function printPreviewContent() {
         const printContent = document.getElementById('previewArea').innerHTML;
         const originalBody = document.body.innerHTML;
-        document.body.innerHTML = `<div style="padding: 20px;">${printContent}</div>`;
+        document.body.innerHTML = `<div style="padding: 20px;" dir="rtl">${printContent}</div>`;
         window.print();
         document.body.innerHTML = originalBody;
         location.reload();
@@ -1198,13 +1225,13 @@
     function downloadPDF() {
         const element = document.getElementById('previewArea');
         const options = {
-            margin: 10,
+            margin: [10, 10, 10, 10],
             filename: 'تقرير_تحويل_الطالب.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-        html2pdf().from(element).set(options).save();
+        html2pdf().set(options).from(element).save();
     }
 
     function executeMainAction(sel) {
