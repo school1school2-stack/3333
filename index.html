@@ -117,6 +117,50 @@
             box-shadow: var(--shadow-sm);
         }
 
+        .counselor-alert-banner {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 2px solid #f97316;
+            border-radius: var(--radius-md);
+            padding: 18px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.15);
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: #f97316; }
+            50% { border-color: #ea580c; }
+            100% { border-color: #f97316; }
+        }
+
+        .counselor-alert-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .counselor-alert-icon {
+            width: 48px;
+            height: 48px;
+            background: #ea580c;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 10px rgba(234, 88, 12, 0.3);
+        }
+
+        .counselor-alert-text {
+            color: #9a3412;
+            font-weight: 800;
+            font-size: 1.05rem;
+        }
+
         .interactive-toolbar {
             background: linear-gradient(135deg, #fffcf0 0%, #fff8e1 100%);
             border: 1.5px solid #fef08a;
@@ -531,7 +575,7 @@
         }
 
         @media print {
-            .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
+            .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification, .counselor-alert-banner {
                 display: none !important;
             }
             body { background: white; padding: 0; }
@@ -571,7 +615,19 @@
     </div>
 </div>
 
-<!-- شاشة البحث الخاصة بالمرشد الطلابي (تظهر فارغة ولا تعرض شيئاً إلا بعد البحث) -->
+<!-- شريط تنبيه حالات التحويل الجديد الخاص بالمرشد -->
+<div class="counselor-alert-banner no-print" id="counselorNotificationBanner" style="display: none;">
+    <div class="counselor-alert-content">
+        <div class="counselor-alert-icon">
+            <i class="fa-solid fa-bell"></i>
+        </div>
+        <div class="counselor-alert-text" id="counselorNotificationText">
+            تنبيه: لديك حالات تحويل جديدة بانتظار الرد والتوجيه.
+        </div>
+    </div>
+</div>
+
+<!-- شاشة البحث الخاصة بالمرشد الطلابي -->
 <div class="interactive-toolbar no-print" id="counselorSearchToolbar" style="display: none; background: #f0f9ff; border-color: #bae6fd;">
     <h3 style="color: #0369a1;"><i class="fa-solid fa-user-gear"></i> بحث ومتابعة سجلات المرشد الطلابي</h3>
     <div style="margin-bottom: 15px;">
@@ -892,7 +948,6 @@
         res.style.display = "block";
     }
 
-    // تنفيذ بحث المرشد (تظهر النتائج فقط عند كتابة اسم الطالب)
     function executeCounselorSearch() {
         const q = document.getElementById("counselorSearchInput").value.trim().toLowerCase();
         const resContainer = document.getElementById("counselorSearchResultsContainer");
@@ -1080,14 +1135,25 @@
             container.innerHTML = "";
             allReferralData = [];
             let cardIndex = 0;
+            let pendingCasesCount = 0;
 
             snapshot.forEach(doc => {
                 const data = doc.data();
                 data.id = doc.id;
                 allReferralData.push(data);
 
-                // في لوحة المرشد: لا يتم عرض أي بطاقات تلقائياً في الصفحة لتبقى نظيفة تماماً حتى يبحث بنفسه
-                if (isCounselorView) return;
+                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
+                const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
+
+                // حساب الحالات المحولة بانتظار الرد الخاصة بالمرشد الحالي
+                if (isCounselorView) {
+                    if (!hasReply) {
+                        if (!currentCounselorParam || reportCounselor.trim() === currentCounselorParam.trim()) {
+                            pendingCasesCount++;
+                        }
+                    }
+                    return;
+                }
 
                 const isArchived = data.isArchived === true;
                 if (isArchived) return;
@@ -1097,8 +1163,24 @@
                 container.appendChild(cardEl);
             });
 
-            // تحديث البحث تلقائياً للمرشد إذا كان يكتب بالبحث
+            // تحديث شريط التنبيه بصفحة المرشد
             if (isCounselorView) {
+                const bannerEl = document.getElementById("counselorNotificationBanner");
+                const textEl = document.getElementById("counselorNotificationText");
+
+                if (pendingCasesCount > 0) {
+                    let caseWord = "حالة محولة";
+                    if (pendingCasesCount === 1) caseWord = "حالة محولة واحدة";
+                    else if (pendingCasesCount === 2) caseWord = "حالتان محولتان";
+                    else if (pendingCasesCount >= 3 && pendingCasesCount <= 10) caseWord = `${pendingCasesCount} حالات محولة`;
+                    else caseWord = `${pendingCasesCount} حالة محولة`;
+
+                    textEl.innerHTML = `🔔 <strong>تنبيه للمرشد:</strong> لديك <strong>${caseWord}</strong> بانتظار الرد والتوجيه. نرجو البحث والرد عليها.`;
+                    bannerEl.style.display = "flex";
+                } else {
+                    bannerEl.style.display = "none";
+                }
+
                 executeCounselorSearch();
             }
         });
