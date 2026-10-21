@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة تحويل الطلاب السحابية 2026 - الأرشيف الشامل</title>
+    <title>منظومة تحويل الطلاب السحابية 2026</title>
     <!-- Google Fonts: Tajawal -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -122,7 +122,7 @@
             border: 1.5px solid #fef08a;
             border-radius: var(--radius-md);
             padding: 25px;
-            margin-bottom: 20px;
+            margin-bottom: 35px;
             box-shadow: var(--shadow-sm);
         }
 
@@ -196,28 +196,6 @@
             background-color: #fdf2f8;
             color: var(--maroon);
             font-weight: 700;
-        }
-
-        .view-mode-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            border: 1.5px solid var(--border);
-            padding: 15px 20px;
-            border-radius: var(--radius-md);
-            margin-bottom: 25px;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .view-mode-title {
-            font-weight: 800;
-            font-size: 1.1rem;
-            color: var(--maroon);
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .student-card-item {
@@ -400,7 +378,6 @@
         .btn-unarchive { background: #475569; color: white; }
         .btn-remove { background: #dc2626; color: white; }
         .btn-close { background: #64748b; color: white; }
-        .btn-archive-toggle { background: #0f172a; color: white; }
 
         .time-badge-referral {
             display: inline-flex;
@@ -527,7 +504,7 @@
         }
 
         @media print {
-            .interactive-toolbar, .view-mode-bar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
+            .interactive-toolbar, .history-section, .actions-dropdown-container, .sequential-actions-bar, .no-print, .modal-overlay, .toast-notification {
                 display: none !important;
             }
             body { background: white; padding: 0; }
@@ -567,6 +544,20 @@
     </div>
 </div>
 
+<!-- نافذة البحث المخصص في سجلات الطلاب / الأرشيف -->
+<div class="modal-overlay" id="searchArchiveModal">
+    <div class="modal-content" style="max-width: 500px;">
+        <h3 style="color: var(--maroon); margin-top: 0; border-bottom: 2px solid var(--gold); padding-bottom: 10px;"><i class="fa-solid fa-magnifying-glass"></i> البحث في سجلات وطباعة تقارير الطالب</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">اكتب اسم الطالب للبحث في كافة السجلات والأرشيف وعرض البطاقة المباشرة له:</p>
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="modalArchiveSearchInput" class="student-search" placeholder="اكتب اسم الطالب للبحث..." oninput="executeArchiveSearch()">
+        </div>
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="btn btn-close" onclick="document.getElementById('searchArchiveModal').style.display='none'">إغلاق</button>
+        </div>
+    </div>
+</div>
+
 <!-- نافذة توليد رابط المرشد الفردي للطالب -->
 <div class="modal-overlay" id="counselorLinkModal">
     <div class="modal-content" style="max-width: 500px;">
@@ -599,9 +590,9 @@
         </div>
     </div>
 
-    <!-- 1. إضافة طالب جديد أو البحث المباشر -->
+    <!-- 1. إضافة الطالب (التسلسل الأساسي) -->
     <div class="interactive-toolbar no-print" id="controlSection">
-        <h3><i class="fa-solid fa-user-plus"></i> 1. إدراج طالب جديد للكشف</h3>
+        <h3><i class="fa-solid fa-user-plus"></i> 1. إضافة طالب جديد إلى السجل</h3>
         <div class="toolbar-grid">
             <div class="search-box-wrapper">
                 <input type="text" id="searchInput" class="student-search" placeholder="🔍 ابحث عن اسم الطالب واختاره..." oninput="filterStudents()" onfocus="filterStudents()">
@@ -618,21 +609,6 @@
         </div>
     </div>
 
-    <!-- شريط التحكم بوضع العرض وشريط البحث العام في التقارير والأرشيف -->
-    <div class="view-mode-bar no-print">
-        <div class="view-mode-title" id="viewModeStatus">
-            <i class="fa-solid fa-folder-open"></i> العرض الحالي: <span id="modeText" style="color: #16a34a;">السجلات النشطة الحالية</span>
-        </div>
-        <div style="flex: 1; max-width: 320px;">
-            <input type="text" id="filterCardInput" class="student-search" placeholder="🔍 تصفية/بحث باسم الطالب..." oninput="filterRenderedCards()">
-        </div>
-        <div>
-            <button class="btn btn-archive-toggle" id="btnToggleArchive" onclick="toggleArchiveView()">
-                <i class="fa-solid fa-box-archive"></i> فتح وسجل الأرشيف الكامل
-            </button>
-        </div>
-    </div>
-
     <div class="history-section no-print" id="studentHistorySection" style="display:none;"></div>
 
     <div id="cardsContainer">
@@ -644,11 +620,13 @@
         <div>توقيع معلم المادة (<span class="teacherNameDisplay">-</span>): ........................</div>
     </div>
 
+    <!-- الخيارات الشاملة تحتوي على خيارات الأرشيف والبحث باسم الطالب -->
     <div class="actions-dropdown-container no-print" style="margin-top: 35px; display: flex; justify-content: flex-end;">
         <select class="main-actions-select" onchange="executeMainAction(this)" style="background: var(--maroon); color: white; border: none; padding: 12px 20px; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer;">
             <option value="">⚙️ خيارات الإدارة الشاملة...</option>
             <option value="save_all">💾 حفظ وأرشفة جميع التقارير الحالية</option>
-            <option value="toggle_archive">📁 فتح / إغلاق سجل الأرشيف</option>
+            <option value="toggle_archive">📁 فتح / إغلاق سجل الأرشيف الكامل</option>
+            <option value="search_student">🔍 البحث عن اسم طالب في السجلات والأرشيف</option>
             <option value="change_teacher_info">👨‍🏫 تعديل بيانات المعلم</option>
             <option value="print">🖨️ طباعة السجل بالكامل</option>
         </select>
@@ -668,7 +646,7 @@
 </div>
 
 <script>
-    // إعدادات فايربيس الخاصة بمشروعك
+    // إعدادات فايربيس
     const firebaseConfig = {
         apiKey: "AIzaSyDhd5CSkNMoppGby6uKx#sQC...",
         authDomain: "aaaa-a2380.firebaseapp.com",
@@ -686,7 +664,7 @@
     let allStudents = [];
     let studentCount = 0;
     let selectedStudentName = "";
-    let showArchiveMode = false; // متغير حالة العرض الأرشيفي
+    let showArchiveMode = false; // التحكم بعرض الأرشيف
     
     let teacherName = localStorage.getItem("teacher_name") || "";
     let teacherEmail = localStorage.getItem("teacher_email") || "";
@@ -768,7 +746,6 @@
             document.getElementById('teacherInfoModal').style.display = 'none';
             document.getElementById('controlSection').style.display = 'none';
             document.querySelector('.actions-dropdown-container').style.display = 'none';
-            document.querySelector('.view-mode-bar').style.display = 'none';
             document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة المرشد الطلابي (${currentCounselorParam})`;
             updateNamesUI();
             return;
@@ -874,27 +851,12 @@
         res.style.display = "block";
     }
 
-    function toggleArchiveView() {
-        showArchiveMode = !showArchiveMode;
-        const modeText = document.getElementById("modeText");
-        const btnToggle = document.getElementById("btnToggleArchive");
-
-        if (showArchiveMode) {
-            modeText.textContent = "سجل الأرشيف الكامل (المؤرشفة والنشطة معاً)";
-            modeText.style.color = "#d97706";
-            btnToggle.innerHTML = '<i class="fa-solid fa-list-check"></i> العودة للسجلات النشطة فقط';
-            showToast("تم فتح سجل الأرشيف الكامل");
-        } else {
-            modeText.textContent = "السجلات النشطة الحالية";
-            modeText.style.color = "#16a34a";
-            btnToggle.innerHTML = '<i class="fa-solid fa-box-archive"></i> فتح وسجل الأرشيف الكامل';
-            showToast("تم العودة للسجلات النشطة");
+    function executeArchiveSearch() {
+        const q = document.getElementById("modalArchiveSearchInput").value.trim().toLowerCase();
+        if (!showArchiveMode) {
+            showArchiveMode = true;
+            listenToCloudReferrals();
         }
-        listenToCloudReferrals();
-    }
-
-    function filterRenderedCards() {
-        const q = document.getElementById("filterCardInput").value.trim().toLowerCase();
         const cards = document.querySelectorAll(".student-card-item");
         cards.forEach(card => {
             const name = card.getAttribute("data-student-name") || "";
@@ -948,7 +910,7 @@
                     if (hasReply) return;
                 }
 
-                // فلترة الأرشيف: إخفاء المؤشف إلا إذا تم تفعيل الأرشيف الكامل
+                // فلترة الأرشيف: إخفاء العناصر المؤرشفة إلا عند تفعيل نمط الأرشيف عبر الخيارات المنسدلة
                 if (!isCounselorView && isArchived && !showArchiveMode) return;
 
                 studentCount++;
@@ -1051,9 +1013,6 @@
                 container.appendChild(card);
                 renderStudentViolationTags(id, currentViolations, isArchived);
             });
-
-            // تطبيق التصفية الفورية إذا كان هناك نص مكتوب في شريط التصفية
-            filterRenderedCards();
         });
     }
 
@@ -1216,7 +1175,11 @@
                 batch.commit().then(() => showToast("تم أرشفة كافة التقارير بنجاح!"));
             });
         } else if (val === "toggle_archive") {
-            toggleArchiveView();
+            showArchiveMode = !showArchiveMode;
+            showToast(showArchiveMode ? "تم فتح الأرشيف الكامل" : "تم إغلاق الأرشيف والعودة النشطة");
+            listenToCloudReferrals();
+        } else if (val === "search_student") {
+            document.getElementById('searchArchiveModal').style.display = 'flex';
         } else if (val === "print") {
             window.print();
         } else if (val === "change_teacher_info") {
