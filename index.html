@@ -603,7 +603,7 @@
             </div>
             <div>
                 <h2 id="mainHeadingTitle">إشعار تحويل طلاب للمرشد الطلابي</h2>
-                <small style="color: var(--text-muted); font-weight: 600;">ثانوية الأمير عبدالمجيد بن عبدالعزيز   -  </small>
+                <small style="color: var(--text-muted); font-weight: 600;">المملكة العربية السعودية - وزارة التعليم</small>
             </div>
         </div>
         <div class="header-badge">
@@ -640,7 +640,7 @@
     <!-- التوقيعات السفلية المرتبة للسطر الثاني -->
     <div class="signatures-footer">
         <div class="signature-block">
-            <div><strong>المرشد الطلابي :</strong> <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span></div>
+            <div><strong>المرشد الطلابي:</strong> <span class="counselorNameDisplay">أ / عبدالمجيد الأحيدب</span></div>
             <div><strong>التوقيع:</strong> ....................................</div>
         </div>
         <div class="signature-block">
@@ -907,6 +907,7 @@
         document.getElementById('searchArchiveModal').style.display = 'none';
         document.getElementById('modalArchiveSearchInput').value = '';
         document.getElementById('archiveSearchResults').innerHTML = '<div style="text-align: center; color: #94a3b8; font-weight: 600; padding: 20px;">ابدأ بكتابة اسم الطالب لعرض بطاقته هنا...</div>';
+        listenToCloudReferrals();
     }
 
     async function addSelectedStudent() {
@@ -1067,6 +1068,7 @@
                 container.appendChild(cardEl);
             });
 
+            // التأكد من تجدد البحث فقط إن كانت النافذة المنفصلة مفتوحة
             if (document.getElementById('searchArchiveModal').style.display === 'flex') {
                 executeArchiveSearch();
             }
@@ -1167,7 +1169,7 @@
         }
     }
 
-    // بناء تقرير طباعة معاينة مع توقيعات مرتبة في أسطر مستقلة
+    // بناء تقرير طباعة معاينة مع حذف كلمة "المختص" وتنسيق التوقيعات
     function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
         let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
         const formattedViolations = generateFormattedViolationsHTML(violationsArr);
@@ -1195,7 +1197,7 @@
                 
                 <div class="signatures-footer">
                     <div class="signature-block">
-                        <div><strong>المرشد الطلابي المختص:</strong> ${activeCounselor}</div>
+                        <div><strong>المرشد الطلابي:</strong> ${activeCounselor}</div>
                         <div><strong>التوقيع:</strong> ....................................</div>
                     </div>
                     <div class="signature-block">
