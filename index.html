@@ -922,7 +922,7 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // تفريغ الحقول وإلغاء تحديد اسم الطالب السابق تماماً
+        // تفريغ الحقول وإلغاء تحديد اسم الطالب السابق
         document.getElementById("searchInput").value = "";
         selectedStudentName = "";
         showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
@@ -1041,12 +1041,6 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 data.id = doc.id;
-
-                // حذف المسودات غير المكتملة تلقائياً تجنباً لبقاء الطالب مفتوحاً بدون بيانات عند الخروج
-                if (!isCounselorView && (!data.violations || data.violations.length === 0) && (!data.notes || data.notes.trim() === "") && (data.reply === "لم يتم الرد بعد")) {
-                    db.collection("referral_list").doc(data.id).delete();
-                    return;
-                }
 
                 allReferralData.push(data);
 
