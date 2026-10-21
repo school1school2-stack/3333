@@ -571,11 +571,11 @@
     </div>
 </div>
 
-<!-- شاشة البحث الخاصة بالمرشد الطلابي لاستعراض سجلات وأسماء الطلاب المردود عليهم ومتابعة جميع المعلمين -->
+<!-- شاشة البحث الخاصة بالمرشد الطلابي (تظهر فارغة ولا تعرض شيئاً إلا بعد البحث) -->
 <div class="interactive-toolbar no-print" id="counselorSearchToolbar" style="display: none; background: #f0f9ff; border-color: #bae6fd;">
     <h3 style="color: #0369a1;"><i class="fa-solid fa-user-gear"></i> بحث ومتابعة سجلات المرشد الطلابي</h3>
     <div style="margin-bottom: 15px;">
-        <input type="text" id="counselorSearchInput" class="student-search" placeholder="🔍 اكتب اسم الطالب لعرض تقريره الموحد عبر كافة المعلمين..." oninput="executeCounselorSearch()">
+        <input type="text" id="counselorSearchInput" class="student-search" placeholder="🔍 اكتب اسم الطالب للبحث عن جميع تحويلاته من كافة المعلمين..." oninput="executeCounselorSearch()">
     </div>
     <div id="counselorSearchResultsContainer"></div>
 </div>
@@ -652,7 +652,7 @@
     <div class="history-section no-print" id="studentHistorySection" style="display:none;"></div>
 
     <div id="cardsContainer">
-        <!-- البطاقات الاحترافية النشطة -->
+        <!-- البطاقات الاحترافية النشطة المعروضة للمعلم -->
     </div>
 
     <div class="signatures-footer">
@@ -720,7 +720,6 @@
     const urlParams = new URLSearchParams(window.location.search);
     const isCounselorView = urlParams.get('mode') === 'counselor';
     const currentCounselorParam = urlParams.get('counselor') ? decodeURIComponent(urlParams.get('counselor')) : "";
-    const targetStudentIdParam = urlParams.get('studentId') || "";
 
     const countOptionsMap = {
         "عدم إحضار الواجبات": [
@@ -758,7 +757,7 @@
 
     function generateCounselorLinkForStudent(studentId, counselorName) {
         const baseUrl = window.location.href.split('?')[0];
-        const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(counselorName)}&studentId=${studentId}`;
+        const link = `${baseUrl}?mode=counselor&counselor=${encodeURIComponent(counselorName)}`;
         document.getElementById("generatedCounselorLink").value = link;
         document.getElementById("counselorLinkModal").style.display = "flex";
     }
@@ -767,7 +766,7 @@
         const input = document.getElementById("generatedCounselorLink");
         input.select();
         document.execCommand("copy");
-        showToast("تم نسخ رابط إرسال الحالة للمرشد بنجاح!");
+        showToast("تم نسخ رابط المرشد بنجاح!");
     }
 
     function updateNamesUI() {
@@ -893,7 +892,7 @@
         res.style.display = "block";
     }
 
-    // دالة خاصة بالمرشد للبحث عن أي طالب واستعراض جميع حالاته من كل المعلمين
+    // تنفيذ بحث المرشد (تظهر النتائج فقط عند كتابة اسم الطالب)
     function executeCounselorSearch() {
         const q = document.getElementById("counselorSearchInput").value.trim().toLowerCase();
         const resContainer = document.getElementById("counselorSearchResultsContainer");
@@ -1067,7 +1066,6 @@
                     `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}', ${isInsideModal})"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
                 ) : ''}
 
-                <!-- المعلم فقط يستطيع الحذف، أما المرشد له حرية المعاينة والتعديل دون الحذف -->
                 ${!isCounselorView ? `<button class="btn btn-remove" onclick="deleteCloudStudent('${id}', '${studentDisplayName}', ${isArchived}, ${isInsideModal})"><i class="fa-solid fa-trash"></i> ${isArchived ? 'حذف من الأرشيف' : 'حذف'}</button>` : ''}
             </div>
         `;
@@ -1086,23 +1084,23 @@
             snapshot.forEach(doc => {
                 const data = doc.data();
                 data.id = doc.id;
-
                 allReferralData.push(data);
 
-                const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
+                // في لوحة المرشد: لا يتم عرض أي بطاقات تلقائياً في الصفحة لتبقى نظيفة تماماً حتى يبحث بنفسه
+                if (isCounselorView) return;
+
                 const isArchived = data.isArchived === true;
-
-                if (isCounselorView) {
-                    if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
-                    if (targetStudentIdParam && data.id !== targetStudentIdParam) return;
-                }
-
-                if (!isCounselorView && isArchived) return;
+                if (isArchived) return;
 
                 cardIndex++;
                 const cardEl = createStudentCardElement(data, cardIndex, false);
                 container.appendChild(cardEl);
             });
+
+            // تحديث البحث تلقائياً للمرشد إذا كان يكتب بالبحث
+            if (isCounselorView) {
+                executeCounselorSearch();
+            }
         });
     }
 
@@ -1199,7 +1197,6 @@
         }
     }
 
-    // دالة إنشاء تقرير الطالب الموحد من كافة المعلمين
     function openCombinedStudentReport(studentName) {
         const studentCases = allReferralData.filter(item => item.name === studentName);
         if (studentCases.length === 0) {
