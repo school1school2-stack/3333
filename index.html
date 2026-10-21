@@ -1124,7 +1124,9 @@
                             <option value="عدم إحضار البحث">عدم إحضار البحث</option>
                             <option value="كثرة النوم">كثرة النوم</option>
                             <option value="ضعف المشاركة">ضعف المشاركة</option>
+                            <option value="أخرى">أخرى (تحديد يدوياً)...</option>
                         </select>
+                        <input type="text" id="custom_type_input_${id}" class="student-search" placeholder="✍️ اكتب المخالفة المخصصة هنا..." style="display: none; margin-top: 8px;">
                         <select id="count_select_${id}" class="count-select">
                             <option value="">-- اختر العدد / الوصف --</option>
                         </select>
@@ -1198,7 +1200,6 @@
                 container.appendChild(cardEl);
             });
 
-            // تحديث شريط التنبيه ومعدل القائمة المباشرة لصفحة المرشد
             if (isCounselorView) {
                 const bannerEl = document.getElementById("counselorNotificationBanner");
                 const textEl = document.getElementById("counselorNotificationText");
@@ -1215,7 +1216,6 @@
 
                     textEl.innerHTML = `🔔 <strong>تنبيه للمرشد:</strong> لديك <strong>${caseWord}</strong> بانتظار الرد والتوجيه.`;
                     
-                    // تعبئة الخيارات بالأسماء
                     pendingSelect.innerHTML = '<option value="">-- اضغط واختر اسم الطالب من القائمة --</option>';
                     pendingStudentsMap.forEach((cases, studentName) => {
                         const opt = document.createElement("option");
@@ -1237,31 +1237,54 @@
     function onTypeSelectChange(id) {
         const typeSelect = document.getElementById(`type_select_${id}`);
         const countSelect = document.getElementById(`count_select_${id}`);
+        const customInput = document.getElementById(`custom_type_input_${id}`);
         if (!typeSelect || !countSelect) return;
+        
         const selectedType = typeSelect.value;
-        countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
-        if (countOptionsMap[selectedType]) {
-            countOptionsMap[selectedType].forEach(opt => {
-                const optEl = document.createElement("option");
-                optEl.value = opt.value;
-                optEl.textContent = opt.text;
-                countSelect.appendChild(optEl);
-            });
+
+        if (selectedType === "أخرى") {
+            if (customInput) customInput.style.display = "block";
+            countSelect.style.display = "none";
+        } else {
+            if (customInput) customInput.style.display = "none";
+            countSelect.style.display = "block";
+            countSelect.innerHTML = '<option value="">-- اختر العدد / الوصف --</option>';
+            if (countOptionsMap[selectedType]) {
+                countOptionsMap[selectedType].forEach(opt => {
+                    const optEl = document.createElement("option");
+                    optEl.value = opt.value;
+                    optEl.textContent = opt.text;
+                    countSelect.appendChild(optEl);
+                });
+            }
         }
     }
 
     async function addViolationToStudent(id) {
-        const typeVal = document.getElementById(`type_select_${id}`).value;
+        const typeSelectVal = document.getElementById(`type_select_${id}`).value;
         const countVal = document.getElementById(`count_select_${id}`).value;
-        if (!typeVal || !countVal) return alert("اختر نوع المخالفة والعدد أولاً");
+        const customInputEl = document.getElementById(`custom_type_input_${id}`);
+        const customTypeVal = customInputEl ? customInputEl.value.trim() : "";
+
+        let finalViolationText = "";
+
+        if (typeSelectVal === "أخرى") {
+            if (!customTypeVal) return alert("يرجى كتابة المخالفة المخصصة أولاً");
+            finalViolationText = customTypeVal;
+        } else {
+            if (!typeSelectVal || !countVal) return alert("اختر نوع المخالفة والعدد أولاً");
+            finalViolationText = `${typeSelectVal}: ${countVal}`;
+        }
 
         const docRef = db.collection("referral_list").doc(id);
         const doc = await docRef.get();
         if (doc.exists) {
             let arr = doc.data().violations || [];
-            arr.push(`${typeVal}: ${countVal}`);
+            arr.push(finalViolationText);
             await docRef.update({ violations: arr });
-            showToast("تمت إضافة المخالفة!");
+            
+            if (customInputEl) customInputEl.value = "";
+            showToast("تمت إضافة المخالفة بنجاح!");
         }
     }
 
