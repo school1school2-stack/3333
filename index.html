@@ -416,6 +416,17 @@
             font-weight: 700;
         }
 
+        .teacher-badge-tag {
+            background: #f1f5f9;
+            color: var(--maroon);
+            border: 1px solid #cbd5e1;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 5px;
+        }
+
         .toast-notification {
             position: fixed;
             bottom: 25px; right: 25px;
@@ -558,6 +569,15 @@
             <button class="btn btn-add" onclick="saveTeacherInfoModal()"><i class="fa-solid fa-floppy-disk"></i> حفظ ومتابعة</button>
         </div>
     </div>
+</div>
+
+<!-- شاشة البحث الخاصة بالمرشد الطلابي لاستعراض سجلات وأسماء الطلاب المردود عليهم ومتابعة جميع المعلمين -->
+<div class="interactive-toolbar no-print" id="counselorSearchToolbar" style="display: none; background: #f0f9ff; border-color: #bae6fd;">
+    <h3 style="color: #0369a1;"><i class="fa-solid fa-user-gear"></i> بحث ومتابعة سجلات المرشد الطلابي</h3>
+    <div style="margin-bottom: 15px;">
+        <input type="text" id="counselorSearchInput" class="student-search" placeholder="🔍 اكتب اسم الطالب لعرض تقريره الموحد عبر كافة المعلمين..." oninput="executeCounselorSearch()">
+    </div>
+    <div id="counselorSearchResultsContainer"></div>
 </div>
 
 <!-- نافذة البحث المخصص لعرض وطباعة نتائج الطالب فقط -->
@@ -767,6 +787,7 @@
             document.getElementById('teacherInfoModal').style.display = 'none';
             document.getElementById('controlSection').style.display = 'none';
             document.querySelector('.actions-dropdown-container').style.display = 'none';
+            document.getElementById('counselorSearchToolbar').style.display = 'block';
             document.getElementById('mainHeadingTitle').textContent = `لوحة متابعة المرشد الطلابي (${currentCounselorParam})`;
             updateNamesUI();
             return;
@@ -872,6 +893,29 @@
         res.style.display = "block";
     }
 
+    // دالة خاصة بالمرشد للبحث عن أي طالب واستعراض جميع حالاته من كل المعلمين
+    function executeCounselorSearch() {
+        const q = document.getElementById("counselorSearchInput").value.trim().toLowerCase();
+        const resContainer = document.getElementById("counselorSearchResultsContainer");
+        resContainer.innerHTML = "";
+
+        if (!q) return;
+
+        const filtered = allReferralData.filter(item => (item.name || '').toLowerCase().includes(q));
+
+        if (filtered.length === 0) {
+            resContainer.innerHTML = '<div style="text-align: center; color: #ef4444; font-weight: 700; padding: 15px;">لم يتم العثور على أي حالات تحويل بهذا الاسم.</div>';
+            return;
+        }
+
+        let count = 0;
+        filtered.forEach(data => {
+            count++;
+            const cardEl = createStudentCardElement(data, count, false);
+            resContainer.appendChild(cardEl);
+        });
+    }
+
     function executeArchiveSearch() {
         const q = document.getElementById("modalArchiveSearchInput").value.trim().toLowerCase();
         const resultsContainer = document.getElementById("archiveSearchResults");
@@ -922,7 +966,6 @@
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         
-        // تفريغ الحقول وإلغاء تحديد اسم الطالب السابق
         document.getElementById("searchInput").value = "";
         selectedStudentName = "";
         showToast(`تم إدراج الطالب (${studentName}) بنجاح!`);
@@ -946,7 +989,7 @@
                     <div style="font-size: 0.85rem; font-weight: bold; color: #0369a1; margin-bottom: 4px;"><i class="fa-solid fa-reply"></i> 5. رد وتوجيه المرشد (${reportCounselor}):</div>
                     <textarea id="reply_${id}" class="counselor-reply" placeholder="اكتب رد المرشد والتوجيه هنا...">${hasReply ? data.reply : ''}</textarea>
                     ${replyTimeStr ? `<div><span class="time-badge-reply"><i class="fa-solid fa-clock"></i> وقت الرد: ${replyTimeStr}</span></div>` : ''}
-                    <button class="btn btn-save-reply" style="display:inline-flex;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ وإرسال رد المرشد</button>
+                    <button class="btn btn-save-reply" style="display:inline-flex;" onclick="saveReply('${id}', '${reportCounselor}')"><i class="fa-solid fa-paper-plane"></i> حفظ / تعديل رد المرشد</button>
                 </div>
             `;
         } else {
@@ -971,6 +1014,7 @@
                 <div class="student-main-title">
                     <span style="background: ${isArchived ? '#64748b' : 'var(--maroon)'}; color: white; width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9rem;">${indexCount}</span>
                     🎓 ${studentDisplayName}
+                    <span class="teacher-badge-tag"><i class="fa-solid fa-chalkboard-user"></i> المحول: ${reportTeacher}</span>
                     ${isArchived ? '<span class="badge-archived"><i class="fa-solid fa-box-archive"></i> في الأرشيف</span>' : ''}
                 </div>
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
@@ -1004,7 +1048,7 @@
                 </div>
 
                 <div class="card-section-box">
-                    <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> 3. ملاحظات وتعليق المعلم</div>
+                    <div class="card-section-title"><i class="fa-solid fa-pen-nib"></i> 3. ملاحظات وتعليق المعلم (${reportTeacher})</div>
                     <div style="margin-bottom: 12px;">
                         <textarea class="notes-input" ${isCounselorView || isArchived ? 'disabled' : ''} placeholder="اكتب ملاحظاتك..." onblur="updateCloudField('${id}', 'notes', this.value)">${data.notes || ''}</textarea>
                     </div>
@@ -1015,15 +1059,16 @@
 
             <div class="sequential-actions-bar no-print">
                 <button class="btn btn-link-counselor" ${isCounselorView || isArchived ? 'style="display:none;"' : ''} onclick="generateCounselorLinkForStudent('${id}', '${reportCounselor}')"><i class="fa-solid fa-share-nodes"></i> 4. رابط إرسال الحالة للمرشد</button>
-                <button class="btn btn-view-report" onclick="openSingleReport('${studentDisplayName}', '${createdTimeStr}', \`${JSON.stringify(currentViolations).replace(/"/g, '&quot;')}\`, \`${data.notes || 'لا توجد'}\`, \`${data.reply || 'لم يتم الرد بعد'}\`, '${replyTimeStr || ''}', '${reportTeacher}', '${reportCounselor}')"><i class="fa-solid fa-eye"></i> 6. معاينة التقرير</button>
+                <button class="btn btn-view-report" onclick="openCombinedStudentReport('${studentDisplayName}')"><i class="fa-solid fa-file-invoice"></i> 6. معاينة تقرير الطالب الموحد (كل المعلمين)</button>
                 
                 ${!isCounselorView ? (
                     isArchived ? 
-                    `<button class="btn btn-unarchive" onclick="unarchiveStudent('${id}', '${studentDisplayName}',${isInsideModal})"><i class="fa-solid fa-box-open"></i> استعادة من الأرشيف</button>` :
-                    `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}',${isInsideModal})"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
+                    `<button class="btn btn-unarchive" onclick="unarchiveStudent('${id}', '${studentDisplayName}', ${isInsideModal})"><i class="fa-solid fa-box-open"></i> استعادة من الأرشيف</button>` :
+                    `<button class="btn btn-save-student" onclick="saveSingleStudent('${id}', '${studentDisplayName}', ${isInsideModal})"><i class="fa-solid fa-floppy-disk"></i> 7. حفظ بالأرشيف</button>`
                 ) : ''}
 
-                <button class="btn btn-remove" ${isCounselorView ? 'style="display:none;"' : ''} onclick="deleteCloudStudent('${id}', '${studentDisplayName}', ${isArchived}, ${isInsideModal})"><i class="fa-solid fa-trash"></i> ${isArchived ? 'حذف من الأرشيف' : '8. حذف'}</button>
+                <!-- المعلم فقط يستطيع الحذف، أما المرشد له حرية المعاينة والتعديل دون الحذف -->
+                ${!isCounselorView ? `<button class="btn btn-remove" onclick="deleteCloudStudent('${id}', '${studentDisplayName}', ${isArchived}, ${isInsideModal})"><i class="fa-solid fa-trash"></i> ${isArchived ? 'حذف من الأرشيف' : 'حذف'}</button>` : ''}
             </div>
         `;
 
@@ -1045,13 +1090,11 @@
                 allReferralData.push(data);
 
                 const reportCounselor = data.counselorName || "أ / عبدالمجيد الأحيدب";
-                const hasReply = data.reply && data.reply !== "لم يتم الرد بعد";
                 const isArchived = data.isArchived === true;
 
                 if (isCounselorView) {
                     if (currentCounselorParam && reportCounselor.trim() !== currentCounselorParam.trim()) return;
                     if (targetStudentIdParam && data.id !== targetStudentIdParam) return;
-                    if (hasReply) return;
                 }
 
                 if (!isCounselorView && isArchived) return;
@@ -1141,11 +1184,10 @@
         if (!replyText.trim()) return alert("اكتب رد المرشد أولاً");
         await db.collection("referral_list").doc(id).update({
             reply: replyText,
-            teacherName: teacherName,
             counselorName: counselor,
             replyCreatedAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        showToast("تم حفظ وإرسال رد المرشد بنجاح!");
+        showToast("تم حفظ / تعديل رد المرشد بنجاح!");
     }
 
     async function deleteCloudStudent(id, name, isArchived, isInsideModal = false) {
@@ -1157,30 +1199,51 @@
         }
     }
 
-    function openSingleReport(name, dateStr, violationsInput, notes, reply, replyDateStr, customTeacher, customCounselor) {
-        let violationsArr = typeof violationsInput === 'string' ? JSON.parse(violationsInput) : violationsInput;
-        const formattedViolations = generateFormattedViolationsHTML(violationsArr);
-        const activeTeacher = customTeacher || teacherName;
-        const activeCounselor = customCounselor || "أ / عبدالمجيد الأحيدب";
+    // دالة إنشاء تقرير الطالب الموحد من كافة المعلمين
+    function openCombinedStudentReport(studentName) {
+        const studentCases = allReferralData.filter(item => item.name === studentName);
+        if (studentCases.length === 0) {
+            alert("لا توجد سجلات مسجلة لهذا الطالب.");
+            return;
+        }
+
+        let casesHTML = "";
+        studentCases.forEach((item, index) => {
+            const teacher = item.teacherName || "غير محدد";
+            const dateStr = formatTimestamp(item.createdAt);
+            const replyDateStr = item.replyCreatedAt ? formatTimestamp(item.replyCreatedAt) : "";
+            const vHtml = generateFormattedViolationsHTML(item.violations || []);
+
+            casesHTML += `
+                <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                    <div style="font-weight: 800; color: var(--maroon); border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 10px;">
+                        📌 حالة تحويل رقم (${index + 1}) - بواسطة المعلم: ${teacher} | بتاريخ: ${dateStr}
+                    </div>
+                    <div style="margin-bottom: 8px;"><strong>المخالفات:</strong> ${vHtml}</div>
+                    <div style="margin-bottom: 8px;"><strong>ملاحظات المعلم:</strong> ${item.notes || 'لا توجد ملاحظات'}</div>
+                    <div style="background: #f0f9ff; padding: 8px; border-radius: 6px; color: #0369a1;">
+                        <strong>رد وتوجيه المرشد:</strong> ${item.reply || 'لم يتم الرد بعد'} ${replyDateStr ? `(${replyDateStr})` : ''}
+                    </div>
+                </div>
+            `;
+        });
+
+        const activeCounselor = currentCounselorParam || studentCases[0].counselorName || "أ / عبدالمجيد الأحيدب";
 
         const content = `
             <div class="executive-report-box" id="printableReportCard">
                 <div class="executive-header">
-                    <h3>تقرير إحالة ومتابعة سلوكية</h3>
+                    <h3>تقرير المتابعة السلوكية الشامل للطالب</h3>
                     <small style="color: var(--text-muted); font-weight: 700;">ثانوية الأمير عبدالمجيد بن عبدالعزيز</small>
                 </div>
                 <div class="executive-grid">
-                    <div><strong>اسم الطالب:</strong> ${name}</div>
-                    <div><strong>تاريخ ووقت الإحالة:</strong> ${dateStr}</div>
-                    <div><strong>معلم المادة:</strong> ${activeTeacher}</div>
-                    <div><strong>المرشد الطلابي:</strong> ${activeCounselor}</div>
+                    <div><strong>اسم الطالب:</strong> ${studentName}</div>
+                    <div><strong>إجمالي حالات التحويل:</strong> ${studentCases.length} حالة</div>
+                    <div><strong>المرشد الطلابي المسؤول:</strong> ${activeCounselor}</div>
+                    <div><strong>تاريخ التقرير:</strong> ${new Date().toLocaleDateString('ar-SA')}</div>
                 </div>
-                <div class="executive-section-title">المخالفات والسلوكيات المرصودة:</div>
-                <div class="executive-content-card">${formattedViolations}</div>
-                <div class="executive-section-title">ملاحظات وتقرير المعلم:</div>
-                <div class="executive-content-card" style="background: #fdf2f8;"><p style="margin: 0; white-space: pre-wrap; font-weight: 600;">${notes || 'لا توجد ملاحظات.'}</p></div>
-                <div class="executive-section-title">رد وتوجيه المرشد الطلابي:</div>
-                <div class="executive-content-card" style="background: #f0f9ff; border-color: #bae6fd;"><p style="margin: 0 0 8px 0; white-space: pre-wrap; color: #0369a1; font-weight: 700;">${reply || 'لم يتم الرد بعد.'}</p>${replyDateStr ? `<div><span class="time-badge-reply">وقت الرد: ${replyDateStr}</span></div>` : ''}</div>
+                <div class="executive-section-title">سجل حالات التحويل المرصودة من جميع المعلمين:</div>
+                <div>${casesHTML}</div>
                 
                 <div class="signatures-footer">
                     <div class="signature-block">
@@ -1188,7 +1251,7 @@
                         <div><strong>التوقيع:</strong> ....................................</div>
                     </div>
                     <div class="signature-block">
-                        <div><strong>معلم المادة:</strong> ${activeTeacher}</div>
+                        <div><strong>إدارة المدرسة:</strong> ....................................</div>
                         <div><strong>التوقيع:</strong> ....................................</div>
                     </div>
                 </div>
@@ -1215,7 +1278,7 @@
         const element = document.getElementById('previewArea');
         const options = {
             margin: [10, 10, 10, 10],
-            filename: 'تقرير_تحويل_الطالب.pdf',
+            filename: 'تقرير_متابعة_الطالب_الموحد.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
